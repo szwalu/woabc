@@ -51,30 +51,31 @@
   </div>
 
   <script>
-    async function loadWeather() {
-      try {
-        const ipRes = await fetch('https://ipinfo.io/json?token=553d956e2e2941f9870160920252704');
-        const ipData = await ipRes.json();
-        const loc = ipData.loc.split(',');
-        const city = ipData.city;
-        const lat = loc[0];
-        const lon = loc[1];
+  async function loadWeather() {
+    try {
+      // 使用 ip-api 获取地理位置
+      const ipRes = await fetch('http://ip-api.com/json/');
+      const ipData = await ipRes.json();
+      const city = ipData.city;
+      const lat = ipData.lat;
+      const lon = ipData.lon;
 
-        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-        const weatherData = await weatherRes.json();
+      // 请求天气数据（使用 open-meteo）
+      const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+      const weatherData = await weatherRes.json();
 
-        const temp = weatherData.current_weather.temperature;
-        const code = weatherData.current_weather.weathercode;
+      const temp = weatherData.current_weather.temperature;
+      const code = weatherData.current_weather.weathercode;
 
-        const weatherEl = document.querySelector('#weather p');
-        weatherEl.innerHTML = `${city} 当前气温：${temp}℃`;
-      } catch (e) {
-        document.querySelector('#weather p').innerText = '天气加载失败';
-        console.error(e);
-      }
+      const weatherEl = document.querySelector('#weather p');
+      weatherEl.innerHTML = `${city} 当前气温：${temp}℃`;
+    } catch (e) {
+      document.querySelector('#weather p').innerText = '天气加载失败';
+      console.error(e);
     }
+  }
 
-    loadWeather();
-  </script>
+  loadWeather();
+</script>
 </body>
 </html>
