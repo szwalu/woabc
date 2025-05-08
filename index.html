@@ -55,30 +55,53 @@
     }
     .sidebar-open .sidebar-overlay { display: block; }
 
-    /* Header Search Box Refined Styles */
+    /* Header Search Box with Select */
     .header-search-container {
         display: flex; align-items: center;
         flex-grow: 1; max-width: 600px; margin: 0 1rem;
     }
-    .search-engine-radios { display: flex; align-items: center; margin-right: 0.5rem; }
-    .search-engine-radios label {
-        display: flex; align-items: center; padding: 0.25rem 0.5rem; cursor: pointer;
-        font-size: 0.8rem; border-radius: 0.375rem;
-        transition: background-color 0.2s ease, color 0.2s ease;
-        line-height: 1.2; border: 1px solid transparent;
+    .search-engine-select {
+        /* Adjust appearance for select dropdown */
+        appearance: none; /* Remove default OS styling */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E"); /* Simple chevron down */
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 1em 1em;
+        padding: 0.25rem 2rem 0.25rem 0.75rem; /* Adjust padding for icon space */
+        margin-right: -1px; /* Overlap border with search form */
+        border: 1px solid #d1d5db; /* Tailwind gray-300 */
+        border-right: none; /* Remove right border, will be handled by form */
+        border-radius: 0.375rem 0 0 0.375rem; /* Rounded left corners */
+        background-color: #f9fafb; /* Tailwind gray-50 */
+        color: #374151; /* Tailwind gray-700 */
+        font-size: 0.875rem; /* Tailwind text-sm */
+        line-height: 1.25rem; /* Tailwind leading-5 */
+        height: 2.25rem; /* Match search form height (h-9) */
+        cursor: pointer;
+        outline: none;
+        transition: border-color 0.2s ease;
     }
-    .dark .search-engine-radios label { color: #d1d5db; }
-    .search-engine-radios input[type="radio"] { display: none; }
-    .search-engine-radios input[type="radio"]:checked + label {
-        background-color: #e0e7ff; color: #4338ca; border-color: #c7d2fe;
+    .dark .search-engine-select {
+        background-color: #374151; /* Tailwind gray-700 */
+        border-color: #4b5563; /* Tailwind gray-600 */
+        color: #d1d5db; /* Tailwind gray-300 */
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E"); /* Darker chevron */
     }
-    .dark .search-engine-radios input[type="radio"]:checked + label {
-        background-color: #3730a3; color: #e0e7ff; border-color: #4f46e5;
+     .search-engine-select:focus {
+        border-color: #3b82f6; /* Tailwind blue-500 */
+        box-shadow: 0 0 0 1px #3b82f6;
     }
-    .search-engine-radios label .lucide { margin-right: 0.25rem; width:0.9rem; height:0.9rem;}
+    .dark .search-engine-select:focus {
+        border-color: #60a5fa; /* Tailwind blue-400 */
+        box-shadow: 0 0 0 1px #60a5fa;
+    }
 
     .s-search-form {
-        display: flex; width: 100%; border: 1px solid #d1d5db; border-radius: 0.375rem;
+        display: flex; width: 100%; border: 1px solid #d1d5db;
+        /* Adjust border radius to connect with select */
+        border-radius: 0 0.375rem 0.375rem 0;
         overflow: hidden; background-color: #ffffff; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         height: 2.25rem;
     }
@@ -130,12 +153,8 @@
     }
 
     /* Reduced spacing for main sections */
-    main > section {
-        margin-bottom: 1.5rem; /* Tailwind mb-6 */
-    }
-    .tool-category-card-container { /* Wrapper for tool categories */
-        space-y: 1.5rem; /* Tailwind space-y-6 */
-    }
+    main > section { margin-bottom: 1.5rem; }
+    .tool-category-card-container { space-y: 1.5rem; }
 
   </style>
 </head>
@@ -182,13 +201,14 @@
         </div>
 
         <div class="header-search-container hidden sm:flex">
-            <div class="search-engine-radios">
-                <input type="radio" name="search_type" id="search-type-google" value="https://www.google.com/search" data-placeholder="Google 搜索..." data-name="q" checked>
-                <label for="search-type-google" title="Google"><i class="lucide lucide-search"></i> G</label>
-                
-                <input type="radio" name="search_type" id="search-type-baidu" value="https://www.baidu.com/s" data-placeholder="百度一下" data-name="wd">
-                <label for="search-type-baidu" title="百度"><i class="lucide lucide-search"></i> B</label>
-            </div>
+            {/* Select Dropdown for Search Engine */}
+            <select id="search-engine-select" name="search_engine" class="search-engine-select">
+                <option value="google" selected>Google</option>
+                <option value="baidu">百度</option>
+                {/* Add more options if needed */}
+            </select>
+            
+            {/* Search Form */}
             <form action="https://www.google.com/search" method="get" target="_blank" id="super-search-form" class="s-search-form">
               <input type="text" id="super-search-text" name="q" placeholder="Google 搜索..." autocomplete="off" class="s-search-input">
               <button type="submit" class="s-search-button"><i class="fas fa-search"></i></button>
@@ -209,17 +229,18 @@
 
   <div class="main-content-pusher">
     <main class="container mx-auto p-4 sm:p-6 lg:p-8">
-      <section class="s-search-container sm:hidden mb-6" id="mobile-search-container">
-         <div class="search-engine-radios mb-2 justify-center">
-            <input type="radio" name="search_type_mobile" id="search-type-google-mobile" value="https://www.google.com/search" data-placeholder="Google 搜索..." data-name="q" checked>
-            <label for="search-type-google-mobile" title="Google"><i class="lucide lucide-search"></i> Google</label>
-            <input type="radio" name="search_type_mobile" id="search-type-baidu-mobile" value="https://www.baidu.com/s" data-placeholder="百度一下" data-name="wd">
-            <label for="search-type-baidu-mobile" title="百度"><i class="lucide lucide-search"></i> 百度</label>
-        </div>
-        <form action="https://www.google.com/search" method="get" target="_blank" id="super-search-form-mobile" class="s-search-form">
-            <input type="text" id="super-search-text-mobile" name="q" placeholder="Google 搜索..." autocomplete="off" class="s-search-input">
-            <button type="submit" class="s-search-button"><i class="fas fa-search"></i></button>
-        </form>
+      {/* Mobile Search - Also needs to use select */}
+      <section class="sm:hidden mb-6" id="mobile-search-container">
+         <div class="flex items-center">
+             <select id="search-engine-select-mobile" name="search_engine_mobile" class="search-engine-select flex-shrink-0">
+                 <option value="google" selected>Google</option>
+                 <option value="baidu">百度</option>
+             </select>
+             <form action="https://www.google.com/search" method="get" target="_blank" id="super-search-form-mobile" class="s-search-form flex-grow">
+                 <input type="text" id="super-search-text-mobile" name="q" placeholder="Google 搜索..." autocomplete="off" class="s-search-input">
+                 <button type="submit" class="s-search-button"><i class="fas fa-search"></i></button>
+             </form>
+         </div>
       </section>
 
       <section class="grid grid-cols-1 md:grid-cols-3 gap-6" id="info-widgets">
@@ -406,20 +427,29 @@
     });
 
     // --- ADVANCED SEARCH LOGIC (Header and Mobile) ---
-    function setupSearchForm(formId, inputId, radioName) {
+    const searchEngines = {
+        google: { action: "https://www.google.com/search", placeholder: "Google 搜索...", name: "q" },
+        baidu: { action: "https://www.baidu.com/s", placeholder: "百度一下", name: "wd" }
+        // Add more engines here
+    };
+
+    function setupSearchForm(formId, inputId, selectId) {
         const searchForm = document.getElementById(formId);
         const searchInput = document.getElementById(inputId);
-        const engineRadios = document.querySelectorAll(`input[name="${radioName}"]`);
+        const engineSelect = document.getElementById(selectId);
 
         function updateSearchEngineState() {
-            const selectedRadio = document.querySelector(`input[name="${radioName}"]:checked`);
-            if (selectedRadio && searchForm && searchInput) {
-                searchForm.action = selectedRadio.value;
-                searchInput.placeholder = selectedRadio.getAttribute('data-placeholder');
-                searchInput.name = selectedRadio.getAttribute('data-name');
+            const selectedEngine = engineSelect.value;
+            const engineData = searchEngines[selectedEngine];
+
+            if (engineData && searchForm && searchInput) {
+                searchForm.action = engineData.action;
+                searchInput.placeholder = engineData.placeholder;
+                searchInput.name = engineData.name;
             }
         }
-        engineRadios.forEach(radio => radio.addEventListener('change', updateSearchEngineState));
+        engineSelect.addEventListener('change', updateSearchEngineState);
+
         if (searchForm) {
             searchForm.addEventListener('submit', function(e) {
                 if (searchInput && searchInput.value.trim() === '') {
@@ -431,8 +461,8 @@
         }
         updateSearchEngineState(); // Initial call
     }
-    setupSearchForm('super-search-form', 'super-search-text', 'search_type'); // For header search
-    setupSearchForm('super-search-form-mobile', 'super-search-text-mobile', 'search_type_mobile'); // For mobile search
+    setupSearchForm('super-search-form', 'super-search-text', 'search-engine-select'); // For header search
+    setupSearchForm('super-search-form-mobile', 'super-search-text-mobile', 'search-engine-select-mobile'); // For mobile search
 
 
     // --- SIDEBAR LINK SMOOTH SCROLL & ACTIVE STATE ---
@@ -472,14 +502,15 @@
       try {
         let city = '未知城市', lat, lon;
         try {
-            const ipRes = await fetch('https://ipapi.co/json/');
+            const ipRes = await fetch('https://ipapi.co/json/'); // HTTPS
             if (!ipRes.ok) throw new Error(`IP API (ipapi.co) failed: ${ipRes.status}`);
             const ipData = await ipRes.json();
             city = ipData.city || city; lat = ipData.latitude; lon = ipData.longitude;
         } catch (e) {
             console.warn("Primary IP API failed, trying fallback:", e.message);
             try {
-                const fallbackIpRes = await fetch('http://ip-api.com/json/');
+                // Use HTTPS for the fallback API as well
+                const fallbackIpRes = await fetch('https://ip-api.com/json/'); // Changed to HTTPS
                 if (!fallbackIpRes.ok) throw new Error(`Fallback IP API (ip-api.com) failed: ${fallbackIpRes.status}`);
                 const fallbackIpData = await fallbackIpRes.json();
                 city = fallbackIpData.city || city; lat = fallbackIpData.lat; lon = fallbackIpData.lon;
@@ -489,6 +520,7 @@
             }
         }
         if (!lat || !lon) throw new Error('无法获取经纬度');
+        // Weather API is already HTTPS
         const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode`);
         if (!weatherRes.ok) throw new Error(`Weather API failed: ${weatherRes.status}`);
         const weatherData = await weatherRes.json();
@@ -512,6 +544,7 @@
 
       const rssUrl = "https://www.36kr.com/feed"; 
       const newsSourceName = "36Kr";
+      // RSS to JSON API is already HTTPS
       const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
       const maxNewsItems = 10; 
 
