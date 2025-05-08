@@ -18,12 +18,12 @@
     }
 
     /* Custom scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; } /* Slightly thinner scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; } /* Tailwind slate-300 */
-    .dark ::-webkit-scrollbar-thumb { background: #475569; } /* Tailwind slate-600 */
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; } /* Tailwind slate-400 */
-    .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; } /* Tailwind slate-500 */
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
     /* Sidebar Styles */
     .app-sidebar {
@@ -57,127 +57,73 @@
 
     /* Header Search Box Refined Styles */
     .header-search-container {
-        display: flex; /* Use flex to align radio buttons and form */
-        align-items: center; /* Vertically align items */
+        display: flex; align-items: center;
         flex-grow: 1; max-width: 600px; margin: 0 1rem;
     }
-    .search-engine-radios {
-        display: flex;
-        align-items: center;
-        margin-right: 0.5rem; /* Space between radios and search form */
-    }
+    .search-engine-radios { display: flex; align-items: center; margin-right: 0.5rem; }
     .search-engine-radios label {
-        display: flex; /* Align icon and text */
-        align-items: center;
-        padding: 0.25rem 0.5rem; /* Reduced padding */
-        cursor: pointer;
-        font-size: 0.8rem; /* Smaller font */
-        border-radius: 0.375rem; /* Rounded corners for each radio "button" */
+        display: flex; align-items: center; padding: 0.25rem 0.5rem; cursor: pointer;
+        font-size: 0.8rem; border-radius: 0.375rem;
         transition: background-color 0.2s ease, color 0.2s ease;
-        line-height: 1.2;
-        border: 1px solid transparent;
+        line-height: 1.2; border: 1px solid transparent;
     }
     .dark .search-engine-radios label { color: #d1d5db; }
-
-    .search-engine-radios input[type="radio"] { display: none; } /* Hide actual radio */
-
+    .search-engine-radios input[type="radio"] { display: none; }
     .search-engine-radios input[type="radio"]:checked + label {
-        background-color: #e0e7ff; /* Tailwind indigo-100 for selected */
-        color: #4338ca; /* Tailwind indigo-700 for selected */
-        border-color: #c7d2fe; /* Tailwind indigo-200 */
+        background-color: #e0e7ff; color: #4338ca; border-color: #c7d2fe;
     }
     .dark .search-engine-radios input[type="radio"]:checked + label {
-        background-color: #3730a3; /* Tailwind indigo-800 for selected dark */
-        color: #e0e7ff; /* Tailwind indigo-100 for selected dark */
-        border-color: #4f46e5; /* Tailwind indigo-600 */
+        background-color: #3730a3; color: #e0e7ff; border-color: #4f46e5;
     }
-    .search-engine-radios label .lucide { margin-right: 0.25rem; width:0.9rem; height:0.9rem;} /* Icon in radio label */
-
+    .search-engine-radios label .lucide { margin-right: 0.25rem; width:0.9rem; height:0.9rem;}
 
     .s-search-form {
-        display: flex; width: 100%; /* Form takes remaining space */
-        border: 1px solid #d1d5db; border-radius: 0.375rem;
-        overflow: hidden; background-color: #ffffff;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        height: 2.25rem; /* Reduced height (Tailwind h-9) */
+        display: flex; width: 100%; border: 1px solid #d1d5db; border-radius: 0.375rem;
+        overflow: hidden; background-color: #ffffff; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        height: 2.25rem;
     }
     .dark .s-search-form { border-color: #4b5563; background-color: #1f2937; }
-
     .s-search-input {
-        flex-grow: 1; padding: 0.25rem 0.75rem; /* Adjusted padding for new height */
-        font-size: 0.875rem; border: none; outline: none; background: transparent; color: #1f2937;
+        flex-grow: 1; padding: 0.25rem 0.75rem; font-size: 0.875rem;
+        border: none; outline: none; background: transparent; color: #1f2937;
     }
     .dark .s-search-input { color: #f3f4f6; }
     .s-search-input::placeholder { color: #9ca3af; }
     .dark .s-search-input::placeholder { color: #6b7280; }
-
     .s-search-button {
-        padding: 0 0.75rem; /* Adjusted padding */
-        font-size: 0.875rem; border: none; background-color: #3b82f6; color: white;
-        cursor: pointer; transition: background-color 0.2s ease;
-        display: flex; align-items: center; justify-content: center;
+        padding: 0 0.75rem; font-size: 0.875rem; border: none;
+        background-color: #3b82f6; color: white; cursor: pointer;
+        transition: background-color 0.2s ease; display: flex;
+        align-items: center; justify-content: center;
     }
     .s-search-button:hover { background-color: #2563eb; }
     .s-search-button .fa-search { font-size: 0.9em; }
 
-
     /* Horizontal News Section */
-    .horizontal-news-container {
-        margin-bottom: 2rem; /* Space below news */
-    }
-    .horizontal-news-header {
-        display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;
-    }
+    .horizontal-news-container { margin-bottom: 2rem; }
+    .horizontal-news-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
     #newsListHorizontal {
-        display: flex;
-        overflow-x: auto; /* Enable horizontal scrolling */
-        padding-bottom: 1rem; /* Space for scrollbar if it appears */
-        gap: 1rem; /* Space between news items */
+        display: flex; overflow-x: auto; padding-bottom: 1rem; gap: 1rem;
     }
     #newsListHorizontal li {
-        flex: 0 0 auto; /* Prevent items from shrinking */
-        width: 280px; /* Fixed width for each news item card */
-        background-color: #ffffff; /* Card background */
-        border-radius: 0.75rem; /* Tailwind rounded-xl */
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* Tailwind shadow-lg */
-        padding: 1rem;
-        transition: transform 0.2s ease-in-out;
+        flex: 0 0 auto; width: 280px; background-color: #ffffff;
+        border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        padding: 1rem; transition: transform 0.2s ease-in-out;
     }
-    .dark #newsListHorizontal li {
-        background-color: #1f2937; /* Dark card background */
-    }
-    #newsListHorizontal li:hover {
-        transform: translateY(-4px);
-    }
+    .dark #newsListHorizontal li { background-color: #1f2937; }
+    #newsListHorizontal li:hover { transform: translateY(-4px); }
     #newsListHorizontal a {
-        display: block; /* Make link take full card space */
-        font-size: 0.875rem; /* Tailwind text-sm */
-        font-weight: 500; /* Tailwind font-medium */
-        line-height: 1.4;
-        color: #3b82f6; /* Tailwind blue-500 */
-        /* For multi-line truncation */
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3; /* Limit to 3 lines */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-height: calc(1.4em * 3); /* (line-height * number of lines) */
+        display: block; font-size: 0.875rem; font-weight: 500; line-height: 1.4; color: #3b82f6;
+        display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+        overflow: hidden; text-overflow: ellipsis; max-height: calc(1.4em * 3);
     }
-    .dark #newsListHorizontal a { color: #60a5fa; } /* Tailwind blue-400 */
+    .dark #newsListHorizontal a { color: #60a5fa; }
     #newsListHorizontal a:hover { text-decoration: underline; }
-    .news-item-source {
-        font-size: 0.75rem; /* Tailwind text-xs */
-        color: #6b7280; /* Tailwind gray-500 */
-        margin-top: 0.5rem;
-        text-align: right;
-    }
-    .dark .news-item-source { color: #9ca3af; } /* Tailwind gray-400 */
-
+    .news-item-source { font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem; text-align: right; }
+    .dark .news-item-source { color: #9ca3af; }
 
     /* Unified Tool Item Card Style */
-    .tool-item-card {
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
+    .tool-item-card { transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
     .tool-item-card:hover {
         transform: scale(1.03);
         box-shadow: 0 8px 25px -5px rgba(0,0,0,0.1), 0 5px 10px -5px rgba(0,0,0,0.04);
@@ -201,7 +147,7 @@
       <li><a href="#category-life" class="sidebar-link"><i class="lucide lucide-home"></i><span>生活常用</span></a></li>
       <li><a href="#category-study" class="sidebar-link"><i class="lucide lucide-briefcase"></i><span>学习办公</span></a></li>
       <li><a href="#category-dev" class="sidebar-link"><i class="lucide lucide-code-2"></i><span>开发设计</span></a></li>
-      <li class="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700"><span class="px-6 py-2 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase">外部站点</span></li>
+      {/* Removed "外部站点" separator here */}
       <li><a href="#ext-news-sites" class="sidebar-link"><i class="lucide lucide-globe"></i><span>新闻站点</span></a></li>
       <li><a href="#ext-ai" class="sidebar-link"><i class="lucide lucide-brain"></i><span>AI 专区</span></a></li>
       <li><a href="#ext-video" class="sidebar-link"><i class="lucide lucide-youtube"></i><span>视频影音</span></a></li>
@@ -219,9 +165,12 @@
           <button id="sidebar-toggle" type="button" class="mr-2 p-2 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
             <i class="fas fa-bars w-5 h-5"></i> <span class="sr-only">打开导航</span>
           </button>
-          <a href="#" class="flex items-center gap-2 text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
-            <i class="lucide lucide-layout-dashboard"></i>
-            <span>tqabc.com</span>
+          {/* Updated Logo */}
+          <a href="#" class="flex items-center gap-2 text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">
+            <i class="lucide lucide-layout-dashboard text-blue-600 dark:text-blue-400"></i>
+            <span>
+                <span class="text-blue-600 dark:text-blue-400">tq</span><span class="font-medium">abc</span>
+            </span>
           </a>
         </div>
 
@@ -546,16 +495,16 @@
     // --- NEWS DISPLAY (HORIZONTAL) ---
     async function loadNewsHorizontal() {
       const newsListEl = document.getElementById("newsListHorizontal");
-      const newsLoadingStatusEl = document.getElementById("newsLoadingStatusHorizontal"); // Assuming you have a loading li
+      const newsLoadingStatusEl = document.getElementById("newsLoadingStatusHorizontal");
       
       if (!newsListEl) { console.error("Element with ID 'newsListHorizontal' not found."); return; }
       if (newsLoadingStatusEl) newsLoadingStatusEl.textContent = '正在加载新闻...';
 
 
-      const rssUrl = "https://www.36kr.com/feed"; // 36Kr RSS Feed
+      const rssUrl = "https://www.36kr.com/feed"; 
       const newsSourceName = "36Kr";
       const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-      const maxNewsItems = 10; // Number of news items to display horizontally
+      const maxNewsItems = 10; 
 
       try {
         const response = await fetch(apiUrl);
@@ -563,8 +512,8 @@
         const data = await response.json();
 
         if (data.status === "ok" && data.items && data.items.length > 0) {
-          if(newsLoadingStatusEl) newsLoadingStatusEl.remove(); // Remove "loading" message item
-          newsListEl.innerHTML = ""; // Clear any previous content
+          if(newsLoadingStatusEl) newsLoadingStatusEl.remove(); 
+          newsListEl.innerHTML = ""; 
           
           data.items.slice(0, maxNewsItems).forEach(item => {
             const listItem = document.createElement("li");
@@ -573,11 +522,10 @@
             link.href = item.link;
             link.textContent = item.title;
             link.target = "_blank"; link.rel = "noopener noreferrer";
-            // Styles for link are in CSS: #newsListHorizontal a
 
             const source = document.createElement("p");
             source.className = "news-item-source";
-            source.textContent = newsSourceName; // Or item.author if available and preferred
+            source.textContent = newsSourceName; 
 
             listItem.appendChild(link);
             listItem.appendChild(source);
@@ -613,7 +561,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       loadDate(); 
       loadWeather(); 
-      loadNewsHorizontal(); // Load horizontal news
+      loadNewsHorizontal(); 
       setCurrentYear();
     });
   </script>
