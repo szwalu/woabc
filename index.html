@@ -1,104 +1,391 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TQABC 工具导航</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tqabc.com - 您的智能工具导航</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: system-ui, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #f2f2f2;
-      color: #333;
+        font-family: 'Inter', sans-serif;
+        /* Subtle background pattern for a bit more texture */
+        /* background-image: radial-gradient(circle at 1px 1px, #cbd5e1 1px, transparent 0); */
+        /* background-size: 20px 20px; */
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
+    .dark body {
+        /* background-image: radial-gradient(circle at 1px 1px, #4a5568 1px, transparent 0); */
     }
-    .section {
-      background: white;
-      padding: 15px 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
+    /* Custom scrollbar for better aesthetics (optional) */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
     }
-    .section h2 {
-      margin-top: 0;
-      font-size: 1.2em;
-      border-left: 4px solid #3498db;
-      padding-left: 10px;
-      color: #3498db;
+    ::-webkit-scrollbar-track {
+        background: transparent;
     }
-    iframe {
-      border: none;
-      width: 100%;
+    ::-webkit-scrollbar-thumb {
+        background: #9ca3af; /* Gray-400 */
+        border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+        background: #4b5563; /* Gray-600 */
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #6b7280; /* Gray-500 */
+    }
+    .dark ::-webkit-scrollbar-thumb:hover {
+        background: #374151; /* Gray-700 */
+    }
+
+    /* Glassmorphism effect for cards (optional, can be intensive) */
+    /*
+    .glass-card {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .dark .glass-card {
+        background: rgba(31, 41, 55, 0.6); // bg-gray-800 with opacity
+        border: 1px solid rgba(75, 85, 99, 0.2); // border-gray-600 with opacity
+    }
+    */
+
+    /* Enhanced card styling */
+    .info-card, .tool-category-card, .tool-item-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .info-card:hover, .tool-category-card:hover {
+        /* transform: translateY(-4px); */
+        /* box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); */
+    }
+     .tool-item-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 25px -5px rgba(0,0,0,0.1), 0 5px 10px -5px rgba(0,0,0,0.04);
+    }
+
+    #newsList li {
+        padding: 0.5rem 0.25rem;
+        border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
+    }
+    .dark #newsList li {
+        border-bottom-color: #374151; /* Tailwind gray-700 */
+    }
+    #newsList li:last-child {
+        border-bottom: none;
+    }
+    #newsList a {
+        transition: color 0.2s ease-in-out;
     }
   </style>
 </head>
-<body>
-  <h1>TQABC 工具导航</h1>
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen">
 
-  <div class="section" id="weather">
-    <h2>📍 当前天气</h2>
-    <p>加载中...</p>
-  </div>
+  <header class="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center">
+          <a href="#" class="flex items-center gap-2 text-2xl font-bold text-blue-600 dark:text-blue-400">
+            <i class="lucide lucide-layout-dashboard"></i>
+            <span>tqabc.com</span>
+          </a>
+        </div>
 
-  <div class="section" id="calendar">
-    <h2>📅 今日日期</h2>
-    <p id="today"></p>
-  </div>
+        <div class="flex-1 flex justify-center px-2 lg:ml-6 lg:justify-end">
+          <div class="max-w-lg w-full lg:max-w-xs">
+            <label for="search" class="sr-only">搜索工具</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="lucide lucide-search text-slate-400 dark:text-slate-500 w-5 h-5"></i>
+              </div>
+              <input id="search" name="search" class="block w-full pl-10 pr-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md leading-5 bg-white dark:bg-slate-700 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:placeholder-slate-400 dark:focus:placeholder-slate-500 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="搜索工具..." type="search">
+            </div>
+          </div>
+        </div>
 
-  <div class="section" id="news">
-    <h2>📰 新闻聚合</h2>
-    <iframe src="https://rsshub.app/tencent/news/world" height="200"></iframe>
-    <p style="font-size: 0.9em; color: #999;">来自 RSSHub - 腾讯新闻</p>
-  </div>
+        <div class="flex items-center">
+          <button id="theme-toggle" type="button" class="p-2 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+            <i class="lucide lucide-sun block dark:hidden w-6 h-6"></i>
+            <i class="lucide lucide-moon hidden dark:block w-6 h-6"></i>
+            <span class="sr-only">切换主题</span>
+          </button>
+          <button class="ml-2 p-2 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+            <i class="lucide lucide-settings w-6 h-6"></i>
+            <span class="sr-only">设置</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-  <div class="section" id="tools">
-    <h2>🛠️ 实用工具</h2>
-    <ul>
-      <li><a href="https://calendar.google.com" target="_blank">Google 日历</a></li>
-      <li><a href="https://cn.bing.com/search?q=日历" target="_blank">查看万年历</a></li>
-      <li><a href="https://www.baidu.com/s?wd=快递查询" target="_blank">快递查询</a></li>
-    </ul>
-  </div>
+  <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div class="info-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 flex items-center gap-4">
+        <i class="lucide lucide-cloud-sun text-sky-500 text-4xl"></i>
+        <div>
+          <h3 class="font-semibold text-lg text-slate-700 dark:text-slate-200">当前天气</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400" id="weatherDisplay">加载中...</p>
+        </div>
+      </div>
+      <div class="info-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 flex items-center gap-4">
+        <i class="lucide lucide-calendar-days text-green-500 text-4xl"></i>
+        <div>
+          <h3 class="font-semibold text-lg text-slate-700 dark:text-slate-200">今日日期</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400" id="dateDisplay">正在加载日期...</p>
+        </div>
+      </div>
+      <div class="info-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 flex items-center gap-4">
+        <i class="lucide lucide-activity text-purple-500 text-4xl"></i>
+        <div>
+          <h3 class="font-semibold text-lg text-slate-700 dark:text-slate-200">站点访问</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400">1,234 今日</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <div class="lg:col-span-1 bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
+        <div class="flex items-center gap-3 mb-4">
+          <i class="lucide lucide-newspaper text-red-500 text-2xl"></i>
+          <h2 class="text-xl font-semibold text-slate-700 dark:text-slate-200">今日新闻</h2>
+        </div>
+        <ul id="newsList" class="space-y-1 text-sm max-h-96 overflow-y-auto">
+          <li id="newsLoadingStatus" class="text-slate-500 dark:text-slate-400">正在加载新闻...</li>
+        </ul>
+        <p id="newsSourceInfo" class="text-xs text-slate-400 dark:text-slate-500 mt-3 text-right">新闻来源: 正在获取...</p>
+      </div>
+
+      <div class="lg:col-span-2 space-y-6">
+        <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
+          <div class="flex items-center gap-3 mb-4">
+            <i class="lucide lucide-home text-cyan-500 text-2xl"></i>
+            <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200">生活常用</h3>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-calculator text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">单位换算</span>
+            </a>
+            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-map-pin text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">IP 查询</span>
+            </a>
+            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-qr-code text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">二维码生成</span>
+            </a>
+            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-clipboard-check text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">待办清单</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
+          <div class="flex items-center gap-3 mb-4">
+            <i class="lucide lucide-briefcase text-amber-500 text-2xl"></i>
+            <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200">学习办公</h3>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-languages text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">翻译工具</span>
+            </a>
+            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-book-open text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">在线词典</span>
+            </a>
+            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-file-text text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">文档转换</span>
+            </a>
+             <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-highlighter text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">Markdown编辑器</span>
+            </a>
+          </div>
+        </div>
+
+         <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
+          <div class="flex items-center gap-3 mb-4">
+            <i class="lucide lucide-code-2 text-indigo-500 text-2xl"></i>
+            <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200">开发设计</h3>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-file-json-2 text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">JSON格式化</span>
+            </a>
+            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-palette text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">调色板</span>
+            </a>
+            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-image text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">图片压缩</span>
+            </a>
+             <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <i class="lucide lucide-github text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
+              <span class="text-sm font-medium text-center">GitHub趋势</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 mt-12">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+      <p>&copy; <span id="currentYear"></span> tqabc.com. 保留所有权利.</p>
+      <p class="mt-1">由 Gemini 精心设计与构建。</p>
+    </div>
+  </footer>
 
   <script>
-    // 天气加载
-    async function loadWeather() {
-      try {
-        const ipRes = await fetch('http://ip-api.com/json/');
-        const ipData = await ipRes.json();
-        const city = ipData.city;
-        const lat = ipData.lat;
-        const lon = ipData.lon;
+    // Theme toggle functionality
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const htmlElement = document.documentElement;
 
-        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-        const weatherData = await weatherRes.json();
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      htmlElement.classList.add('dark');
+    } else {
+      htmlElement.classList.remove('dark');
+    }
 
-        const temp = weatherData.current_weather.temperature;
-        document.querySelector('#weather p').innerHTML = `${city} 当前气温：${temp}℃`;
-      } catch (e) {
-        document.querySelector('#weather p').innerText = '天气加载失败';
-        console.error(e);
+    themeToggleBtn.addEventListener('click', () => {
+      if (htmlElement.classList.contains('dark')) {
+        htmlElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        htmlElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    // Function to display the current date
+    function loadDate() {
+      const dateDisplayEl = document.getElementById("dateDisplay");
+      if (dateDisplayEl) {
+        const now = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+        dateDisplayEl.textContent = now.toLocaleDateString('zh-CN', options);
+      } else {
+        console.error("Element with ID 'dateDisplay' not found.");
       }
     }
 
-    // 日期加载
-    function loadDate() {
-      const today = new Date();
-      const dateStr = today.toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        weekday: 'long'
-      });
-      document.getElementById('today').innerText = dateStr;
+    // Asynchronous function to load weather data
+    async function loadWeather() {
+      const weatherDisplayEl = document.getElementById("weatherDisplay");
+      if (!weatherDisplayEl) {
+        console.error("Element with ID 'weatherDisplay' not found.");
+        return;
+      }
+      try {
+        const ipRes = await fetch('https://ipapi.co/json/');
+        if (!ipRes.ok) throw new Error(`IP API (ipapi.co) request failed with status ${ipRes.status}`);
+        let ipData = await ipRes.json();
+        let city = ipData.city;
+        let lat = ipData.latitude;
+        let lon = ipData.longitude;
+
+        if (!lat || !lon) {
+            console.warn("Primary IP API (ipapi.co) did not return lat/lon, trying fallback (ip-api.com)...");
+            const fallbackIpRes = await fetch('http://ip-api.com/json/');
+            if (!fallbackIpRes.ok) throw new Error(`Fallback IP API (ip-api.com) request failed with status ${fallbackIpRes.status}`);
+            const fallbackIpData = await fallbackIpRes.json();
+            city = fallbackIpData.city; lat = fallbackIpData.lat; lon = fallbackIpData.lon;
+            if (!lat || !lon) { throw new Error('Latitude or Longitude not found in IP data from both APIs.'); }
+        }
+        city = city || '未知城市';
+        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode`);
+        if (!weatherRes.ok) throw new Error(`Weather API request failed with status ${weatherRes.status}`);
+        const weatherData = await weatherRes.json();
+        if (weatherData && weatherData.current_weather) {
+          const temp = weatherData.current_weather.temperature;
+          weatherDisplayEl.innerHTML = `${city} 当前气温：${temp}°C`;
+        } else { weatherDisplayEl.innerText = '无法获取天气数据'; }
+      } catch (e) {
+        console.error("Weather loading error:", e);
+        let displayErrorMessage = '天气加载失败';
+        if (e.message.includes("Latitude or Longitude not found")) { displayErrorMessage += ' (无法确定位置)'; }
+        else if (e.message.includes("API request failed") || e.message.toLowerCase().includes("failed to fetch")) { displayErrorMessage += ' (服务暂时不可用)'; }
+        else { displayErrorMessage += ' (未知错误)'; }
+        weatherDisplayEl.innerText = displayErrorMessage;
+      }
     }
 
-    loadWeather();
-    loadDate();
+    // Asynchronous function to load news data
+    async function loadNews() {
+      const newsListEl = document.getElementById("newsList");
+      const newsSourceInfoEl = document.getElementById("newsSourceInfo");
+      if (!newsListEl) { console.error("Element with ID 'newsList' not found."); return; }
+      newsListEl.innerHTML = '<li id="newsLoadingStatus" class="text-slate-500 dark:text-slate-400">正在加载新闻...</li>';
+      const newsLoadingStatusEl = document.getElementById("newsLoadingStatus");
+
+      const rssUrl = "https://www.36kr.com/feed"; // 36Kr RSS Feed
+      const newsSourceName = "36Kr";
+      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+      const maxNewsItems = 7; // Display more news items
+
+      if (newsSourceInfoEl) { newsSourceInfoEl.textContent = `新闻来源: ${newsSourceName}`; }
+
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`服务请求失败，状态码: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.status === "ok" && data.items && data.items.length > 0) {
+          newsListEl.innerHTML = ""; // Clear loading message
+          data.items.slice(0, maxNewsItems).forEach(item => {
+            const listItem = document.createElement("li");
+            const link = document.createElement("a");
+            link.href = item.link;
+            link.textContent = item.title;
+            link.target = "_blank"; link.rel = "noopener noreferrer";
+            link.className = "text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline";
+            listItem.appendChild(link);
+            newsListEl.appendChild(listItem);
+          });
+        } else {
+          let errorMessage = `无法加载新闻条目。`;
+          if (data.message) { errorMessage += ` (API信息: ${data.message})`; }
+          else if (data.items && data.items.length === 0) { errorMessage += ` (来源没有新闻)`; }
+          else { errorMessage += ` (数据格式不正确或来源无内容)`; }
+          if (newsLoadingStatusEl) newsLoadingStatusEl.remove();
+          newsListEl.innerHTML = `<li class="text-red-500">${errorMessage}</li>`;
+        }
+      } catch (e) {
+        console.error("News loading error:", e);
+        let displayErrorMessage = `新闻加载失败`;
+        if (e.message.includes("状态码")) { displayErrorMessage += ` (${e.message})`; }
+        else if (e.message.toLowerCase().includes("failed to fetch")) { displayErrorMessage += ` (网络错误或无法连接到新闻服务)`; }
+        else { displayErrorMessage += ` (未知错误)`; }
+        if (newsLoadingStatusEl) newsLoadingStatusEl.remove();
+        newsListEl.innerHTML = `<li class="text-red-500">${displayErrorMessage}</li>`;
+      }
+    }
+
+    // Function to set the current year in the footer
+    function setCurrentYear() {
+        const yearEl = document.getElementById('currentYear');
+        if (yearEl) { yearEl.textContent = new Date().getFullYear(); }
+    }
+
+    // Call functions when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDate();
+      loadWeather();
+      loadNews();
+      setCurrentYear();
+    });
   </script>
 </body>
 </html>
