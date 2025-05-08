@@ -6,10 +6,10 @@
   <title>TQABC 工具导航</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: system-ui, sans-serif;
       margin: 0;
       padding: 20px;
-      background: #f5f5f5;
+      background: #f2f2f2;
       color: #333;
     }
     h1 {
@@ -30,6 +30,10 @@
       padding-left: 10px;
       color: #3498db;
     }
+    iframe {
+      border: none;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -41,41 +45,60 @@
   </div>
 
   <div class="section" id="calendar">
-    <h2>📅 日历</h2>
-    <p>（可嵌入你喜欢的日历插件）</p>
+    <h2>📅 今日日期</h2>
+    <p id="today"></p>
   </div>
 
   <div class="section" id="news">
     <h2>📰 新闻聚合</h2>
-    <p>（稍后可添加 RSS、聚合 API 或 iframe）</p>
+    <iframe src="https://rsshub.app/36kr/newsflashes" height="200"></iframe>
+    <p style="font-size: 0.9em; color: #999;">来自 RSSHub | 可替换为其他源</p>
+  </div>
+
+  <div class="section" id="tools">
+    <h2>🛠️ 实用工具</h2>
+    <ul>
+      <li><a href="https://calendar.google.com" target="_blank">Google 日历</a></li>
+      <li><a href="https://cn.bing.com/search?q=日历" target="_blank">查看万年历</a></li>
+      <li><a href="https://www.baidu.com/s?wd=快递查询" target="_blank">快递查询</a></li>
+    </ul>
   </div>
 
   <script>
-  async function loadWeather() {
-    try {
-      // 使用 ip-api 获取地理位置
-      const ipRes = await fetch('http://ip-api.com/json/');
-      const ipData = await ipRes.json();
-      const city = ipData.city;
-      const lat = ipData.lat;
-      const lon = ipData.lon;
+    // 天气加载
+    async function loadWeather() {
+      try {
+        const ipRes = await fetch('http://ip-api.com/json/');
+        const ipData = await ipRes.json();
+        const city = ipData.city;
+        const lat = ipData.lat;
+        const lon = ipData.lon;
 
-      // 请求天气数据（使用 open-meteo）
-      const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-      const weatherData = await weatherRes.json();
+        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        const weatherData = await weatherRes.json();
 
-      const temp = weatherData.current_weather.temperature;
-      const code = weatherData.current_weather.weathercode;
-
-      const weatherEl = document.querySelector('#weather p');
-      weatherEl.innerHTML = `${city} 当前气温：${temp}℃`;
-    } catch (e) {
-      document.querySelector('#weather p').innerText = '天气加载失败';
-      console.error(e);
+        const temp = weatherData.current_weather.temperature;
+        document.querySelector('#weather p').innerHTML = `${city} 当前气温：${temp}℃`;
+      } catch (e) {
+        document.querySelector('#weather p').innerText = '天气加载失败';
+        console.error(e);
+      }
     }
-  }
 
-  loadWeather();
-</script>
+    // 日期加载
+    function loadDate() {
+      const today = new Date();
+      const dateStr = today.toLocaleDateString('zh-CN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long'
+      });
+      document.getElementById('today').innerText = dateStr;
+    }
+
+    loadWeather();
+    loadDate();
+  </script>
 </body>
 </html>
