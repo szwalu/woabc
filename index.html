@@ -100,7 +100,7 @@
     .s-search-button .fa-search { font-size: 0.9em; }
 
     /* Horizontal News Section */
-    .horizontal-news-container { margin-bottom: 2rem; }
+    .horizontal-news-container { margin-bottom: 1.5rem; } /* Reduced margin */
     .horizontal-news-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
     #newsListHorizontal {
         display: flex; overflow-x: auto; padding-bottom: 1rem; gap: 1rem;
@@ -128,6 +128,18 @@
         transform: scale(1.03);
         box-shadow: 0 8px 25px -5px rgba(0,0,0,0.1), 0 5px 10px -5px rgba(0,0,0,0.04);
     }
+
+    /* Reduced spacing for main sections */
+    main > section {
+        margin-bottom: 1.5rem; /* Was mb-8, now mb-6 (approx 24px) */
+    }
+    main > section.space-y-8 { /* For the section holding multiple tool categories */
+        margin-bottom: 1.5rem;
+    }
+    .tool-category-card-container { /* Wrapper for tool categories */
+        space-y: 1.5rem; /* Was space-y-6 */
+    }
+
   </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen">
@@ -147,7 +159,6 @@
       <li><a href="#category-life" class="sidebar-link"><i class="lucide lucide-home"></i><span>生活常用</span></a></li>
       <li><a href="#category-study" class="sidebar-link"><i class="lucide lucide-briefcase"></i><span>学习办公</span></a></li>
       <li><a href="#category-dev" class="sidebar-link"><i class="lucide lucide-code-2"></i><span>开发设计</span></a></li>
-      {/* Removed "外部站点" separator here */}
       <li><a href="#ext-news-sites" class="sidebar-link"><i class="lucide lucide-globe"></i><span>新闻站点</span></a></li>
       <li><a href="#ext-ai" class="sidebar-link"><i class="lucide lucide-brain"></i><span>AI 专区</span></a></li>
       <li><a href="#ext-video" class="sidebar-link"><i class="lucide lucide-youtube"></i><span>视频影音</span></a></li>
@@ -165,7 +176,6 @@
           <button id="sidebar-toggle" type="button" class="mr-2 p-2 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
             <i class="fas fa-bars w-5 h-5"></i> <span class="sr-only">打开导航</span>
           </button>
-          {/* Updated Logo */}
           <a href="#" class="flex items-center gap-2 text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">
             <i class="lucide lucide-layout-dashboard text-blue-600 dark:text-blue-400"></i>
             <span>
@@ -215,7 +225,7 @@
         </form>
       </section>
 
-      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" id="info-widgets">
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6" id="info-widgets"> {/* Reduced mb from mb-8 */}
         <div class="info-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 flex items-center gap-4">
           <i class="lucide lucide-cloud-sun text-sky-500 text-4xl"></i>
           <div> <h3 class="font-semibold text-lg text-slate-700 dark:text-slate-200">当前天气</h3> <p class="text-sm text-slate-500 dark:text-slate-400" id="weatherDisplay">加载中...</p> </div>
@@ -240,7 +250,9 @@
         </ul>
       </section>
 
-      <section class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-8"> <div class="space-y-6"> <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5" id="category-life">
+      <section class="grid grid-cols-1 lg:grid-cols-1 gap-6"> {/* Reduced mb from mb-8 */}
+        <div class="tool-category-card-container space-y-4"> {/* Reduced space-y from space-y-6 */}
+           <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5" id="category-life">
             <div class="flex items-center gap-3 mb-4"> <i class="lucide lucide-home text-cyan-500 text-2xl"></i> <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200">生活常用</h3> </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"> <i class="lucide lucide-calculator text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i> <span class="text-sm font-medium text-center">单位换算</span> </a>
@@ -270,7 +282,7 @@
         </div>
       </section>
 
-      <section class="space-y-8">
+      <section class="tool-category-card-container space-y-4"> {/* Reduced space-y from space-y-8 */}
         <div id="ext-news-sites" class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
           <h4 class="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-4">新闻站点</h4>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
