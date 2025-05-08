@@ -100,7 +100,7 @@
     .s-search-button .fa-search { font-size: 0.9em; }
 
     /* Horizontal News Section */
-    .horizontal-news-container { margin-bottom: 1.5rem; } /* Reduced margin */
+    .horizontal-news-container { margin-bottom: 1.5rem; }
     .horizontal-news-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
     #newsListHorizontal {
         display: flex; overflow-x: auto; padding-bottom: 1rem; gap: 1rem;
@@ -131,13 +131,10 @@
 
     /* Reduced spacing for main sections */
     main > section {
-        margin-bottom: 1.5rem; /* Was mb-8, now mb-6 (approx 24px) */
-    }
-    main > section.space-y-8 { /* For the section holding multiple tool categories */
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.5rem; /* Tailwind mb-6 */
     }
     .tool-category-card-container { /* Wrapper for tool categories */
-        space-y: 1.5rem; /* Was space-y-6 */
+        space-y: 1.5rem; /* Tailwind space-y-6 */
     }
 
   </style>
@@ -225,7 +222,7 @@
         </form>
       </section>
 
-      <section class="grid grid-cols-1 md:grid-cols-3 gap-6" id="info-widgets"> {/* Reduced mb from mb-8 */}
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6" id="info-widgets">
         <div class="info-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 flex items-center gap-4">
           <i class="lucide lucide-cloud-sun text-sky-500 text-4xl"></i>
           <div> <h3 class="font-semibold text-lg text-slate-700 dark:text-slate-200">当前天气</h3> <p class="text-sm text-slate-500 dark:text-slate-400" id="weatherDisplay">加载中...</p> </div>
@@ -250,8 +247,8 @@
         </ul>
       </section>
 
-      <section class="grid grid-cols-1 lg:grid-cols-1 gap-6"> {/* Reduced mb from mb-8 */}
-        <div class="tool-category-card-container space-y-4"> {/* Reduced space-y from space-y-6 */}
+      <section class="grid grid-cols-1 lg:grid-cols-1 gap-6">
+        <div class="tool-category-card-container space-y-4">
            <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5" id="category-life">
             <div class="flex items-center gap-3 mb-4"> <i class="lucide lucide-home text-cyan-500 text-2xl"></i> <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200">生活常用</h3> </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -282,7 +279,7 @@
         </div>
       </section>
 
-      <section class="tool-category-card-container space-y-4"> {/* Reduced space-y from space-y-8 */}
+      <section class="tool-category-card-container space-y-4">
         <div id="ext-news-sites" class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
           <h4 class="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-4">新闻站点</h4>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
