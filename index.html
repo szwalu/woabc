@@ -6,13 +6,18 @@
   <title>tqabc.com - 工具导航</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://unpkg.com/lucide-static@latest/font/lucide.css">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100 min-h-screen p-4">
+<body class="bg-gradient-to-b from-white to-blue-50 text-gray-800 min-h-screen p-4">
   <!-- 顶部导航栏 -->
-  <div class="flex items-center justify-between mb-4">
-    <h1 class="text-2xl font-bold">tqabc.com</h1>
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-3xl font-bold">tqabc.com</h1>
     <div class="flex items-center gap-2">
-      <input type="text" placeholder="搜索..." class="border rounded px-2 py-1 w-48" />
+      <input type="text" placeholder="搜索..." class="border rounded px-3 py-1 w-52" />
       <button class="p-2 bg-gray-100 rounded hover:bg-gray-200">
         <i class="lucide lucide-search w-4 h-4"></i>
       </button>
@@ -23,55 +28,135 @@
   </div>
 
   <!-- 信息区模块 -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-    <div class="bg-white dark:bg-gray-800 rounded shadow p-4 flex items-center gap-4">
-      <i class="lucide lucide-sun text-yellow-400 text-xl"></i>
-      <div>
-        <div class="font-semibold text-lg">当前天气</div>
-        <div class="text-sm text-gray-500 dark:text-gray-400">城市 / 温度 / 天气描述</div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-white rounded shadow p-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="lucide lucide-cloud-sun text-yellow-400 text-2xl"></i>
+          <div>
+            <div class="font-semibold text-lg">当前天气</div>
+            <div class="text-sm text-gray-500" id="weather">正在加载天气...</div>
+          </div>
+        </div>
+        <select id="citySelector" class="border rounded px-2 py-1 text-sm">
+          <option value="auto">自动定位</option>
+          <option value="101010100">北京</option>
+          <option value="101020100">上海</option>
+          <option value="101280101">广州</option>
+          <option value="101280601">深圳</option>
+          <option value="101270101">成都</option>
+          <option value="101210101">杭州</option>
+        </select>
       </div>
     </div>
-    <div class="bg-white dark:bg-gray-800 rounded shadow p-4 flex items-center gap-4">
-      <i class="lucide lucide-calendar text-blue-500 text-xl"></i>
+
+    <div class="bg-white rounded shadow p-4 flex items-center gap-4">
+      <i class="lucide lucide-calendar text-blue-500 text-2xl"></i>
       <div>
         <div class="font-semibold text-lg">今日日期</div>
-        <div class="text-sm text-gray-500 dark:text-gray-400" id="dateDisplay"></div>
+        <div class="text-sm text-gray-500" id="dateDisplay"></div>
       </div>
     </div>
   </div>
 
   <!-- 新闻模块 -->
-  <div class="bg-white dark:bg-gray-800 rounded shadow p-4 mb-4">
-    <div class="flex items-center gap-2 mb-2">
+  <div class="bg-white rounded shadow p-4 mb-6">
+    <div class="flex items-center gap-2 mb-3">
       <i class="lucide lucide-newspaper text-red-500"></i>
-      <h2 class="text-lg font-semibold">今日新闻</h2>
+      <h2 class="text-xl font-semibold">今日新闻</h2>
     </div>
-    <ul class="list-disc list-inside space-y-1 text-sm">
-      <li><a href="#" class="hover:underline">新闻标题一 - 来源</a></li>
-      <li><a href="#" class="hover:underline">新闻标题二 - 来源</a></li>
-      <li><a href="#" class="hover:underline">新闻标题三 - 来源</a></li>
+    <ul class="list-disc list-inside space-y-2 text-sm" id="news">
+      <li>加载中...</li>
     </ul>
   </div>
 
   <!-- 工具导航 -->
-  <div class="bg-white dark:bg-gray-800 rounded shadow p-4">
-    <h2 class="text-lg font-semibold mb-2">常用工具</h2>
-    <div class="grid grid-cols-3 md:grid-cols-6 gap-4 text-sm text-center">
-      <a href="#" class="hover:underline">天气预报</a>
-      <a href="#" class="hover:underline">日历查询</a>
-      <a href="#" class="hover:underline">单位换算</a>
-      <a href="#" class="hover:underline">IP 查询</a>
-      <a href="#" class="hover:underline">翻译工具</a>
-      <a href="#" class="hover:underline">记事本</a>
+  <div class="bg-white rounded shadow p-4 mb-4">
+    <h2 class="text-xl font-semibold mb-3">常用工具</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 text-sm text-center">
+      <a href="https://weather.com" target="_blank" class="hover:underline">天气预报</a>
+      <a href="https://calendar.google.com" target="_blank" class="hover:underline">日历</a>
+      <a href="https://translate.google.com" target="_blank" class="hover:underline">翻译工具</a>
+      <a href="https://www.baidu.com/s?wd=单位换算" target="_blank" class="hover:underline">单位换算</a>
+      <a href="https://ip.cn" target="_blank" class="hover:underline">IP 查询</a>
+      <a href="https://notepad.pw" target="_blank" class="hover:underline">记事本</a>
     </div>
   </div>
 
+  <!-- JavaScript -->
   <script>
+    const heKey = "26ffb95e61b54f05b81a6940e4e68c1f"; // 👈 替换为你自己的 KEY
+    const weatherEl = document.getElementById("weather");
+    const selector = document.getElementById("citySelector");
+
+    function getWeatherByLocationId(locationId, cityName = "") {
+      fetch(`https://devapi.qweather.com/v7/weather/now?location=${locationId}&key=${heKey}&lang=zh`)
+        .then(res => res.json())
+        .then(data => {
+          const now = data.now;
+          weatherEl.textContent = `${cityName ? cityName : ""} ${now.temp}℃ ${now.text}`;
+        })
+        .catch(() => {
+          weatherEl.textContent = "天气获取失败";
+        });
+    }
+
+    function locateAndFetchWeather() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const { latitude, longitude } = position.coords;
+          fetch(`https://geoapi.qweather.com/v2/city/lookup?location=${longitude},${latitude}&key=${heKey}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.location && data.location.length > 0) {
+                const loc = data.location[0];
+                getWeatherByLocationId(loc.id, loc.name);
+              } else {
+                getWeatherByLocationId("101010100", "北京");
+              }
+            })
+            .catch(() => {
+              getWeatherByLocationId("101010100", "北京");
+            });
+        }, () => {
+          getWeatherByLocationId("101010100", "北京");
+        });
+      } else {
+        getWeatherByLocationId("101010100", "北京");
+      }
+    }
+
+    // 下拉选择城市时触发
+    selector.addEventListener("change", () => {
+      const value = selector.value;
+      const name = selector.options[selector.selectedIndex].text;
+      if (value === "auto") {
+        locateAndFetchWeather();
+      } else {
+        getWeatherByLocationId(value, name);
+      }
+    });
+
+    // 默认加载：自动定位
+    locateAndFetchWeather();
+
     // 日期显示
     const dateDisplay = document.getElementById("dateDisplay");
     const now = new Date();
     const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
     dateDisplay.textContent = now.toLocaleDateString('zh-CN', options);
+
+    // 新闻加载
+    const newsList = document.getElementById("news");
+    fetch("https://api.rss2json.com/v1/api.json?rss_url=https://news.qq.com/rss.htm")
+      .then(res => res.json())
+      .then(data => {
+        const list = data.items.slice(0, 5);
+        newsList.innerHTML = list.map(item => `<li><a href="${item.link}" target="_blank">${item.title}</a></li>`).join("");
+      })
+      .catch(() => {
+        newsList.innerHTML = "<li>新闻获取失败</li>";
+      });
   </script>
 </body>
 </html>
