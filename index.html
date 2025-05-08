@@ -64,12 +64,12 @@
         appearance: none; -webkit-appearance: none; -moz-appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
         background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em 1em;
-        padding: 0.25rem 1.75rem 0.25rem 0.5rem; /* Reduced right padding */
+        padding: 0.25rem 1.75rem 0.25rem 0.5rem;
         margin-right: -1px; border: 1px solid #d1d5db; border-right: none;
         border-radius: 0.375rem 0 0 0.375rem; background-color: #f9fafb;
         color: #374151; font-size: 0.875rem; line-height: 1.25rem;
         height: 2.25rem; cursor: pointer; outline: none; transition: border-color 0.2s ease;
-        flex-shrink: 0; /* Prevent select from shrinking */
+        flex-shrink: 0;
     }
     .dark .search-engine-select {
         background-color: #374151; border-color: #4b5563; color: #d1d5db;
@@ -79,16 +79,16 @@
     .dark .search-engine-select:focus { border-color: #60a5fa; box-shadow: 0 0 0 1px #60a5fa; }
 
     .s-search-form {
-        display: flex; flex-grow: 1; /* Allow form to take remaining space */
+        display: flex; flex-grow: 1;
         border: 1px solid #d1d5db; border-radius: 0 0.375rem 0.375rem 0;
         overflow: hidden; background-color: #ffffff; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        height: 2.25rem; min-width: 0; /* Allow form to shrink */
+        height: 2.25rem; min-width: 0;
     }
     .dark .s-search-form { border-color: #4b5563; background-color: #1f2937; }
     .s-search-input {
         flex-grow: 1; padding: 0.25rem 0.75rem; font-size: 0.875rem;
         border: none; outline: none; background: transparent; color: #1f2937;
-        min-width: 50px; /* Ensure input doesn't become too small */
+        min-width: 50px;
     }
     .dark .s-search-input { color: #f3f4f6; }
     .s-search-input::placeholder { color: #9ca3af; }
@@ -98,7 +98,7 @@
         background-color: #3b82f6; color: white; cursor: pointer;
         transition: background-color 0.2s ease; display: flex;
         align-items: center; justify-content: center;
-        flex-shrink: 0; /* Prevent button from shrinking */
+        flex-shrink: 0;
     }
     .s-search-button:hover { background-color: #2563eb; }
     .s-search-button .fa-search { font-size: 0.9em; }
@@ -173,10 +173,9 @@
           <button id="sidebar-toggle" type="button" class="mr-2 p-2 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
             <i class="fas fa-bars w-5 h-5"></i> <span class="sr-only">打开导航</span>
           </button>
-          {/* Replaced text logo with image logo */}
           <a href="#" class="flex items-center gap-2 text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">
-             {/* User needs to replace 'tqabc_logo_128x128.png' with the actual path/URL */}
-             <img src="tqabc_logo_128x128.png" alt="tqabc Logo" class="h-8 w-auto"> 
+             {/* Corrected image path: Assumes logo is in the root directory */}
+             <img src="/tqabc_logo_128x128.png" alt="tqabc Logo" class="h-8 w-auto">
           </a>
         </div>
 
