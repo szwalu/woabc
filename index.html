@@ -6,68 +6,268 @@
   <title>tqabc.com - 您的智能工具导航</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     body {
         font-family: 'Inter', sans-serif;
-        /* Subtle background pattern for a bit more texture */
-        /* background-image: radial-gradient(circle at 1px 1px, #cbd5e1 1px, transparent 0); */
-        /* background-size: 20px 20px; */
+        transition: margin-left 0.3s ease-in-out; /* For sidebar push effect */
     }
-    .dark body {
-        /* background-image: radial-gradient(circle at 1px 1px, #4a5568 1px, transparent 0); */
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
+    ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    .dark ::-webkit-scrollbar-thumb:hover { background: #374151; }
+
+    /* Sidebar Styles (Inspired by index-3.html, adapted for Tailwind) */
+    .app-sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px; /* Hidden by default */
+        width: 280px; /* Sidebar width */
+        height: 100vh;
+        background-color: #ffffff; /* Tailwind white */
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        padding-top: 4rem; /* Space for header */
+        z-index: 40; /* Below header (z-50) */
+        transition: left 0.3s ease-in-out;
+        overflow-y: auto;
     }
-    /* Custom scrollbar for better aesthetics (optional) */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+    .dark .app-sidebar {
+        background-color: #1f2937; /* Tailwind gray-800 */
+        border-right: 1px solid #374151; /* Tailwind gray-700 */
     }
-    ::-webkit-scrollbar-track {
+    .sidebar-open .app-sidebar {
+        left: 0;
+    }
+    .app-sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .app-sidebar ul li a {
+        display: flex; /* Use flex for icon and text alignment */
+        align-items: center; /* Vertically center icon and text */
+        gap: 0.75rem; /* Space between icon and text (Tailwind gap-3) */
+        padding: 0.75rem 1.5rem; /* Tailwind p-3 px-6 */
+        font-size: 0.95rem; /* Slightly smaller than default */
+        color: #374151; /* Tailwind gray-700 */
+        cursor: pointer;
+        transition: background-color 0.2s, color 0.2s;
+        border-left: 3px solid transparent; /* For active state indicator */
+    }
+    .dark .app-sidebar ul li a {
+        color: #d1d5db; /* Tailwind gray-300 */
+    }
+    .app-sidebar ul li a:hover,
+    .app-sidebar ul li a.active {
+        background-color: #eff6ff; /* Tailwind blue-50 */
+        color: #2563eb; /* Tailwind blue-600 */
+        border-left-color: #2563eb; /* Tailwind blue-600 */
+    }
+    .dark .app-sidebar ul li a:hover,
+    .dark .app-sidebar ul li a.active {
+        background-color: #374151; /* Tailwind gray-700 */
+        color: #60a5fa; /* Tailwind blue-400 */
+        border-left-color: #60a5fa; /* Tailwind blue-400 */
+    }
+    .app-sidebar ul li a .lucide { /* Style for lucide icons in sidebar */
+        width: 1.125rem; /* Tailwind w-4.5 */
+        height: 1.125rem; /* Tailwind h-4.5 */
+    }
+
+
+    /* Main content adjustment when sidebar is open */
+    @media (min-width: 768px) { /* Apply push effect only on md screens and up */
+      .sidebar-open .main-content-pusher {
+          margin-left: 280px;
+      }
+    }
+     /* Overlay for mobile when sidebar is open */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 39; /* Below sidebar, above content */
+    }
+    .sidebar-open .sidebar-overlay {
+        display: block;
+    }
+
+
+    /* Search Box Styles (Inspired by index-3.html) */
+    .s-search-container {
+        width: 100%;
+        max-width: 700px; /* Max width for the search box */
+        margin: 1.5rem auto; /* Centered with margin top/bottom */
+        padding: 0 1rem; /* Padding on smaller screens */
+    }
+    .s-search-tabs {
+        display: flex;
+        margin-bottom: -1px; /* Overlap with the form border */
+    }
+    .s-search-tabs label {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        background-color: #e5e7eb; /* Tailwind gray-200 */
+        color: #4b5563; /* Tailwind gray-600 */
+        font-size: 0.875rem; /* Tailwind text-sm */
+        border-radius: 0.375rem 0.375rem 0 0; /* Tailwind rounded-t-md */
+        margin-right: 2px;
+        transition: background-color 0.2s ease, color 0.2s ease;
+        border: 1px solid transparent;
+        border-bottom: none;
+    }
+    .dark .s-search-tabs label {
+        background-color: #374151; /* Tailwind gray-700 */
+        color: #d1d5db; /* Tailwind gray-300 */
+    }
+    .s-search-tabs input[type="radio"] {
+        display: none; /* Hide actual radio button */
+    }
+    .s-search-tabs input[type="radio"]:checked + label {
+        background-color: #ffffff; /* Tailwind white */
+        color: #1f2937; /* Tailwind gray-800 */
+        border-color: #d1d5db; /* Tailwind gray-300 */
+        z-index: 1;
+    }
+    .dark .s-search-tabs input[type="radio"]:checked + label {
+        background-color: #1f2937; /* Tailwind gray-800 */
+        color: #f3f4f6; /* Tailwind gray-100 */
+        border-color: #4b5563; /* Tailwind gray-600 */
+    }
+
+    .s-search-form {
+        display: flex;
+        width: 100%;
+        border: 1px solid #d1d5db; /* Tailwind gray-300 */
+        border-radius: 0.375rem; /* Tailwind rounded-md */
+        overflow: hidden;
+        background-color: #ffffff; /* Tailwind white */
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        position: relative; /* For z-index context with tabs */
+    }
+    .dark .s-search-form {
+        border-color: #4b5563; /* Tailwind gray-600 */
+        background-color: #1f2937; /* Tailwind gray-800 */
+    }
+    /* Adjust border radius if top-left is covered by an active tab */
+    .s-search-tabs input[type="radio"]:checked + label + form, /* If first tab active */
+    .s-search-tabs input[type="radio"]:checked + label + input + label + form /* If second tab active, etc. */
+    {
+        border-top-left-radius: 0;
+    }
+
+
+    .s-search-input {
+        flex-grow: 1;
+        padding: 0.75rem 1rem; /* Tailwind p-3 px-4 */
+        font-size: 1rem; /* Tailwind text-base */
+        border: none;
+        outline: none;
         background: transparent;
+        color: #1f2937; /* Tailwind gray-800 */
     }
-    ::-webkit-scrollbar-thumb {
-        background: #9ca3af; /* Gray-400 */
-        border-radius: 4px;
+    .dark .s-search-input {
+        color: #f3f4f6; /* Tailwind gray-100 */
     }
-    .dark ::-webkit-scrollbar-thumb {
-        background: #4b5563; /* Gray-600 */
+    .s-search-input::placeholder {
+        color: #9ca3af; /* Tailwind gray-400 */
     }
-    ::-webkit-scrollbar-thumb:hover {
-        background: #6b7280; /* Gray-500 */
+    .dark .s-search-input::placeholder {
+        color: #6b7280; /* Tailwind gray-500 */
     }
-    .dark ::-webkit-scrollbar-thumb:hover {
-        background: #374151; /* Gray-700 */
+    .s-search-button {
+        padding: 0 1.25rem; /* Tailwind px-5 */
+        font-size: 1rem;
+        border: none;
+        background-color: #3b82f6; /* Tailwind blue-500 */
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .s-search-button:hover {
+        background-color: #2563eb; /* Tailwind blue-600 */
+    }
+    .s-search-button .fa-search {
+        font-size: 1em;
+    }
+    .google-text .g1 { color: #4285f4; } .google-text .g2 { color: #ea4335; } .google-text .g3 { color: #fbbc05; } .google-text .g4 { color: #4285f4; } .google-text .g5 { color: #34a853; } .google-text .g6 { color: #ea4335; }
+    .baidu-text { color: #2932e1; font-weight: bold; }
+
+
+    /* Tool card styles from index-3.html, adapted */
+    .tool-card-ext { /* ext for external style */
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 10px;
+        transition: transform 0.2s;
+        width: 100%;
+        min-height: 90px; /* Adjusted min-height */
+        display: flex; /* Use flex for better control */
+        flex-direction: column; /* Stack content vertically */
+    }
+    .dark .tool-card-ext {
+        background: #2d3748; /* Tailwind gray-800 (example, adjust as needed) */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .tool-card-ext:hover {
+        transform: translateY(-5px);
+    }
+    .tool-card-ext a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: inherit; /* Inherit text color from body/card */
+        flex-grow: 1; /* Allow link to take full card space */
+    }
+    .tool-card-ext img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 15px;
+        flex-shrink: 0; /* Prevent image from shrinking */
+    }
+    .tool-card-ext h3 {
+        margin: 0;
+        font-size: 0.95em; /* Adjusted font size */
+        color: #333; /* Default text color */
+        flex-grow: 1; /* Allow title to take available space */
+        /* For multi-line truncation */
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2; /* Limit to 2 lines */
+        overflow: hidden;
+        word-break: break-word;
+    }
+    .dark .tool-card-ext h3 {
+        color: #e2e8f0; /* Tailwind slate-200 (example) */
     }
 
-    /* Glassmorphism effect for cards (optional, can be intensive) */
-    /*
-    .glass-card {
-        background: rgba(255, 255, 255, 0.6);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    .dark .glass-card {
-        background: rgba(31, 41, 55, 0.6); // bg-gray-800 with opacity
-        border: 1px solid rgba(75, 85, 99, 0.2); // border-gray-600 with opacity
-    }
-    */
-
-    /* Enhanced card styling */
-    .info-card, .tool-category-card, .tool-item-card {
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
+    /* General card hover effects from original design */
     .info-card:hover, .tool-category-card:hover {
         /* transform: translateY(-4px); */
-        /* box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); */
     }
      .tool-item-card:hover {
         transform: scale(1.03);
         box-shadow: 0 8px 25px -5px rgba(0,0,0,0.1), 0 5px 10px -5px rgba(0,0,0,0.04);
     }
 
+    /* News list specific styling */
     #newsList li {
         padding: 0.5rem 0.25rem;
         border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
@@ -75,34 +275,59 @@
     .dark #newsList li {
         border-bottom-color: #374151; /* Tailwind gray-700 */
     }
-    #newsList li:last-child {
-        border-bottom: none;
-    }
-    #newsList a {
-        transition: color 0.2s ease-in-out;
-    }
+    #newsList li:last-child { border-bottom: none; }
+    #newsList a { transition: color 0.2s ease-in-out; }
+
   </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen">
+
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+  <aside id="app-sidebar" class="app-sidebar">
+    <div class="p-6">
+        <a href="#" class="flex items-center gap-2 text-xl font-bold text-blue-600 dark:text-blue-400">
+            <i class="lucide lucide-layout-grid"></i>
+            <span>导航分类</span>
+        </a>
+    </div>
+    <ul>
+      <li><a href="#info-widgets" class="sidebar-link active"><i class="lucide lucide-layout-dashboard"></i><span>仪表盘</span></a></li>
+      <li><a href="#category-life" class="sidebar-link"><i class="lucide lucide-home"></i><span>生活常用</span></a></li>
+      <li><a href="#category-study" class="sidebar-link"><i class="lucide lucide-briefcase"></i><span>学习办公</span></a></li>
+      <li><a href="#category-dev" class="sidebar-link"><i class="lucide lucide-code-2"></i><span>开发设计</span></a></li>
+      <li class="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700"><span class="px-6 py-2 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase">外部站点</span></li>
+      <li><a href="#ext-news" class="sidebar-link"><i class="lucide lucide-globe"></i><span>新闻站点</span></a></li>
+      <li><a href="#ext-ai" class="sidebar-link"><i class="lucide lucide-brain"></i><span>AI 专区</span></a></li>
+      <li><a href="#ext-video" class="sidebar-link"><i class="lucide lucide-youtube"></i><span>视频影音</span></a></li>
+      <li><a href="#ext-shopping" class="sidebar-link"><i class="lucide lucide-shopping-cart"></i><span>购物</span></a></li>
+      <li><a href="#ext-reading" class="sidebar-link"><i class="lucide lucide-book-open"></i><span>阅读</span></a></li>
+      <li><a href="#ext-travel" class="sidebar-link"><i class="lucide lucide-plane"></i><span>出行</span></a></li>
+      <li><a href="#ext-others" class="sidebar-link"><i class="lucide lucide-folder-plus"></i><span>其它</span></a></li>
+    </ul>
+  </aside>
 
   <header class="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center">
+          <button id="sidebar-toggle" type="button" class="mr-2 p-2 rounded-md text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 lg:hidden">
+            <i class="fas fa-bars w-6 h-6"></i>
+            <span class="sr-only">打开导航</span>
+          </button>
           <a href="#" class="flex items-center gap-2 text-2xl font-bold text-blue-600 dark:text-blue-400">
             <i class="lucide lucide-layout-dashboard"></i>
             <span>tqabc.com</span>
           </a>
         </div>
 
-        <div class="flex-1 flex justify-center px-2 lg:ml-6 lg:justify-end">
+        <div class="hidden md:flex flex-1 justify-center px-2 lg:ml-6 lg:justify-end">
           <div class="max-w-lg w-full lg:max-w-xs">
-            <label for="search" class="sr-only">搜索工具</label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <i class="lucide lucide-search text-slate-400 dark:text-slate-500 w-5 h-5"></i>
               </div>
-              <input id="search" name="search" class="block w-full pl-10 pr-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md leading-5 bg-white dark:bg-slate-700 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:placeholder-slate-400 dark:focus:placeholder-slate-500 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="搜索工具..." type="search">
+              <input class="block w-full pl-10 pr-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md leading-5 bg-white dark:bg-slate-700 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:placeholder-slate-400 dark:focus:placeholder-slate-500 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="快速搜索..." type="search">
             </div>
           </div>
         </div>
@@ -122,264 +347,409 @@
     </div>
   </header>
 
-  <main class="container mx-auto p-4 sm:p-6 lg:p-8">
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <div class="info-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 flex items-center gap-4">
-        <i class="lucide lucide-cloud-sun text-sky-500 text-4xl"></i>
-        <div>
-          <h3 class="font-semibold text-lg text-slate-700 dark:text-slate-200">当前天气</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400" id="weatherDisplay">加载中...</p>
-        </div>
-      </div>
-      <div class="info-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 flex items-center gap-4">
-        <i class="lucide lucide-calendar-days text-green-500 text-4xl"></i>
-        <div>
-          <h3 class="font-semibold text-lg text-slate-700 dark:text-slate-200">今日日期</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400" id="dateDisplay">正在加载日期...</p>
-        </div>
-      </div>
-      <div class="info-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 flex items-center gap-4">
-        <i class="lucide lucide-activity text-purple-500 text-4xl"></i>
-        <div>
-          <h3 class="font-semibold text-lg text-slate-700 dark:text-slate-200">站点访问</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400">1,234 今日</p>
-        </div>
-      </div>
-    </section>
+  <div class="main-content-pusher">
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+      <section class="s-search-container" id="advanced-search">
+        <div class="s-search-tabs">
+          <input type="radio" name="search_type" id="search-type-google" value="https://www.google.com/search" data-placeholder="Google 搜索..." data-name="q" checked>
+          <label for="search-type-google"><span class="google-text"><span class="g1">G</span><span class="g2">o</span><span class="g3">o</span><span class="g4">g</span><span class="g5">l</span><span class="g6">e</span></span></label>
+          
+          <input type="radio" name="search_type" id="search-type-baidu" value="https://www.baidu.com/s" data-placeholder="百度一下" data-name="wd">
+          <label for="search-type-baidu"><span class="baidu-text">百度</span></label>
+          
+          </div>
+        <form action="https://www.google.com/search" method="get" target="_blank" id="super-search-form" class="s-search-form">
+          <input type="text" id="super-search-text" name="q" placeholder="Google 搜索..." autocomplete="off" class="s-search-input">
+          <button type="submit" class="s-search-button"><i class="fas fa-search"></i></button>
+        </form>
+      </section>
 
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-      <div class="lg:col-span-1 bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
-        <div class="flex items-center gap-3 mb-4">
-          <i class="lucide lucide-newspaper text-red-500 text-2xl"></i>
-          <h2 class="text-xl font-semibold text-slate-700 dark:text-slate-200">今日新闻</h2>
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" id="info-widgets">
+        <div class="info-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 flex items-center gap-4">
+          <i class="lucide lucide-cloud-sun text-sky-500 text-4xl"></i>
+          <div>
+            <h3 class="font-semibold text-lg text-slate-700 dark:text-slate-200">当前天气</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400" id="weatherDisplay">加载中...</p>
+          </div>
         </div>
-        <ul id="newsList" class="space-y-1 text-sm max-h-96 overflow-y-auto">
-          <li id="newsLoadingStatus" class="text-slate-500 dark:text-slate-400">正在加载新闻...</li>
-        </ul>
-        <p id="newsSourceInfo" class="text-xs text-slate-400 dark:text-slate-500 mt-3 text-right">新闻来源: 正在获取...</p>
-      </div>
+        <div class="info-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 flex items-center gap-4">
+          <i class="lucide lucide-calendar-days text-green-500 text-4xl"></i>
+          <div>
+            <h3 class="font-semibold text-lg text-slate-700 dark:text-slate-200">今日日期</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400" id="dateDisplay">正在加载日期...</p>
+          </div>
+        </div>
+        <div class="info-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5 flex items-center gap-4">
+          <i class="lucide lucide-activity text-purple-500 text-4xl"></i>
+          <div>
+            <h3 class="font-semibold text-lg text-slate-700 dark:text-slate-200">站点访问</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400">1,234 今日</p>
+          </div>
+        </div>
+      </section>
 
-      <div class="lg:col-span-2 space-y-6">
-        <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="lg:col-span-1 bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
           <div class="flex items-center gap-3 mb-4">
-            <i class="lucide lucide-home text-cyan-500 text-2xl"></i>
-            <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200">生活常用</h3>
+            <i class="lucide lucide-newspaper text-red-500 text-2xl"></i>
+            <h2 class="text-xl font-semibold text-slate-700 dark:text-slate-200">今日新闻</h2>
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-calculator text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">单位换算</span>
-            </a>
-            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-map-pin text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">IP 查询</span>
-            </a>
-            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-qr-code text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">二维码生成</span>
-            </a>
-            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-clipboard-check text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">待办清单</span>
-            </a>
+          <ul id="newsList" class="space-y-1 text-sm max-h-96 overflow-y-auto">
+            <li id="newsLoadingStatus" class="text-slate-500 dark:text-slate-400">正在加载新闻...</li>
+          </ul>
+          <p id="newsSourceInfo" class="text-xs text-slate-400 dark:text-slate-500 mt-3 text-right">新闻来源: 正在获取...</p>
+        </div>
+
+        <div class="lg:col-span-2 space-y-6">
+          <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5" id="category-life">
+            <div class="flex items-center gap-3 mb-4">
+              <i class="lucide lucide-home text-cyan-500 text-2xl"></i>
+              <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200">生活常用</h3>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <i class="lucide lucide-calculator text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
+                <span class="text-sm font-medium text-center">单位换算</span>
+              </a>
+              <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <i class="lucide lucide-map-pin text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
+                <span class="text-sm font-medium text-center">IP 查询</span>
+              </a>
+              <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <i class="lucide lucide-qr-code text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
+                <span class="text-sm font-medium text-center">二维码生成</span>
+              </a>
+              <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <i class="lucide lucide-clipboard-check text-cyan-600 dark:text-cyan-400 text-3xl mb-2"></i>
+                <span class="text-sm font-medium text-center">待办清单</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5" id="category-study">
+            <div class="flex items-center gap-3 mb-4">
+              <i class="lucide lucide-briefcase text-amber-500 text-2xl"></i>
+              <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200">学习办公</h3>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <i class="lucide lucide-languages text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-center">翻译工具</span>
+                </a>
+                <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <i class="lucide lucide-book-open text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-center">在线词典</span>
+                </a>
+                <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <i class="lucide lucide-file-text text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-center">文档转换</span>
+                </a>
+                <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <i class="lucide lucide-highlighter text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-center">Markdown编辑器</span>
+                </a>
+            </div>
+          </div>
+
+          <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5" id="category-dev">
+            <div class="flex items-center gap-3 mb-4">
+              <i class="lucide lucide-code-2 text-indigo-500 text-2xl"></i>
+              <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200">开发设计</h3>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <i class="lucide lucide-file-json-2 text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-center">JSON格式化</span>
+                </a>
+                <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <i class="lucide lucide-palette text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-center">调色板</span>
+                </a>
+                <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <i class="lucide lucide-image text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-center">图片压缩</span>
+                </a>
+                <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <i class="lucide lucide-github text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
+                    <span class="text-sm font-medium text-center">GitHub趋势</span>
+                </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-8">
+        <div id="ext-news" class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
+          <h4 class="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-4">新闻站点</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="tool-card-ext">
+              <a href="https://cn.nytimes.com" target="_blank">
+                <img src="https://www.nytimes.com/vi-assets/static-assets/ios-ipad-144x144-28865b72953380a40aa43318108876cb.png" alt="纽约时报中文网 Icon" onerror="this.src='https://placehold.co/40x40/e2e8f0/94a3b8?text=NYT'">
+                <h3>纽约时报中文网</h3>
+              </a>
+            </div>
+            <div class="tool-card-ext">
+                <a href="https://www.bbc.com/zhongwen/simp" target="_blank">
+                    <img src="https://static.files.bbci.co.uk/ws/simorgh-assets/public/zhongwen/images/icons/icon-144x144.png" alt="BBC中文网 Icon" onerror="this.src='https://placehold.co/40x40/e2e8f0/94a3b8?text=BBC'">
+                    <h3>BBC中文网</h3>
+                </a>
+            </div>
+            <div class="tool-card-ext">
+                <a href="https://cn.wsj.com/zh-hans" target="_blank">
+                    <img src="https://www.wsj.com/favicon.ico" alt="华尔街日报中文网 Icon" onerror="this.src='https://placehold.co/40x40/e2e8f0/94a3b8?text=WSJ'">
+                    <h3>华尔街日报中文网</h3>
+                </a>
+            </div>
+             <div class="tool-card-ext">
+                <a href="https://www.ftchinese.com" target="_blank">
+                    <img src="https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo-v1%3Abrand-ft-logo-square?source=update-logos&width=180&height=180&format=png" alt="FT中文网 Icon" onerror="this.src='https://placehold.co/40x40/e2e8f0/94a3b8?text=FT'">
+                    <h3>FT中文网</h3>
+                </a>
+            </div>
           </div>
         </div>
 
-        <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
-          <div class="flex items-center gap-3 mb-4">
-            <i class="lucide lucide-briefcase text-amber-500 text-2xl"></i>
-            <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200">学习办公</h3>
+        <div id="ext-ai" class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
+          <h4 class="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-4">AI 专区</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="tool-card-ext">
+                <a href="https://chatgpt.com/" target="_blank">
+                    <img src="https://chatgpt.com/favicon.ico" alt="ChatGPT" onerror="this.src='https://placehold.co/40x40/e2e8f0/94a3b8?text=AI'">
+                    <h3>ChatGPT</h3>
+                </a>
+            </div>
+            <div class="tool-card-ext">
+                <a href="https://gemini.google.com/" target="_blank">
+                    <img src="https://www.gstatic.com/lamda/images/gemini_favicon_f069958c85030456e93de685481c559f160ea06b.png" alt="Gemini" onerror="this.src='https://placehold.co/40x40/e2e8f0/94a3b8?text=AI'">
+                    <h3>Gemini</h3>
+                </a>
+            </div>
+             <div class="tool-card-ext">
+                <a href="https://copilot.microsoft.com/" target="_blank">
+                    <img src="https://copilot.microsoft.com/favicon.ico" alt="Copilot" onerror="this.src='https://placehold.co/40x40/e2e8f0/94a3b8?text=AI'">
+                    <h3>Copilot</h3>
+                </a>
+            </div>
+            <div class="tool-card-ext">
+                <a href="https://grok.com/?referrer=website" target="_blank">
+                    <img src="https://grok.com/images/favicon-light.png" alt="Grok" onerror="this.src='https://placehold.co/40x40/e2e8f0/94a3b8?text=AI'">
+                    <h3>Grok</h3>
+                </a>
+            </div>
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-languages text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">翻译工具</span>
-            </a>
-            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-book-open text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">在线词典</span>
-            </a>
-            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-file-text text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">文档转换</span>
-            </a>
-             <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-highlighter text-amber-600 dark:text-amber-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">Markdown编辑器</span>
-            </a>
+        </div>
+        <div id="ext-video" class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
+          <h4 class="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-4">视频影音</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="tool-card-ext">
+                <a href="https://www.youtube.com/" target="_blank">
+                    <img src="https://www.youtube.com/s/desktop/014dbbed/img/favicon_144x144.png" alt="YouTube" onerror="this.src='https://placehold.co/40x40/e2e8f0/94a3b8?text=YT'">
+                    <h3>YouTube</h3>
+                </a>
+            </div>
+            <div class="tool-card-ext">
+                <a href="https://www.bilibili.com/" target="_blank">
+                    <img src="https://www.bilibili.com/favicon.ico" alt="Bilibili" onerror="this.src='https://placehold.co/40x40/e2e8f0/94a3b8?text=B'">
+                    <h3>Bilibili</h3>
+                </a>
+            </div>
           </div>
         </div>
 
-         <div class="tool-category-card bg-white dark:bg-slate-800 rounded-xl shadow-lg p-5">
-          <div class="flex items-center gap-3 mb-4">
-            <i class="lucide lucide-code-2 text-indigo-500 text-2xl"></i>
-            <h3 class="text-xl font-semibold text-slate-700 dark:text-slate-200">开发设计</h3>
-          </div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-file-json-2 text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">JSON格式化</span>
-            </a>
-            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-palette text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">调色板</span>
-            </a>
-            <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-image text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">图片压缩</span>
-            </a>
-             <a href="#" class="tool-item-card flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <i class="lucide lucide-github text-indigo-600 dark:text-indigo-400 text-3xl mb-2"></i>
-              <span class="text-sm font-medium text-center">GitHub趋势</span>
-            </a>
-          </div>
-        </div>
+      </section>
+    </main>
+
+    <footer class="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 mt-12">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+        <p>&copy; <span id="currentYear"></span> tqabc.com. 保留所有权利.</p>
+        <p class="mt-1">由 Gemini 精心设计与构建。</p>
       </div>
-    </section>
-  </main>
-
-  <footer class="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 mt-12">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
-      <p>&copy; <span id="currentYear"></span> tqabc.com. 保留所有权利.</p>
-      <p class="mt-1">由 Gemini 精心设计与构建。</p>
-    </div>
-  </footer>
-
-  <script>
-    // Theme toggle functionality
+    </footer>
+  </div> <script>
+    // --- THEME TOGGLE ---
     const themeToggleBtn = document.getElementById('theme-toggle');
     const htmlElement = document.documentElement;
-
-    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
     if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       htmlElement.classList.add('dark');
     } else {
       htmlElement.classList.remove('dark');
     }
-
     themeToggleBtn.addEventListener('click', () => {
-      if (htmlElement.classList.contains('dark')) {
-        htmlElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      } else {
-        htmlElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      }
+      htmlElement.classList.toggle('dark');
+      localStorage.setItem('theme', htmlElement.classList.contains('dark') ? 'dark' : 'light');
     });
 
-    // Function to display the current date
+    // --- SIDEBAR TOGGLE ---
+    const sidebarToggleBtn = document.getElementById('sidebar-toggle');
+    const appSidebar = document.getElementById('app-sidebar');
+    const mainContentPusher = document.querySelector('.main-content-pusher'); // Assuming this class exists around main content
+    const bodyEl = document.body;
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    sidebarToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent click from bubbling to document
+      bodyEl.classList.toggle('sidebar-open');
+    });
+
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', () => {
+            bodyEl.classList.remove('sidebar-open');
+        });
+    }
+    // Close sidebar if clicked outside on mobile/tablet
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth < 1024) { // lg breakpoint for Tailwind
+            const isClickInsideSidebar = appSidebar.contains(event.target);
+            const isClickOnToggler = sidebarToggleBtn.contains(event.target);
+            if (!isClickInsideSidebar && !isClickOnToggler && bodyEl.classList.contains('sidebar-open')) {
+                bodyEl.classList.remove('sidebar-open');
+            }
+        }
+    });
+
+
+    // --- ADVANCED SEARCH LOGIC (from index-3.html, adapted) ---
+    const searchForm = document.getElementById('super-search-form');
+    const searchInput = document.getElementById('super-search-text');
+    const engineRadios = document.querySelectorAll('input[name="search_type"]');
+
+    function updateSearchEngine() {
+      const selectedRadio = document.querySelector('input[name="search_type"]:checked');
+      if (selectedRadio && searchForm && searchInput) {
+        searchForm.action = selectedRadio.value;
+        searchInput.placeholder = selectedRadio.getAttribute('data-placeholder');
+        searchInput.name = selectedRadio.getAttribute('data-name');
+      }
+    }
+    engineRadios.forEach(radio => radio.addEventListener('change', updateSearchEngine));
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            if (searchInput && searchInput.value.trim() === '') {
+            searchInput.focus();
+            e.preventDefault();
+            return false;
+            }
+        });
+    }
+    updateSearchEngine(); // Initial call
+
+
+    // --- SIDEBAR LINK SMOOTH SCROLL & ACTIVE STATE ---
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          const headerOffset = document.querySelector('header').offsetHeight || 64; // Height of sticky header
+          const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - headerOffset - 20; // 20px extra offset
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        }
+        // Close sidebar on mobile after click
+        if (window.innerWidth < 768 && bodyEl.classList.contains('sidebar-open')) {
+            bodyEl.classList.remove('sidebar-open');
+        }
+      });
+    });
+
+
+    // --- DATE DISPLAY ---
     function loadDate() {
       const dateDisplayEl = document.getElementById("dateDisplay");
       if (dateDisplayEl) {
         const now = new Date();
-        const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-        dateDisplayEl.textContent = now.toLocaleDateString('zh-CN', options);
-      } else {
-        console.error("Element with ID 'dateDisplay' not found.");
+        dateDisplayEl.textContent = now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
       }
     }
 
-    // Asynchronous function to load weather data
+    // --- WEATHER DISPLAY ---
     async function loadWeather() {
       const weatherDisplayEl = document.getElementById("weatherDisplay");
-      if (!weatherDisplayEl) {
-        console.error("Element with ID 'weatherDisplay' not found.");
-        return;
-      }
+      if (!weatherDisplayEl) return;
       try {
-        const ipRes = await fetch('https://ipapi.co/json/');
-        if (!ipRes.ok) throw new Error(`IP API (ipapi.co) request failed with status ${ipRes.status}`);
-        let ipData = await ipRes.json();
-        let city = ipData.city;
-        let lat = ipData.latitude;
-        let lon = ipData.longitude;
-
-        if (!lat || !lon) {
-            console.warn("Primary IP API (ipapi.co) did not return lat/lon, trying fallback (ip-api.com)...");
-            const fallbackIpRes = await fetch('http://ip-api.com/json/');
-            if (!fallbackIpRes.ok) throw new Error(`Fallback IP API (ip-api.com) request failed with status ${fallbackIpRes.status}`);
-            const fallbackIpData = await fallbackIpRes.json();
-            city = fallbackIpData.city; lat = fallbackIpData.lat; lon = fallbackIpData.lon;
-            if (!lat || !lon) { throw new Error('Latitude or Longitude not found in IP data from both APIs.'); }
+        let city = '未知城市', lat, lon;
+        try { // Primary IP API
+            const ipRes = await fetch('https://ipapi.co/json/');
+            if (!ipRes.ok) throw new Error(`IP API (ipapi.co) failed: ${ipRes.status}`);
+            const ipData = await ipRes.json();
+            city = ipData.city || city; lat = ipData.latitude; lon = ipData.longitude;
+        } catch (e) {
+            console.warn("Primary IP API failed, trying fallback:", e.message);
+            try { // Fallback IP API
+                const fallbackIpRes = await fetch('http://ip-api.com/json/');
+                if (!fallbackIpRes.ok) throw new Error(`Fallback IP API (ip-api.com) failed: ${fallbackIpRes.status}`);
+                const fallbackIpData = await fallbackIpRes.json();
+                city = fallbackIpData.city || city; lat = fallbackIpData.lat; lon = fallbackIpData.lon;
+            } catch (e2) {
+                console.error("All IP APIs failed:", e2.message);
+                throw new Error('无法确定位置信息');
+            }
         }
-        city = city || '未知城市';
+        if (!lat || !lon) throw new Error('无法获取经纬度');
+        
         const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode`);
-        if (!weatherRes.ok) throw new Error(`Weather API request failed with status ${weatherRes.status}`);
+        if (!weatherRes.ok) throw new Error(`Weather API failed: ${weatherRes.status}`);
         const weatherData = await weatherRes.json();
         if (weatherData && weatherData.current_weather) {
-          const temp = weatherData.current_weather.temperature;
-          weatherDisplayEl.innerHTML = `${city} 当前气温：${temp}°C`;
+          weatherDisplayEl.innerHTML = `${city} 当前气温：${weatherData.current_weather.temperature}°C`;
         } else { weatherDisplayEl.innerText = '无法获取天气数据'; }
       } catch (e) {
         console.error("Weather loading error:", e);
-        let displayErrorMessage = '天气加载失败';
-        if (e.message.includes("Latitude or Longitude not found")) { displayErrorMessage += ' (无法确定位置)'; }
-        else if (e.message.includes("API request failed") || e.message.toLowerCase().includes("failed to fetch")) { displayErrorMessage += ' (服务暂时不可用)'; }
-        else { displayErrorMessage += ' (未知错误)'; }
-        weatherDisplayEl.innerText = displayErrorMessage;
+        weatherDisplayEl.innerText = `天气加载失败 (${e.message})`;
       }
     }
 
-    // Asynchronous function to load news data
+    // --- NEWS DISPLAY ---
     async function loadNews() {
       const newsListEl = document.getElementById("newsList");
       const newsSourceInfoEl = document.getElementById("newsSourceInfo");
-      if (!newsListEl) { console.error("Element with ID 'newsList' not found."); return; }
+      if (!newsListEl) return;
       newsListEl.innerHTML = '<li id="newsLoadingStatus" class="text-slate-500 dark:text-slate-400">正在加载新闻...</li>';
-      const newsLoadingStatusEl = document.getElementById("newsLoadingStatus");
-
-      const rssUrl = "https://www.36kr.com/feed"; // 36Kr RSS Feed
+      
+      const rssUrl = "https://www.36kr.com/feed";
       const newsSourceName = "36Kr";
       const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-      const maxNewsItems = 7; // Display more news items
+      const maxNewsItems = 7;
 
-      if (newsSourceInfoEl) { newsSourceInfoEl.textContent = `新闻来源: ${newsSourceName}`; }
-
+      if (newsSourceInfoEl) newsSourceInfoEl.textContent = `新闻来源: ${newsSourceName}`;
       try {
         const response = await fetch(apiUrl);
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`服务请求失败，状态码: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`新闻服务请求失败，状态码: ${response.status}`);
         const data = await response.json();
         if (data.status === "ok" && data.items && data.items.length > 0) {
-          newsListEl.innerHTML = ""; // Clear loading message
+          newsListEl.innerHTML = "";
           data.items.slice(0, maxNewsItems).forEach(item => {
             const listItem = document.createElement("li");
             const link = document.createElement("a");
-            link.href = item.link;
-            link.textContent = item.title;
+            link.href = item.link; link.textContent = item.title;
             link.target = "_blank"; link.rel = "noopener noreferrer";
             link.className = "text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline";
-            listItem.appendChild(link);
-            newsListEl.appendChild(listItem);
+            listItem.appendChild(link); newsListEl.appendChild(listItem);
           });
         } else {
-          let errorMessage = `无法加载新闻条目。`;
-          if (data.message) { errorMessage += ` (API信息: ${data.message})`; }
-          else if (data.items && data.items.length === 0) { errorMessage += ` (来源没有新闻)`; }
-          else { errorMessage += ` (数据格式不正确或来源无内容)`; }
-          if (newsLoadingStatusEl) newsLoadingStatusEl.remove();
-          newsListEl.innerHTML = `<li class="text-red-500">${errorMessage}</li>`;
+          throw new Error(data.message || '无法加载新闻条目或来源无内容');
         }
       } catch (e) {
         console.error("News loading error:", e);
-        let displayErrorMessage = `新闻加载失败`;
-        if (e.message.includes("状态码")) { displayErrorMessage += ` (${e.message})`; }
-        else if (e.message.toLowerCase().includes("failed to fetch")) { displayErrorMessage += ` (网络错误或无法连接到新闻服务)`; }
-        else { displayErrorMessage += ` (未知错误)`; }
-        if (newsLoadingStatusEl) newsLoadingStatusEl.remove();
-        newsListEl.innerHTML = `<li class="text-red-500">${displayErrorMessage}</li>`;
+        newsListEl.innerHTML = `<li class="text-red-500">新闻加载失败 (${e.message})</li>`;
       }
     }
 
-    // Function to set the current year in the footer
+    // --- CURRENT YEAR ---
     function setCurrentYear() {
-        const yearEl = document.getElementById('currentYear');
-        if (yearEl) { yearEl.textContent = new Date().getFullYear(); }
+      const yearEl = document.getElementById('currentYear');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
     }
 
-    // Call functions when the DOM is fully loaded
+    // --- INITIALIZE ON DOM LOAD ---
     document.addEventListener('DOMContentLoaded', () => {
       loadDate();
       loadWeather();
