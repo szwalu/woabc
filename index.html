@@ -174,8 +174,8 @@
             <i class="fas fa-bars w-5 h-5"></i> <span class="sr-only">打开导航</span>
           </button>
           <a href="#" class="flex items-center gap-2 text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">
-             {/* Increased logo size with h-12 */}
-             <img src="/tqabc_logo_128x128.png" alt="tqabc Logo" class="h-12 w-auto">
+             {/* Removed height constraint, added max-h-12 and object-contain */}
+             <img src="/tqabc_logo_128x128.png" alt="tqabc Logo" class="max-h-12 w-auto object-contain">
           </a>
         </div>
 
@@ -473,37 +473,78 @@
     async function loadWeather() {
       const weatherDisplayEl = document.getElementById("weatherDisplay");
       if (!weatherDisplayEl) return;
+      weatherDisplayEl.textContent = '正在加载天气...'; // Initial loading message
+      let city = '未知城市', lat, lon;
+      let locationDetermined = false;
+
       try {
-        let city = '未知城市', lat, lon;
-        try {
-            const ipRes = await fetch('https://ipapi.co/json/'); // HTTPS
-            if (!ipRes.ok) throw new Error(`IP API (ipapi.co) failed: ${ipRes.status}`);
-            const ipData = await ipRes.json();
-            city = ipData.city || city; lat = ipData.latitude; lon = ipData.longitude;
-        } catch (e) {
-            console.warn("Primary IP API failed, trying fallback:", e.message);
-            try {
-                // Use HTTPS for the fallback API as well
-                const fallbackIpRes = await fetch('https://ip-api.com/json/'); // Changed to HTTPS
-                if (!fallbackIpRes.ok) throw new Error(`Fallback IP API (ip-api.com) failed: ${fallbackIpRes.status}`);
-                const fallbackIpData = await fallbackIpRes.json();
-                city = fallbackIpData.city || city; lat = fallbackIpData.lat; lon = fallbackIpData.lon;
-            } catch (e2) {
-                console.error("All IP APIs failed:", e2.message);
-                throw new Error('无法确定位置信息');
-            }
-        }
-        if (!lat || !lon) throw new Error('无法获取经纬度');
-        // Weather API is already HTTPS
-        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode`);
-        if (!weatherRes.ok) throw new Error(`Weather API failed: ${weatherRes.status}`);
-        const weatherData = await weatherRes.json();
-        if (weatherData && weatherData.current_weather) {
-          weatherDisplayEl.innerHTML = `${city} 当前气温：${weatherData.current_weather.temperature}°C`;
-        } else { weatherDisplayEl.innerText = '无法获取天气数据'; }
+          // Try primary IP API (ipapi.co)
+          try {
+              const ipRes = await fetch('https://ipapi.co/json/'); // HTTPS
+              if (ipRes.ok) {
+                  const ipData = await ipRes.json();
+                  if (ipData.latitude && ipData.longitude) {
+                      city = ipData.city || city; 
+                      lat = ipData.latitude; 
+                      lon = ipData.longitude;
+                      locationDetermined = true;
+                      console.log("Location from ipapi.co:", city, lat, lon);
+                  } else {
+                       console.warn("ipapi.co did not return lat/lon.");
+                  }
+              } else {
+                  console.warn(`IP API (ipapi.co) failed: ${ipRes.status}`);
+              }
+          } catch (e) {
+              console.warn("Primary IP API failed:", e.message);
+          }
+
+          // Try fallback IP API if primary failed or didn't return coordinates
+          if (!locationDetermined) {
+              console.log("Trying fallback IP API (ip-api.com)...");
+              try {
+                  const fallbackIpRes = await fetch('https://ip-api.com/json/'); // HTTPS
+                  if (fallbackIpRes.ok) {
+                      const fallbackIpData = await fallbackIpRes.json();
+                      if (fallbackIpData.lat && fallbackIpData.lon) {
+                          city = fallbackIpData.city || city; 
+                          lat = fallbackIpData.lat; 
+                          lon = fallbackIpData.lon;
+                          locationDetermined = true;
+                           console.log("Location from ip-api.com:", city, lat, lon);
+                      } else {
+                          console.warn("ip-api.com did not return lat/lon.");
+                      }
+                  } else {
+                       console.warn(`Fallback IP API (ip-api.com) failed: ${fallbackIpRes.status}`);
+                  }
+              } catch (e2) {
+                  console.error("Fallback IP API failed:", e2.message);
+              }
+          }
+
+          // If location was determined, fetch weather
+          if (locationDetermined) {
+              const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,weathercode`);
+              if (!weatherRes.ok) throw new Error(`Weather API failed: ${weatherRes.status}`);
+              const weatherData = await weatherRes.json();
+              if (weatherData && weatherData.current_weather) {
+                  weatherDisplayEl.innerHTML = `${city} 当前气温：${weatherData.current_weather.temperature}°C`;
+              } else { 
+                  weatherDisplayEl.innerText = '无法获取天气数据'; 
+              }
+          } else {
+              // If location could not be determined after trying both APIs
+              weatherDisplayEl.innerText = '无法自动确定位置';
+          }
+
       } catch (e) {
-        console.error("Weather loading error:", e);
-        weatherDisplayEl.innerText = `天气加载失败 (${e.message})`;
+        // Catch any other errors during the process
+        console.error("Weather loading process error:", e);
+        // Display a generic failure message if not already set to location error
+        if (weatherDisplayEl.textContent === '正在加载天气...') {
+             weatherDisplayEl.innerText = `天气加载失败`;
+        }
       }
     }
 
