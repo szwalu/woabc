@@ -36,7 +36,7 @@
             left: 0;
             z-index: 1000;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            height: 50px;
+            height: 60px;
             box-sizing: border-box;
             transition: width 0.3s, left 0.3s;
         }
@@ -53,9 +53,9 @@
             color: #333;
         }
         .header h1 img {
-            width: 50px;
-            height: 50px;
-            margin-right: 8px;
+            width: 80px;
+            height: 80px;
+            margin-right: 10px;
         }
         .header .date {
             font-size: 1em;
@@ -173,14 +173,14 @@
         .s-search {
             width: 90%;
             max-width: 600px;
-            margin: 60px auto 10px;
+            margin: 70px auto 10px;
             position: relative;
             padding-top: 26px;
             transition: width 0.3s, margin 0.3s;
         }
         .sidebar-hidden .s-search {
             width: calc(100% - 40px);
-            margin: 60px auto 10px;
+            margin: 70px auto 10px;
         }
         #search-list {
             position: absolute;
@@ -491,7 +491,7 @@
         /* 响应式设计：移动端调整 */
         @media (max-width: 768px) {
             .header {
-                height: 40px;
+                height: 50px;
                 width: 100%;
                 left: 0;
                 padding: 10px 10px;
@@ -508,8 +508,8 @@
                 margin-left: 10px;
             }
             .header h1 img {
-                width: 40px;
-                height: 40px;
+                width: 64px;
+                height: 64px;
                 margin-right: 8px;
             }
             .header .date {
@@ -517,12 +517,12 @@
             }
             .sidebar {
                 position: fixed;
-                top: 40px;
+                top: 50px;
                 left: 0;
                 right: auto;
                 width: 100vw;
                 height: auto;
-                max-height: calc(100vh - 40px);
+                max-height: calc(100vh - 50px);
                 background: #fff;
                 box-shadow: 2px 0 5px rgba(0,0,0,0.2);
                 padding: 0;
@@ -540,7 +540,7 @@
             .main-content {
                 margin-left: 0;
                 padding: 10px;
-                margin-top: 40px;
+                margin-top: 50px;
             }
             .sidebar-hidden .main-content {
                  margin-left: 0;
@@ -548,11 +548,11 @@
             .s-search {
                 width: 90%;
                 max-width: none;
-                margin: 50px auto 5px;
+                margin: 60px auto 5px;
                 padding-top: 10px;
             }
             .sidebar-hidden .s-search {
-                 margin: 50px auto 5px;
+                 margin: 60px auto 5px;
                  width: 90%;
             }
             #super-search-fm {
@@ -662,7 +662,6 @@
         <div class="left-section" style="display: flex; align-items: center;">
             <h1>
                 <img src="https://www.tqabc.com/image/logo.png" alt="Logo">
-                <span style="font-family: 'SimHei', sans-serif; color: #000; font-size: 24px; line-height: 50px; margin-left: 8px;">网址导航</span>
                 <span style="font-size: 0px;">网址导航</span>
             </h1>
         </div>
@@ -1094,7 +1093,7 @@
                 if (target === 'body') {
                     offsetTop = 0;
                 } else if ($(target).length) {
-                    const headerHeight = $(window).width() <= 768 ? 40 : 50;
+                    const headerHeight = $(window).width() <= 768 ? 50 : 60;
                     offsetTop = $(target).offset().top - headerHeight - 10;
                 } else {
                     console.warn("Scroll target not found:", target);
@@ -1264,5 +1263,5 @@
         }
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9352af9dbe674533',t:'MTc0NTQ2NzE0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93580f91f8717bd5',t:'MTc0NTUyMzUwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93580f91f8717bd5',t:'MTc0NTUyMzUwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ccf9487c79452d',t:'MTc0Njc0OTQyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
