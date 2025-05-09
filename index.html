@@ -1,18 +1,19 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-    <link rel="apple-touch-icon" sizes="180x180" href="/image/logo.png">
-    <link rel="icon" type="image/png" href="https://www.tqabc.com/image/logo.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>网址导航 | 提供网址收录和各种实用在线工具</title>
-    <meta name="description" content="在线网址导航，持续更新中，欢迎体验！">
-    <meta name="keywords" content="网址导航, 网址大全, 网址站，网址">
-    <meta name="theme-color" content="#2C2E2F">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <style>
+<link href="/image/logo.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="https://www.tqabc.com/image/logo.png" rel="icon" type="image/png"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>网址导航 | 提供网址收录和各种实用在线工具</title>
+<meta content="在线网址导航，持续更新中，欢迎体验！" name="description"/>
+<meta content="网址导航, 网址大全, 网址站，网址" name="keywords"/>
+<meta content="#2C2E2F" name="theme-color"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<style>
         body {
             font-family: 'Helvetica Neue', Arial, 'PingFang SC', sans-serif;
             background-color: #f5f5f5;
@@ -692,443 +693,413 @@ html.dark-mode .date-week {
 </style>
 </head>
 <body>
-    <div class="header">
-    <div class="left-section">
-        <h1>
-            <img src="https://www.tqabc.com/image/logo.png" alt="Logo">
-            <span style="font-size: 0px;">网址导航</span>
-        </h1>
-        <div class="date-week" id="dateWeek"></div>
-    </div>
-    <div class="weather" id="weatherInfo">加载天气...</div>
-        <div class="left-section">
-            <h1>
-                <img src="https://www.tqabc.com/image/logo.png" alt="Logo">
-                <span style="font-size: 0px;">网址导航</span>
-            </h1>
-        </div>
-        <div class="sidebar-toggle">
-            <i class="fa fa-bars"></i>
-        </div>
-    </div>
-
-    <div id="search" class="s-search">
-        <div id="search-list">
-            <div class="search-group">
-                <ul class="search-type">
-                    <li>
-                        <input checked type="radio" name="type" id="type-google" value="https://www.google.com/search" data-placeholder="Google Search..." data-name="q">
-                        <label for="type-google">
-                            <span class="google-text">
-                                <span class="g1">G</span><span class="g2">o</span><span class="g3">o</span><span class="g4">g</span><span class="g5">l</span><span class="g6">e</span>
-                            </span>
-                        </label>
-                    </li>
-                    <li>
-                        <input type="radio" name="type" id="type-baidu" value="https://www.baidu.com/s" data-placeholder="百度一下" data-name="wd">
-                        <label for="type-baidu"><span class="baidu-text">百度</span></label>
-                    </li>
-                </ul>
-        </div>
-        </div>
-        <form action="https://www.google.com/search" method="get" target="_blank" id="super-search-fm">
-            <input type="text" id="search-text" name="q" placeholder="Google Search..." autocomplete="off">
-            <button type="submit"><i class="fas fa-search"></i></button>
-        </form>
-    </div>
-
-    <div class="sidebar">
-        <ul>
-            <li data-target="#common-tools" class="active">新闻</li>
-            <li data-target="#media-tools">AI专区</li>
-            <li data-target="#image-tools">视频</li>
-            <li data-target="#game-tools">购物</li>
-            <li data-target="#other-tools">阅读</li>
-            <li data-target="#travel-tools">出行</li>
-            <li data-target="#dev-tools">其它</li>
-        </ul>
-    </div>
-
-    <div class="main-content">
-        <h4 class="section-title" id="common-tools">新闻</h4>
-        <div class="row">
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://cn.nytimes.com" target="_blank">
-                        <img src="https://www.nytimes.com/vi-assets/static-assets/ios-ipad-144x144-28865b72953380a40aa43318108876cb.png" alt="纽约时报中文网 Icon">
-                        <h3>纽约时报中文网</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.bbc.com/zhongwen/simp" target="_blank">
-                        <img src="https://static.files.bbci.co.uk/ws/simorgh-assets/public/zhongwen/images/icons/icon-144x144.png" alt="BBC中文网 Icon">
-                        <h3>BBC中文网</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://cn.wsj.com/zh-hans" target="_blank">
-                        <img src="https://www.wsj.com/favicon.ico" alt="华尔街日报中文网 Icon">
-                        <h3>华尔街日报中文网</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.ftchinese.com" target="_blank">
-                        <img src="https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo-v1%3Abrand-ft-logo-square?source=update-logos&width=180&height=180&format=png" alt="FT中文网 Icon">
-                        <h3>FT中文网</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.dw.com/zh" target="_blank">
-                        <img src="https://www.dw.com/favicon.png" alt="德国之声中文网 Icon">
-                        <h3>德国之声中文网</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://news.stheadline.com" target="_blank">
-                        <img src="https://www.sthlstatic.com/sthl/assets/favicon/ms-icon-144x144.png" alt="优岛日报">
-                        <h3>星岛日报</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://china.kyodonews.net/" target="_blank">
-                        <img src="https://china.kyodonews.net/favicon.ico" alt="共同网中文">
-                        <h3>共同网中文</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.rfi.fr/cn/" target="_blank">
-                        <img src="https://www.rfi.fr/favicon.ico" alt="法国国际广播电台中文">
-                        <h3>法国国际广播电台中文</h3>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <h4 class="section-title" id="media-tools">AI专区</h4>
-        <div class="row">
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://chatgpt.com/" target="_blank">
-                        <img src="https://chatgpt.com/favicon.ico" alt="ChatGPT">
-                        <h3>ChatGPT</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://grok.com/?referrer=website" target="_blank">
-                        <img src="https://grok.com/images/favicon-light.png" alt="Grok">
-                        <h3>Grok</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://chat.deepseek.com/sign_in" target="_blank">
-                        <img src="https://cdn.deepseek.com/chat/icon.png" alt="DeepSeek">
-                        <h3>DeepSeek</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://gemini.google.com/" target="_blank">
-                        <img src="https://www.gstatic.com/lamda/images/gemini_favicon_f069958c85030456e93de685481c559f160ea06b.png" alt="Gemini">
-                        <h3>Gemini</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://yuanbao.tencent.com/" target="_blank">
-                        <img src="https://yuanbao.tencent.com/logo-v2.png" alt="腾讯元宝">
-                        <h3>腾讯元宝</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://copilot.microsoft.com/" target="_blank">
-                        <img src="https://copilot.microsoft.com/favicon.ico" alt="Copilot">
-                        <h3>Copilot</h3>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <h4 class="section-title" id="image-tools">视频</h4>
-        <div class="row">
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.youtube.com/" target="_blank">
-                        <img src="https://www.youtube.com/s/desktop/c722ba88/img/logos/favicon_144x144.png" alt="YouTube">
-                        <h3>YouTube</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.bilibili.com/" target="_blank">
-                        <img src="https://www.tqabc.com/image/blibili.ico" alt="Bilibili">
-                        <h3>Bilibili</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.yfsp.tv/" target="_blank">
-                        <img src="https://www.tqabc.com/image/ayf.png" alt="爱壹帆">
-                        <h3>爱壹帆</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.tiktok.com/" target="_blank">
-                        <img src="https://www.tiktok.com/favicon.ico" alt="TikTok">
-                        <h3>TikTok</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://x.com/" target="_blank">
-                        <img src="https://abs.twimg.com/responsive-web/client-web/icon-ios.77d25eba.png" alt="X">
-                        <h3>X</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.xiaohongshu.com/" target="_blank">
-                        <img src="https://picasso-static.xiaohongshu.com/fe-platform/f43dc4a8baf03678996c62d8db6ebc01a82256ff.png" alt="小红书">
-                        <h3>小红书</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.facebook.com/" target="_blank">
-                        <img src="https://www.tqabc.com/image/facebook.ico" alt="Facebook">
-                        <h3>Facebook</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.instagram.com/" target="_blank">
-                        <img src="https://static.cdninstagram.com/rsrc.php/y4/r/QaBlI0OZiks.ico" alt="Instagram">
-                        <h3>Instagram</h3>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <h4 class="section-title" id="game-tools">购物</h4>
-        <div class="row">
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.amazon.com/" target="_blank">
-                        <img src="https://www.amazon.com/favicon.ico" alt="Amazon">
-                        <h3>Amazon</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.taobao.com/" target="_blank">
-                        <img src="https://www.taobao.com/favicon.ico" alt="淘宝">
-                        <h3>淘宝</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.homedepot.com/" target="_blank">
-                        <img src="https://www.homedepot.com/favicon.ico" alt="Home Depot">
-                        <h3>Home Depot</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.temu.com/" target="_blank">
-                        <img src="https://www.temu.com/favicon.ico" alt="Temu">
-                        <h3>Temu</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.walmart.com/" target="_blank">
-                        <img src="https://www.walmart.com/favicon.ico" alt="Walmart">
-                        <h3>Walmart</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.target.com/" target="_blank">
-                        <img src="https://assets.targetimg1.com/static/images/apple-touch-icon-precomposed.png" alt="Target">
-                        <h3>Target</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.ikea.com/" target="_blank">
-                        <img src="https://www.ikea.com/favicon.ico" alt="IKEA">
-                        <h3>宜家家居</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.sayweee.com/" target="_blank">
-                        <img src="https://www.sayweee.com/favicons/apple-touch-icon.png" alt="weee">
-                        <h3>Weee生鲜</h3>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <h4 class="section-title" id="other-tools">阅读</h4>
-        <div class="row">
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://v.flomoapp.com/mine" target="_blank">
-                        <img src="https://v.flomoapp.com/favicon.ico" alt="flomo浮墨笔记 Icon">
-                        <h3>flomo浮墨笔记</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.zhihu.com" target="_blank">
-                        <img src="https://www.zhihu.com/favicon.ico" alt="知乎 Icon">
-                        <h3>知乎</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://zh.1lib.sk/" target="_blank">
-                        <img src="https://zh.1lib.sk/favicon.ico" alt="Z-Library">
-                        <h3>Z-Library</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://m.douban.com/home_guide" target="_blank">
-                        <img src="https://www.douban.com/favicon.ico" alt="豆瓣">
-                        <h3>豆瓣</h3>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <h4 class="section-title" id="travel-tools">出行</h4>
-        <div class="row">
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.ctrip.com" target="_blank">
-                        <img src="https://pages.ctrip.com/favicon.ico" alt="携程旅行 Icon">
-                        <h3>携程旅行</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.airbnb.com" target="_blank">
-                        <img src="https://www.airbnb.com/favicon.ico" alt="Airbnb Icon">
-                        <h3>Airbnb</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.booking.com" target="_blank">
-                        <img src="https://cf.bstatic.com/static/img/favicon/40749a316c45e239a7149b6711ea4c48d10f8d89.ico" alt="Booking Icon">
-                        <h3>Booking</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.yelp.com" target="_blank">
-                        <img src="https://www.yelp.com/favicon.ico" alt="Yelp Icon">
-                        <h3>Yelp</h3>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <h4 class="section-title" id="dev-tools">其它</h4>
-        <div class="row">
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://www.calorietech.com/blog/plan" target="_blank">
-                        <img src="https://www.calorietech.com/icons/favicon.ico" alt="KEEP Icon">
-                        <h3>KEEP</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://sfz.tools.likunming.cn" target="_blank">
-                        <img src="https://www.tqabc.com/image/suiyin.png" alt="图片加水印">
-                        <h3>图片加水印</h3>
-                    </a>
-                </div>
-            </div>
-            <div class="col-sm-4 col-md-3">
-                <div class="tool-card">
-                    <a href="https://tingfm.com/" target="_blank">
-                        <img src="https://tingfm.com/favicon.ico" alt="TingFM电台 Icon">
-                        <h3>TingFM电台</h3>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="footer">
-        <div class="go-up">
-            <i class="fa fa-angle-up"></i>
-        </div>
-        <div>
+<div class="header"><div class="left-section"><h1><img alt="Logo" src="https://www.tqabc.com/image/logo.png"/><span style="font-size: 0px;">网址导航</span></h1><div class="weather" id="weatherInfo">加载天气...</div></div><div style="display: flex; align-items: center;"><div class="date-week" id="dateWeek"></div><div class="sidebar-toggle"><i class="fa fa-bars"></i></div></div></div>
+<div class="s-search" id="search">
+<div id="search-list">
+<div class="search-group">
+<ul class="search-type">
+<li>
+<input checked="" data-name="q" data-placeholder="Google Search..." id="type-google" name="type" type="radio" value="https://www.google.com/search"/>
+<label for="type-google">
+<span class="google-text">
+<span class="g1">G</span><span class="g2">o</span><span class="g3">o</span><span class="g4">g</span><span class="g5">l</span><span class="g6">e</span>
+</span>
+</label>
+</li>
+<li>
+<input data-name="wd" data-placeholder="百度一下" id="type-baidu" name="type" type="radio" value="https://www.baidu.com/s"/>
+<label for="type-baidu"><span class="baidu-text">百度</span></label>
+</li>
+</ul>
+</div>
+</div>
+<form action="https://www.google.com/search" id="super-search-fm" method="get" target="_blank">
+<input autocomplete="off" id="search-text" name="q" placeholder="Google Search..." type="text"/>
+<button type="submit"><i class="fas fa-search"></i></button>
+</form>
+</div>
+<div class="sidebar">
+<ul>
+<li class="active" data-target="#common-tools">新闻</li>
+<li data-target="#media-tools">AI专区</li>
+<li data-target="#image-tools">视频</li>
+<li data-target="#game-tools">购物</li>
+<li data-target="#other-tools">阅读</li>
+<li data-target="#travel-tools">出行</li>
+<li data-target="#dev-tools">其它</li>
+</ul>
+</div>
+<div class="main-content">
+<h4 class="section-title" id="common-tools">新闻</h4>
+<div class="row">
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://cn.nytimes.com" target="_blank">
+<img alt="纽约时报中文网 Icon" src="https://www.nytimes.com/vi-assets/static-assets/ios-ipad-144x144-28865b72953380a40aa43318108876cb.png"/>
+<h3>纽约时报中文网</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.bbc.com/zhongwen/simp" target="_blank">
+<img alt="BBC中文网 Icon" src="https://static.files.bbci.co.uk/ws/simorgh-assets/public/zhongwen/images/icons/icon-144x144.png"/>
+<h3>BBC中文网</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://cn.wsj.com/zh-hans" target="_blank">
+<img alt="华尔街日报中文网 Icon" src="https://www.wsj.com/favicon.ico"/>
+<h3>华尔街日报中文网</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.ftchinese.com" target="_blank">
+<img alt="FT中文网 Icon" src="https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo-v1%3Abrand-ft-logo-square?source=update-logos&amp;width=180&amp;height=180&amp;format=png"/>
+<h3>FT中文网</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.dw.com/zh" target="_blank">
+<img alt="德国之声中文网 Icon" src="https://www.dw.com/favicon.png"/>
+<h3>德国之声中文网</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://news.stheadline.com" target="_blank">
+<img alt="优岛日报" src="https://www.sthlstatic.com/sthl/assets/favicon/ms-icon-144x144.png"/>
+<h3>星岛日报</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://china.kyodonews.net/" target="_blank">
+<img alt="共同网中文" src="https://china.kyodonews.net/favicon.ico"/>
+<h3>共同网中文</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.rfi.fr/cn/" target="_blank">
+<img alt="法国国际广播电台中文" src="https://www.rfi.fr/favicon.ico"/>
+<h3>法国国际广播电台中文</h3>
+</a>
+</div>
+</div>
+</div>
+<h4 class="section-title" id="media-tools">AI专区</h4>
+<div class="row">
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://chatgpt.com/" target="_blank">
+<img alt="ChatGPT" src="https://chatgpt.com/favicon.ico"/>
+<h3>ChatGPT</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://grok.com/?referrer=website" target="_blank">
+<img alt="Grok" src="https://grok.com/images/favicon-light.png"/>
+<h3>Grok</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://chat.deepseek.com/sign_in" target="_blank">
+<img alt="DeepSeek" src="https://cdn.deepseek.com/chat/icon.png"/>
+<h3>DeepSeek</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://gemini.google.com/" target="_blank">
+<img alt="Gemini" src="https://www.gstatic.com/lamda/images/gemini_favicon_f069958c85030456e93de685481c559f160ea06b.png"/>
+<h3>Gemini</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://yuanbao.tencent.com/" target="_blank">
+<img alt="腾讯元宝" src="https://yuanbao.tencent.com/logo-v2.png"/>
+<h3>腾讯元宝</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://copilot.microsoft.com/" target="_blank">
+<img alt="Copilot" src="https://copilot.microsoft.com/favicon.ico"/>
+<h3>Copilot</h3>
+</a>
+</div>
+</div>
+</div>
+<h4 class="section-title" id="image-tools">视频</h4>
+<div class="row">
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.youtube.com/" target="_blank">
+<img alt="YouTube" src="https://www.youtube.com/s/desktop/c722ba88/img/logos/favicon_144x144.png"/>
+<h3>YouTube</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.bilibili.com/" target="_blank">
+<img alt="Bilibili" src="https://www.tqabc.com/image/blibili.ico"/>
+<h3>Bilibili</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.yfsp.tv/" target="_blank">
+<img alt="爱壹帆" src="https://www.tqabc.com/image/ayf.png"/>
+<h3>爱壹帆</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.tiktok.com/" target="_blank">
+<img alt="TikTok" src="https://www.tiktok.com/favicon.ico"/>
+<h3>TikTok</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://x.com/" target="_blank">
+<img alt="X" src="https://abs.twimg.com/responsive-web/client-web/icon-ios.77d25eba.png"/>
+<h3>X</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.xiaohongshu.com/" target="_blank">
+<img alt="小红书" src="https://picasso-static.xiaohongshu.com/fe-platform/f43dc4a8baf03678996c62d8db6ebc01a82256ff.png"/>
+<h3>小红书</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.facebook.com/" target="_blank">
+<img alt="Facebook" src="https://www.tqabc.com/image/facebook.ico"/>
+<h3>Facebook</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.instagram.com/" target="_blank">
+<img alt="Instagram" src="https://static.cdninstagram.com/rsrc.php/y4/r/QaBlI0OZiks.ico"/>
+<h3>Instagram</h3>
+</a>
+</div>
+</div>
+</div>
+<h4 class="section-title" id="game-tools">购物</h4>
+<div class="row">
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.amazon.com/" target="_blank">
+<img alt="Amazon" src="https://www.amazon.com/favicon.ico"/>
+<h3>Amazon</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.taobao.com/" target="_blank">
+<img alt="淘宝" src="https://www.taobao.com/favicon.ico"/>
+<h3>淘宝</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.homedepot.com/" target="_blank">
+<img alt="Home Depot" src="https://www.homedepot.com/favicon.ico"/>
+<h3>Home Depot</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.temu.com/" target="_blank">
+<img alt="Temu" src="https://www.temu.com/favicon.ico"/>
+<h3>Temu</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.walmart.com/" target="_blank">
+<img alt="Walmart" src="https://www.walmart.com/favicon.ico"/>
+<h3>Walmart</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.target.com/" target="_blank">
+<img alt="Target" src="https://assets.targetimg1.com/static/images/apple-touch-icon-precomposed.png"/>
+<h3>Target</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.ikea.com/" target="_blank">
+<img alt="IKEA" src="https://www.ikea.com/favicon.ico"/>
+<h3>宜家家居</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.sayweee.com/" target="_blank">
+<img alt="weee" src="https://www.sayweee.com/favicons/apple-touch-icon.png"/>
+<h3>Weee生鲜</h3>
+</a>
+</div>
+</div>
+</div>
+<h4 class="section-title" id="other-tools">阅读</h4>
+<div class="row">
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://v.flomoapp.com/mine" target="_blank">
+<img alt="flomo浮墨笔记 Icon" src="https://v.flomoapp.com/favicon.ico"/>
+<h3>flomo浮墨笔记</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.zhihu.com" target="_blank">
+<img alt="知乎 Icon" src="https://www.zhihu.com/favicon.ico"/>
+<h3>知乎</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://zh.1lib.sk/" target="_blank">
+<img alt="Z-Library" src="https://zh.1lib.sk/favicon.ico"/>
+<h3>Z-Library</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://m.douban.com/home_guide" target="_blank">
+<img alt="豆瓣" src="https://www.douban.com/favicon.ico"/>
+<h3>豆瓣</h3>
+</a>
+</div>
+</div>
+</div>
+<h4 class="section-title" id="travel-tools">出行</h4>
+<div class="row">
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.ctrip.com" target="_blank">
+<img alt="携程旅行 Icon" src="https://pages.ctrip.com/favicon.ico"/>
+<h3>携程旅行</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.airbnb.com" target="_blank">
+<img alt="Airbnb Icon" src="https://www.airbnb.com/favicon.ico"/>
+<h3>Airbnb</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.booking.com" target="_blank">
+<img alt="Booking Icon" src="https://cf.bstatic.com/static/img/favicon/40749a316c45e239a7149b6711ea4c48d10f8d89.ico"/>
+<h3>Booking</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.yelp.com" target="_blank">
+<img alt="Yelp Icon" src="https://www.yelp.com/favicon.ico"/>
+<h3>Yelp</h3>
+</a>
+</div>
+</div>
+</div>
+<h4 class="section-title" id="dev-tools">其它</h4>
+<div class="row">
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://www.calorietech.com/blog/plan" target="_blank">
+<img alt="KEEP Icon" src="https://www.calorietech.com/icons/favicon.ico"/>
+<h3>KEEP</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://sfz.tools.likunming.cn" target="_blank">
+<img alt="图片加水印" src="https://www.tqabc.com/image/suiyin.png"/>
+<h3>图片加水印</h3>
+</a>
+</div>
+</div>
+<div class="col-sm-4 col-md-3">
+<div class="tool-card">
+<a href="https://tingfm.com/" target="_blank">
+<img alt="TingFM电台 Icon" src="https://tingfm.com/favicon.ico"/>
+<h3>TingFM电台</h3>
+</a>
+</div>
+</div>
+</div>
+</div>
+<footer class="footer">
+<div class="go-up">
+<i class="fa fa-angle-up"></i>
+</div>
+<div>
             版权 © 2025 网址导航。设计灵感来源于 <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Webstack</a>。
         </div>
-    </footer>
-
-    <div class="toast-bar" id="toastBar">
-        <div class="toast-content">
-            <span class="toast-text">
-                <span>添加网址导航到桌面</span>
-                <span>点击下面的 <img src="https://www.tqabc.com/image/1122.jpg" alt="分享图标" class="inline-icon highlight-icon"></span>
-                <span>然后选择“添加到主屏幕”</span>
-            </span>
-        </div>
-        <button class="toast-close" id="toastClose">×</button>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
-    <script>
+</footer>
+<div class="toast-bar" id="toastBar">
+<div class="toast-content">
+<span class="toast-text">
+<span>添加网址导航到桌面</span>
+<span>点击下面的 <img alt="分享图标" class="inline-icon highlight-icon" src="https://www.tqabc.com/image/1122.jpg"/></span>
+<span>然后选择“添加到主屏幕”</span>
+</span>
+</div>
+<button class="toast-close" id="toastClose">×</button>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
         $(document).ready(function() {
             function scrollToSection(target) {
                 let offsetTop = 0;
