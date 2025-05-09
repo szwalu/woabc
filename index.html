@@ -29,7 +29,7 @@
             padding: 10px 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between; /* 确保logo居左，三条横线居右 */
+            justify-content: space-between;
             position: fixed;
             width: 100%;
             top: 0;
@@ -60,8 +60,18 @@
         .header .date {
             font-size: 1em;
             color: #333;
+            margin-right: 20px;
+        }
+        .header .weather {
+            font-size: 1em;
+            color: #333;
+            margin-left: 20px;
         }
         .left-section {
+            display: flex;
+            align-items: center;
+        }
+        .right-section {
             display: flex;
             align-items: center;
         }
@@ -387,7 +397,8 @@
         html.dark-mode .header h1 {
             color: #e0e0e0;
         }
-        html.dark-mode .header .date {
+        html.dark-mode .header .date,
+        html.dark-mode .header .weather {
             color: #e0e0e0;
         }
         html.dark-mode .sidebar {
@@ -499,7 +510,7 @@
                 width: 100%;
                 left: 0;
                 padding: 10px 10px;
-                justify-content: space-between; /* 移动端也保持logo居左三条横线居右 */
+                justify-content: space-between;
             }
             .header.sidebar-hidden {
                 width: 100%;
@@ -518,6 +529,10 @@
             }
             .header .date {
                 font-size: 0.9em;
+                margin-right: 10px;
+            }
+            .header .weather {
+                display: none; /* 移动端隐藏天气 */
             }
             .sidebar {
                 position: fixed;
@@ -668,9 +683,13 @@
                 <img src="https://www.tqabc.com/image/logo.png" alt="Logo">
                 <span style="font-size: 0px;">网址导航</span>
             </h1>
+            <span class="weather" id="weather">加载天气...</span>
         </div>
-        <div class="sidebar-toggle">
-            <i class="fa fa-bars"></i>
+        <div class="right-section">
+            <span class="date" id="date"></span>
+            <div class="sidebar-toggle">
+                <i class="fa fa-bars"></i>
+            </div>
         </div>
     </div>
 
@@ -1194,6 +1213,61 @@
                     return false;
                 }
             });
+
+            // 显示日期和星期
+            const dateElement = document.getElementById('date');
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekday = weekdays[today.getDay()];
+            dateElement.textContent = `${year}-${month}-${day} ${weekday}`;
+
+            // 获取天气信息（使用Open-Meteo API）
+            const weatherElement = document.getElementById('weather');
+            const city = '上海';
+            const latitude = 31.2304; // 上海的纬度
+            const longitude = 121.4737; // 上海的经度
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode&timezone=Asia/Shanghai`;
+
+            // 天气代码映射到中文描述
+            const weatherCodeMap = {
+                0: '晴',
+                1: '少云',
+                2: '多云',
+                3: '阴',
+                45: '雾',
+                48: '冻雾',
+                51: '小雨',
+                53: '中雨',
+                55: '大雨',
+                61: '小阵雨',
+                63: '中阵雨',
+                65: '大阵雨',
+                71: '小雪',
+                73: '中雪',
+                75: '大雪',
+                80: '小阵雨',
+                81: '中阵雨',
+                82: '大阵雨',
+                95: '雷阵雨',
+                96: '雷阵雨带小冰雹',
+                99: '雷阵雨带大冰雹'
+            };
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const temp = Math.round(data.current.temperature_2m);
+                    const weatherCode = data.current.weathercode;
+                    const description = weatherCodeMap[weatherCode] || '未知天气';
+                    weatherElement.textContent = `${city}: ${temp}°C, ${description}`;
+                })
+                .catch(error => {
+                    console.error('获取天气失败:', error);
+                    weatherElement.textContent = '无法获取天气';
+                });
         });
 
         function updateTheme() {
