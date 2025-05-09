@@ -36,7 +36,7 @@
             left: 0;
             z-index: 1000;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            height: 70px;
+            height: 60px;
             box-sizing: border-box;
             transition: width 0.3s, left 0.3s;
         }
@@ -54,9 +54,9 @@
             flex-shrink: 0;
         }
         .header h1 img {
-            width: 220px;
+            width: 140px;
             height: auto;
-            margin-right: 10px;
+            margin-right: 6px;
         }
         .left-section {
             display: flex;
@@ -67,7 +67,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            margin-left: 10px;
+            margin-left: 4px;
         }
         .right-section {
             display: flex;
@@ -78,20 +78,20 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            margin-right: 10px;
+            margin-right: 8px;
         }
         .weather-city, .weather-info, .date, .weekday {
-            font-size: 14px;
+            font-size: 12px;
             color: #333;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .weather-city, .weather-info {
-            max-width: 120px;
+            max-width: 100px;
         }
         .date, .weekday {
-            max-width: 100px;
+            max-width: 80px;
         }
         /* 导航栏样式（桌面端） */
         .sidebar {
@@ -114,7 +114,7 @@
         }
         @media (min-width: 769px) {
             .sidebar ul {
-                padding-top: 70px;
+                padding-top: 60px;
             }
         }
         @media (max-width: 768px) {
@@ -157,7 +157,7 @@
         }
         .section-title {
             color: #555;
-            font-size: 1.8em;
+ Bets: 1.8em;
             margin: 0 0 15px;
             display: flex;
             align-items: center;
@@ -205,14 +205,14 @@
         .s-search {
             width: 90%;
             max-width: 600px;
-            margin: 80px auto 10px;
+            margin: 65px auto 10px;
             position: relative;
             padding-top: 26px;
             transition: width 0.3s, margin 0.3s;
         }
         .sidebar-hidden .s-search {
             width: calc(100% - 40px);
-            margin: 80px auto 10px;
+            margin: 65px auto 10px;
         }
         #search-list {
             position: absolute;
@@ -526,16 +526,16 @@
         /* 响应式设计：移动端调整 */
         @media (max-width: 768px) {
             .header {
-                height: 70px;
+                height: 60px;
                 width: 100%;
                 left: 0;
-                padding: 10px 10px;
+                padding: 8px 10px;
                 justify-content: space-between;
             }
             .header.sidebar-hidden {
                 width: 100%;
                 left: 0;
-                padding: 10px 10px;
+                padding: 8px 10px;
             }
             .header h1 {
                 display: flex;
@@ -543,33 +543,33 @@
                 margin: 0;
             }
             .header h1 img {
-                width: 120px;
+                width: 80px;
                 height: auto;
-                margin-right: 5px;
+                margin-right: 4px;
             }
             .weather-city, .weather-info, .date, .weekday {
-                font-size: 12px;
+                font-size: 10px;
             }
             .weather-city, .weather-info {
-                max-width: 80px;
+                max-width: 70px;
             }
             .date, .weekday {
-                max-width: 80px;
+                max-width: 60px;
             }
             .weather-section {
-                margin-left: 5px;
+                margin-left: 3px;
             }
             .date-section {
                 margin-right: 5px;
             }
             .sidebar {
                 position: fixed;
-                top: 70px;
+                top: 60px;
                 left: 0;
                 right: auto;
                 width: 100vw;
                 height: auto;
-                max-height: calc(100vh - 70px);
+                max-height: calc(100vh - 60px);
                 background: #fff;
                 box-shadow: 2px 0 5px rgba(0,0,0,0.2);
                 padding: 0;
@@ -587,7 +587,7 @@
             .main-content {
                 margin-left: 0;
                 padding: 10px;
-                margin-top: 70px;
+                margin-top: 60px;
             }
             .sidebar-hidden .main-content {
                 margin-left: 0;
@@ -595,11 +595,11 @@
             .s-search {
                 width: 90%;
                 max-width: none;
-                margin: 80px auto 5px;
+                margin: 65px auto 5px;
                 padding-top: 10px;
             }
             .sidebar-hidden .s-search {
-                margin: 80px auto 5px;
+                margin: 65px auto 5px;
                 width: 90%;
             }
             #super-search-fm {
@@ -1133,7 +1133,7 @@
                 if (target === 'body') {
                     offsetTop = 0;
                 } else if ($(target).length) {
-                    const headerHeight = $(window).width() <= 768 ? 70 : 70;
+                    const headerHeight = $(window).width() <= 768 ? 60 : 60;
                     offsetTop = $(target).offset().top - headerHeight - 10;
                 } else {
                     console.warn("Scroll target not found:", target);
@@ -1335,7 +1335,7 @@
     fetchWeather();
 </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9352af9dbe674533',t:'MTc0NTQ2NzE0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93580f91f8717bd5',t:'MTc0NTUyMzUwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading' !==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93580f91f8717bd5',t:'MTc0NTUyMzUwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ccf9487c79452d',t:'MTc0Njc0OTQyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ce49b6ed994576',t:'MTc0Njc2MzIwNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
