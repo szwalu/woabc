@@ -1230,7 +1230,11 @@
             const defaultLatitude = 31.2304; // 上海纬度
             const defaultLongitude = 121.4737; // 上海经度
 
-            function getWeather(latitude, longitude) {
+            // 从本地存储获取缓存的定位和城市信息
+            const cachedLocation = localStorage.getItem('userLocation');
+            const cachedCity = localStorage.getItem('userCity');
+
+            function getWeather(latitude, longitude, city) {
                 const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode&timezone=Asia/Shanghai`;
 
                 const weatherCodeMap = {
@@ -1269,36 +1273,76 @@
                             const temp = Math.round(data.current.temperature_2m);
                             const weatherCode = data.current.weathercode;
                             const description = weatherCodeMap[weatherCode] || '未知天气';
-                            weatherElement.textContent = `${temp}°C, ${description}`;
+                            weatherElement.textContent = `${city}: ${temp}°C, ${description}`;
                         } else {
                             throw new Error('天气数据格式错误');
                         }
                     })
                     .catch(error => {
                         console.error('获取天气失败:', error);
-                        weatherElement.textContent = `${defaultCity}: 无法获取天气`;
-                        getWeather(defaultLatitude, defaultLongitude); // 回退到默认城市
+                        weatherElement.textContent = `${city}: 无法获取天气`;
                     });
             }
 
-            // 自动定位
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const latitude = position.coords.latitude;
-                        const longitude = position.coords.longitude;
-                        getWeather(latitude, longitude);
-                    },
-                    (error) => {
-                        console.warn('定位失败，使用默认城市天气:', error.message);
-                        weatherElement.textContent = `${defaultCity}: 加载天气...`;
-                        getWeather(defaultLatitude, defaultLongitude);
-                    }
-                );
+            function getCityName(latitude, longitude) {
+                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`;
+
+                return fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && data.address) {
+                            // 优先获取城市名称，可能是 city 或 town
+                            let city = data.address.city || data.address.town || '未知城市';
+                            return city;
+                        } else {
+                            throw new Error('反向地理编码失败');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('获取城市名称失败:', error);
+                        return '未知城市';
+                    });
+            }
+
+            // 使用缓存的定位信息
+            if (cachedLocation && cachedCity) {
+                const { latitude, longitude } = JSON.parse(cachedLocation);
+                weatherElement.textContent = `${cachedCity}: 加载天气...`;
+                getWeather(latitude, longitude, cachedCity);
             } else {
-                console.warn('浏览器不支持定位，使用默认城市天气');
-                weatherElement.textContent = `${defaultCity}: 加载天气...`;
-                getWeather(defaultLatitude, defaultLongitude);
+                // 自动定位
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const latitude = position.coords.latitude;
+                            const longitude = position.coords.longitude;
+
+                            // 缓存定位信息
+                            localStorage.setItem('userLocation', JSON.stringify({ latitude, longitude }));
+
+                            // 获取城市名称
+                            getCityName(latitude, longitude).then(city => {
+                                localStorage.setItem('userCity', city);
+                                weatherElement.textContent = `${city}: 加载天气...`;
+                                getWeather(latitude, longitude, city);
+                            });
+                        },
+                        (error) => {
+                            console.warn('定位失败，使用默认城市天气:', error.message);
+                            weatherElement.textContent = `${defaultCity}: 加载天气...`;
+                            getWeather(defaultLatitude, defaultLongitude, defaultCity);
+                        }
+                    );
+                } else {
+                    console.warn('浏览器不支持定位，使用默认城市天气');
+                    weatherElement.textContent = `${defaultCity}: 加载天气...`;
+                    getWeather(defaultLatitude, defaultLongitude, defaultCity);
+                }
             }
         });
 
