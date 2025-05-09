@@ -1224,50 +1224,82 @@
             const weekday = weekdays[today.getDay()];
             dateElement.textContent = `${year}-${month}-${day} ${weekday}`;
 
-            // 获取天气信息（使用Open-Meteo API）
+            // 获取天气信息（使用Open-Meteo API，自动定位）
             const weatherElement = document.getElementById('weather');
-            const city = '上海';
-            const latitude = 31.2304; // 上海的纬度
-            const longitude = 121.4737; // 上海的经度
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode&timezone=Asia/Shanghai`;
+            const defaultCity = '上海';
+            const defaultLatitude = 31.2304; // 上海纬度
+            const defaultLongitude = 121.4737; // 上海经度
 
-            // 天气代码映射到中文描述
-            const weatherCodeMap = {
-                0: '晴',
-                1: '少云',
-                2: '多云',
-                3: '阴',
-                45: '雾',
-                48: '冻雾',
-                51: '小雨',
-                53: '中雨',
-                55: '大雨',
-                61: '小阵雨',
-                63: '中阵雨',
-                65: '大阵雨',
-                71: '小雪',
-                73: '中雪',
-                75: '大雪',
-                80: '小阵雨',
-                81: '中阵雨',
-                82: '大阵雨',
-                95: '雷阵雨',
-                96: '雷阵雨带小冰雹',
-                99: '雷阵雨带大冰雹'
-            };
+            function getWeather(latitude, longitude) {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode&timezone=Asia/Shanghai`;
 
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const temp = Math.round(data.current.temperature_2m);
-                    const weatherCode = data.current.weathercode;
-                    const description = weatherCodeMap[weatherCode] || '未知天气';
-                    weatherElement.textContent = `${city}: ${temp}°C, ${description}`;
-                })
-                .catch(error => {
-                    console.error('获取天气失败:', error);
-                    weatherElement.textContent = '无法获取天气';
-                });
+                const weatherCodeMap = {
+                    0: '晴',
+                    1: '少云',
+                    2: '多云',
+                    3: '阴',
+                    45: '雾',
+                    48: '冻雾',
+                    51: '小雨',
+                    53: '中雨',
+                    55: '大雨',
+                    61: '小阵雨',
+                    63: '中阵雨',
+                    65: '大阵雨',
+                    71: '小雪',
+                    73: '中雪',
+                    75: '大雪',
+                    80: '小阵雨',
+                    81: '中阵雨',
+                    82: '大阵雨',
+                    95: '雷阵雨',
+                    96: '雷阵雨带小冰雹',
+                    99: '雷阵雨带大冰雹'
+                };
+
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && data.current) {
+                            const temp = Math.round(data.current.temperature_2m);
+                            const weatherCode = data.current.weathercode;
+                            const description = weatherCodeMap[weatherCode] || '未知天气';
+                            weatherElement.textContent = `${temp}°C, ${description}`;
+                        } else {
+                            throw new Error('天气数据格式错误');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('获取天气失败:', error);
+                        weatherElement.textContent = `${defaultCity}: 无法获取天气`;
+                        getWeather(defaultLatitude, defaultLongitude); // 回退到默认城市
+                    });
+            }
+
+            // 自动定位
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        getWeather(latitude, longitude);
+                    },
+                    (error) => {
+                        console.warn('定位失败，使用默认城市天气:', error.message);
+                        weatherElement.textContent = `${defaultCity}: 加载天气...`;
+                        getWeather(defaultLatitude, defaultLongitude);
+                    }
+                );
+            } else {
+                console.warn('浏览器不支持定位，使用默认城市天气');
+                weatherElement.textContent = `${defaultCity}: 加载天气...`;
+                getWeather(defaultLatitude, defaultLongitude);
+            }
         });
 
         function updateTheme() {
