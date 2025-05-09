@@ -29,7 +29,7 @@
             padding: 10px 20px;
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* 修改为flex-start以让内容居左 */
+            justify-content: space-between; /* 确保logo居左，三条横线居右 */
             position: fixed;
             width: 100%;
             top: 0;
@@ -64,7 +64,6 @@
         .left-section {
             display: flex;
             align-items: center;
-            margin-right: 20px; /* 确保logo和sidebar-toggle之间的间距 */
         }
         /* 导航栏样式（桌面端） */
         .sidebar {
@@ -500,7 +499,7 @@
                 width: 100%;
                 left: 0;
                 padding: 10px 10px;
-                justify-content: flex-start; /* 移动端也居左 */
+                justify-content: space-between; /* 移动端也保持logo居左三条横线居右 */
             }
             .header.sidebar-hidden {
                 width: 100%;
@@ -510,7 +509,7 @@
             .header h1 {
                 display: flex;
                 font-size: 1.2em;
-                margin-left: 0; /* 移除额外的左边距 */
+                margin-left: 0;
             }
             .header h1 img {
                 width: 176px;
