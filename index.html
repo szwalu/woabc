@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="zh-CN">
 <head>
 <link href="/image/logo.png" rel="apple-touch-icon" sizes="180x180"/>
@@ -30,14 +29,14 @@
             padding: 10px 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between; /* 确保logo居左，三条横线居右 */
+            justify-content: space-between;
             position: fixed;
             width: 100%;
             top: 0;
             left: 0;
             z-index: 1000;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            height: 60px;
+            height: 70px;
             box-sizing: border-box;
             transition: width 0.3s, left 0.3s;
         }
@@ -52,19 +51,47 @@
             display: flex;
             align-items: center;
             color: #333;
+            flex-shrink: 0;
         }
         .header h1 img {
             width: 220px;
-            height: 80px;
+            height: auto;
             margin-right: 10px;
-        }
-        .header .date {
-            font-size: 1em;
-            color: #333;
         }
         .left-section {
             display: flex;
             align-items: center;
+            flex-shrink: 0;
+        }
+        .weather-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-left: 10px;
+        }
+        .right-section {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+        .date-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-right: 10px;
+        }
+        .weather-city, .weather-info, .date, .weekday {
+            font-size: 14px;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .weather-city, .weather-info {
+            max-width: 120px;
+        }
+        .date, .weekday {
+            max-width: 100px;
         }
         /* 导航栏样式（桌面端） */
         .sidebar {
@@ -87,13 +114,13 @@
         }
         @media (min-width: 769px) {
             .sidebar ul {
-                padding-top: 60px;
+                padding-top: 70px;
             }
         }
         @media (max-width: 768px) {
             .sidebar ul {
-                 padding: 10px 0;
-             }
+                padding: 10px 0;
+            }
         }
         .sidebar ul li {
             padding: 15px 20px;
@@ -178,14 +205,14 @@
         .s-search {
             width: 90%;
             max-width: 600px;
-            margin: 70px auto 10px;
+            margin: 80px auto 10px;
             position: relative;
             padding-top: 26px;
             transition: width 0.3s, margin 0.3s;
         }
         .sidebar-hidden .s-search {
             width: calc(100% - 40px);
-            margin: 70px auto 10px;
+            margin: 80px auto 10px;
         }
         #search-list {
             position: absolute;
@@ -388,7 +415,10 @@
         html.dark-mode .header h1 {
             color: #e0e0e0;
         }
-        html.dark-mode .header .date {
+        html.dark-mode .weather-city,
+        html.dark-mode .weather-info,
+        html.dark-mode .date,
+        html.dark-mode .weekday {
             color: #e0e0e0;
         }
         html.dark-mode .sidebar {
@@ -496,11 +526,11 @@
         /* 响应式设计：移动端调整 */
         @media (max-width: 768px) {
             .header {
-                height: 50px;
+                height: 70px;
                 width: 100%;
                 left: 0;
                 padding: 10px 10px;
-                justify-content: space-between; /* 移动端也保持logo居左三条横线居右 */
+                justify-content: space-between;
             }
             .header.sidebar-hidden {
                 width: 100%;
@@ -510,24 +540,36 @@
             .header h1 {
                 display: flex;
                 font-size: 1.2em;
-                margin-left: 0;
+                margin: 0;
             }
             .header h1 img {
-                width: 176px;
-                height: 64px;
-                margin-right: 8px;
+                width: 120px;
+                height: auto;
+                margin-right: 5px;
             }
-            .header .date {
-                font-size: 0.9em;
+            .weather-city, .weather-info, .date, .weekday {
+                font-size: 12px;
+            }
+            .weather-city, .weather-info {
+                max-width: 80px;
+            }
+            .date, .weekday {
+                max-width: 80px;
+            }
+            .weather-section {
+                margin-left: 5px;
+            }
+            .date-section {
+                margin-right: 5px;
             }
             .sidebar {
                 position: fixed;
-                top: 50px;
+                top: 70px;
                 left: 0;
                 right: auto;
                 width: 100vw;
                 height: auto;
-                max-height: calc(100vh - 50px);
+                max-height: calc(100vh - 70px);
                 background: #fff;
                 box-shadow: 2px 0 5px rgba(0,0,0,0.2);
                 padding: 0;
@@ -545,20 +587,20 @@
             .main-content {
                 margin-left: 0;
                 padding: 10px;
-                margin-top: 50px;
+                margin-top: 70px;
             }
             .sidebar-hidden .main-content {
-                 margin-left: 0;
+                margin-left: 0;
             }
             .s-search {
                 width: 90%;
                 max-width: none;
-                margin: 60px auto 5px;
+                margin: 80px auto 5px;
                 padding-top: 10px;
             }
             .sidebar-hidden .s-search {
-                 margin: 60px auto 5px;
-                 width: 90%;
+                margin: 80px auto 5px;
+                width: 90%;
             }
             #super-search-fm {
                 padding: 4px 0;
@@ -660,76 +702,25 @@
                 font-size: 15px;
             }
         }
-    
-.weather {
-    font-size: 14px;
-    color: #333;
-    margin-left: 10px;
-    white-space: nowrap;
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.date-week {
-    font-size: 14px;
-    color: #333;
-    margin-left: 15px;
-}
-@media (max-width: 768px) {
-    .weather {
-        font-size: 12px;
-        white-space: normal;
-        max-width: 120px;
-    }
-    .date-week {
-        font-size: 12px;
-    }
-}
-html.dark-mode .weather,
-html.dark-mode .date-week {
-    color: #e0e0e0;
-}
-
-
-@media (max-width: 768px) {
-    .header h1 img {
-        width: 140px !important;
-        height: auto !important;
-        margin-right: 8px;
-    }
-    .weather {
-        font-size: 12px;
-        white-space: nowrap;
-        max-width: 100px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .date-week {
-        font-size: 12px;
-        white-space: nowrap;
-        margin-right: 10px;
-    }
-    .header {
-        flex-wrap: nowrap;
-        padding: 8px 10px;
-    }
-    .left-section {
-        display: flex;
-        align-items: center;
-        flex-shrink: 1;
-        min-width: 0;
-    }
-    .header > div:last-child {
-        display: flex;
-        align-items: center;
-        margin-left: auto;
-    }
-}
-
 </style>
 </head>
 <body>
-<div class="header"><div class="left-section"><h1><img alt="Logo" src="https://www.tqabc.com/image/logo.png"/><span style="font-size: 0px;">网址导航</span></h1><div class="weather" id="weatherInfo">加载天气...</div></div><div style="display: flex; align-items: center;"><div class="date-week" id="dateWeek"></div><div class="sidebar-toggle"><i class="fa fa-bars"></i></div></div></div>
+<div class="header">
+    <div class="left-section">
+        <h1><img alt="Logo" src="https://www.tqabc.com/image/logo.png"/><span style="font-size: 0px;">网址导航</span></h1>
+        <div class="weather-section">
+            <div class="weather-city" id="weatherCity">加载城市...</div>
+            <div class="weather-info" id="weatherInfo">加载天气...</div>
+        </div>
+    </div>
+    <div class="right-section">
+        <div class="date-section">
+            <div class="date" id="date">加载日期...</div>
+            <div class="weekday" id="weekday">加载星期...</div>
+        </div>
+        <div class="sidebar-toggle"><i class="fa fa-bars"></i></div>
+    </div>
+</div>
 <div class="s-search" id="search">
 <div id="search-list">
 <div class="search-group">
@@ -795,7 +786,7 @@ html.dark-mode .date-week {
 <div class="col-sm-4 col-md-3">
 <div class="tool-card">
 <a href="https://www.ftchinese.com" target="_blank">
-<img alt="FT中文网 Icon" src="https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo-v1%3Abrand-ft-logo-square?source=update-logos&amp;width=180&amp;height=180&amp;format=png"/>
+<img alt="FT中文网 Icon" src="https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo-v1%3Abrand-ft-logo-square?source=update-logos&width=180&height=180&format=png"/>
 <h3>FT中文网</h3>
 </a>
 </div>
@@ -1142,7 +1133,7 @@ html.dark-mode .date-week {
                 if (target === 'body') {
                     offsetTop = 0;
                 } else if ($(target).length) {
-                    const headerHeight = $(window).width() <= 768 ? 50 : 60;
+                    const headerHeight = $(window).width() <= 768 ? 70 : 70;
                     offsetTop = $(target).offset().top - headerHeight - 10;
                 } else {
                     console.warn("Scroll target not found:", target);
@@ -1311,8 +1302,6 @@ html.dark-mode .date-week {
             });
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9352af9dbe674533',t:'MTc0NTQ2NzE0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93580f91f8717bd5',t:'MTc0NTUyMzUwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ccf9487c79452d',t:'MTc0Njc0OTQyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 <script>
     function updateDateWeek() {
         const now = new Date();
@@ -1321,7 +1310,8 @@ html.dark-mode .date-week {
                         String(now.getMonth() + 1).padStart(2, '0') + '-' +
                         String(now.getDate()).padStart(2, '0');
         const weekStr = weekDays[now.getDay()];
-        document.getElementById('dateWeek').textContent = `${dateStr} ${weekStr}`;
+        document.getElementById('date').textContent = dateStr;
+        document.getElementById('weekday').textContent = weekStr;
     }
 
     function fetchWeather() {
@@ -1332,9 +1322,11 @@ html.dark-mode .date-week {
                 const city = data.location.name;
                 const temp = weather.temp_c;
                 const text = weather.condition.text;
-                document.getElementById('weatherInfo').textContent = `${city} ${temp}°C ${text}`;
+                document.getElementById('weatherCity').textContent = city;
+                document.getElementById('weatherInfo').textContent = `${temp}°C ${text}`;
             })
             .catch(() => {
+                document.getElementById('weatherCity').textContent = '城市加载失败';
                 document.getElementById('weatherInfo').textContent = '天气加载失败';
             });
     }
@@ -1342,5 +1334,9 @@ html.dark-mode .date-week {
     updateDateWeek();
     fetchWeather();
 </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9352af9dbe674533',t:'MTc0NTQ2NzE0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93580f91f8717bd5',t:'MTc0NTUyMzUwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading' !==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ccf9487c79452d',t:'MTc0Njc0OTQyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ce49b6ed994576',t:'MTc0Njc2MzIwNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
