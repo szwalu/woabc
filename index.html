@@ -29,7 +29,7 @@
             padding: 10px 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start; /* 修改为flex-start以让内容居左 */
             position: fixed;
             width: 100%;
             top: 0;
@@ -60,6 +60,11 @@
         .header .date {
             font-size: 1em;
             color: #333;
+        }
+        .left-section {
+            display: flex;
+            align-items: center;
+            margin-right: 20px; /* 确保logo和sidebar-toggle之间的间距 */
         }
         /* 导航栏样式（桌面端） */
         .sidebar {
@@ -495,7 +500,7 @@
                 width: 100%;
                 left: 0;
                 padding: 10px 10px;
-                justify-content: space-between;
+                justify-content: flex-start; /* 移动端也居左 */
             }
             .header.sidebar-hidden {
                 width: 100%;
@@ -505,7 +510,7 @@
             .header h1 {
                 display: flex;
                 font-size: 1.2em;
-                margin-left: 10px;
+                margin-left: 0; /* 移除额外的左边距 */
             }
             .header h1 img {
                 width: 176px;
@@ -659,7 +664,7 @@
 </head>
 <body>
     <div class="header">
-        <div class="left-section" style="display: flex; align-items: center;">
+        <div class="left-section">
             <h1>
                 <img src="https://www.tqabc.com/image/logo.png" alt="Logo">
                 <span style="font-size: 0px;">网址导航</span>
