@@ -690,6 +690,42 @@ html.dark-mode .date-week {
     color: #e0e0e0;
 }
 
+
+@media (max-width: 768px) {
+    .header h1 img {
+        width: 140px !important;
+        height: auto !important;
+        margin-right: 8px;
+    }
+    .weather {
+        font-size: 12px;
+        white-space: nowrap;
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .date-week {
+        font-size: 12px;
+        white-space: nowrap;
+        margin-right: 10px;
+    }
+    .header {
+        flex-wrap: nowrap;
+        padding: 8px 10px;
+    }
+    .left-section {
+        display: flex;
+        align-items: center;
+        flex-shrink: 1;
+        min-width: 0;
+    }
+    .header > div:last-child {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+    }
+}
+
 </style>
 </head>
 <body>
