@@ -29,7 +29,7 @@
             padding: 10px 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: space-between; /* 确保logo居左，三条横线居右 */
             position: fixed;
             width: 100%;
             top: 0;
@@ -60,18 +60,8 @@
         .header .date {
             font-size: 1em;
             color: #333;
-            margin-right: 20px;
-        }
-        .header .weather {
-            font-size: 1em;
-            color: #333;
-            margin-left: 20px;
         }
         .left-section {
-            display: flex;
-            align-items: center;
-        }
-        .right-section {
             display: flex;
             align-items: center;
         }
@@ -397,8 +387,7 @@
         html.dark-mode .header h1 {
             color: #e0e0e0;
         }
-        html.dark-mode .header .date,
-        html.dark-mode .header .weather {
+        html.dark-mode .header .date {
             color: #e0e0e0;
         }
         html.dark-mode .sidebar {
@@ -510,7 +499,7 @@
                 width: 100%;
                 left: 0;
                 padding: 10px 10px;
-                justify-content: space-between;
+                justify-content: space-between; /* 移动端也保持logo居左三条横线居右 */
             }
             .header.sidebar-hidden {
                 width: 100%;
@@ -529,10 +518,6 @@
             }
             .header .date {
                 font-size: 0.9em;
-                margin-right: 10px;
-            }
-            .header .weather {
-                display: none; /* 移动端隐藏天气 */
             }
             .sidebar {
                 position: fixed;
@@ -674,22 +659,56 @@
                 font-size: 15px;
             }
         }
-    </style>
+    
+.weather {
+    font-size: 14px;
+    color: #333;
+    margin-left: 10px;
+    white-space: nowrap;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.date-week {
+    font-size: 14px;
+    color: #333;
+    margin-left: 15px;
+}
+@media (max-width: 768px) {
+    .weather {
+        font-size: 12px;
+        white-space: normal;
+        max-width: 120px;
+    }
+    .date-week {
+        font-size: 12px;
+    }
+}
+html.dark-mode .weather,
+html.dark-mode .date-week {
+    color: #e0e0e0;
+}
+
+</style>
 </head>
 <body>
     <div class="header">
+    <div class="left-section">
+        <h1>
+            <img src="https://www.tqabc.com/image/logo.png" alt="Logo">
+            <span style="font-size: 0px;">网址导航</span>
+        </h1>
+        <div class="date-week" id="dateWeek"></div>
+    </div>
+    <div class="weather" id="weatherInfo">加载天气...</div>
         <div class="left-section">
             <h1>
                 <img src="https://www.tqabc.com/image/logo.png" alt="Logo">
                 <span style="font-size: 0px;">网址导航</span>
             </h1>
-            <span class="weather" id="weather">加载天气...</span>
         </div>
-        <div class="right-section">
-            <span class="date" id="date"></span>
-            <div class="sidebar-toggle">
-                <i class="fa fa-bars"></i>
-            </div>
+        <div class="sidebar-toggle">
+            <i class="fa fa-bars"></i>
         </div>
     </div>
 
@@ -1213,137 +1232,6 @@
                     return false;
                 }
             });
-
-            // 显示日期和星期
-            const dateElement = document.getElementById('date');
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            const weekday = weekdays[today.getDay()];
-            dateElement.textContent = `${year}-${month}-${day} ${weekday}`;
-
-            // 获取天气信息（使用Open-Meteo API，自动定位）
-            const weatherElement = document.getElementById('weather');
-            const defaultCity = '上海';
-            const defaultLatitude = 31.2304; // 上海纬度
-            const defaultLongitude = 121.4737; // 上海经度
-
-            // 从本地存储获取缓存的定位和城市信息
-            const cachedLocation = localStorage.getItem('userLocation');
-            const cachedCity = localStorage.getItem('userCity');
-
-            function getWeather(latitude, longitude, city) {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode&timezone=Asia/Shanghai`;
-
-                const weatherCodeMap = {
-                    0: '晴',
-                    1: '少云',
-                    2: '多云',
-                    3: '阴',
-                    45: '雾',
-                    48: '冻雾',
-                    51: '小雨',
-                    53: '中雨',
-                    55: '大雨',
-                    61: '小阵雨',
-                    63: '中阵雨',
-                    65: '大阵雨',
-                    71: '小雪',
-                    73: '中雪',
-                    75: '大雪',
-                    80: '小阵雨',
-                    81: '中阵雨',
-                    82: '大阵雨',
-                    95: '雷阵雨',
-                    96: '雷阵雨带小冰雹',
-                    99: '雷阵雨带大冰雹'
-                };
-
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data && data.current) {
-                            const temp = Math.round(data.current.temperature_2m);
-                            const weatherCode = data.current.weathercode;
-                            const description = weatherCodeMap[weatherCode] || '未知天气';
-                            weatherElement.textContent = `${city}: ${temp}°C, ${description}`;
-                        } else {
-                            throw new Error('天气数据格式错误');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('获取天气失败:', error);
-                        weatherElement.textContent = `${city}: 无法获取天气`;
-                    });
-            }
-
-            function getCityName(latitude, longitude) {
-                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`;
-
-                return fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data && data.address) {
-                            // 优先获取城市名称，可能是 city 或 town
-                            let city = data.address.city || data.address.town || '未知城市';
-                            return city;
-                        } else {
-                            throw new Error('反向地理编码失败');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('获取城市名称失败:', error);
-                        return '未知城市';
-                    });
-            }
-
-            // 使用缓存的定位信息
-            if (cachedLocation && cachedCity) {
-                const { latitude, longitude } = JSON.parse(cachedLocation);
-                weatherElement.textContent = `${cachedCity}: 加载天气...`;
-                getWeather(latitude, longitude, cachedCity);
-            } else {
-                // 自动定位
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            const latitude = position.coords.latitude;
-                            const longitude = position.coords.longitude;
-
-                            // 缓存定位信息
-                            localStorage.setItem('userLocation', JSON.stringify({ latitude, longitude }));
-
-                            // 获取城市名称
-                            getCityName(latitude, longitude).then(city => {
-                                localStorage.setItem('userCity', city);
-                                weatherElement.textContent = `${city}: 加载天气...`;
-                                getWeather(latitude, longitude, city);
-                            });
-                        },
-                        (error) => {
-                            console.warn('定位失败，使用默认城市天气:', error.message);
-                            weatherElement.textContent = `${defaultCity}: 加载天气...`;
-                            getWeather(defaultLatitude, defaultLongitude, defaultCity);
-                        }
-                    );
-                } else {
-                    console.warn('浏览器不支持定位，使用默认城市天气');
-                    weatherElement.textContent = `${defaultCity}: 加载天气...`;
-                    getWeather(defaultLatitude, defaultLongitude, defaultCity);
-                }
-            }
         });
 
         function updateTheme() {
@@ -1417,5 +1305,35 @@
         }
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9352af9dbe674533',t:'MTc0NTQ2NzE0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93580f91f8717bd5',t:'MTc0NTUyMzUwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ccf9487c79452d',t:'MTc0Njc0OTQyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93580f91f8717bd5',t:'MTc0NTUyMzUwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ccf9487c79452d',t:'MTc0Njc0OTQyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>
+    function updateDateWeek() {
+        const now = new Date();
+        const weekDays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+        const dateStr = now.getFullYear() + '-' +
+                        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(now.getDate()).padStart(2, '0');
+        const weekStr = weekDays[now.getDay()];
+        document.getElementById('dateWeek').textContent = `${dateStr} ${weekStr}`;
+    }
+
+    function fetchWeather() {
+        fetch('https://api.weatherapi.com/v1/current.json?key=553d956e2e2941f9870160920252704&q=auto:ip&lang=zh')
+            .then(response => response.json())
+            .then(data => {
+                const weather = data.current;
+                const city = data.location.name;
+                const temp = weather.temp_c;
+                const text = weather.condition.text;
+                document.getElementById('weatherInfo').textContent = `${city} ${temp}°C ${text}`;
+            })
+            .catch(() => {
+                document.getElementById('weatherInfo').textContent = '天气加载失败';
+            });
+    }
+
+    updateDateWeek();
+    fetchWeather();
+</script>
+</body>
 </html>
