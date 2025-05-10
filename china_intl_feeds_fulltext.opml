@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<opml version="1.0">
+  <head>
+    <title>国内可访问 + 墙外 RSS 全文阅读合集</title>
+  </head>
+  <body>
+    <outline text="中国可访问新闻源" title="中国可访问新闻源">
+      <outline type="rss" text="财新网 - 最新文章" title="财新网 - 最新文章" xmlUrl="https://rsshub.novax.moe/caixin/latest"/>
+      <outline type="rss" text="澎湃新闻 - 要闻" title="澎湃新闻 - 要闻" xmlUrl="https://rsshub.novax.moe/thepaper/featured"/>
+      <outline type="rss" text="观察者网" title="观察者网" xmlUrl="https://rsshub.novax.moe/guancha/headlines"/>
+      <outline type="rss" text="界面新闻" title="界面新闻" xmlUrl="https://rsshub.novax.moe/jiemian/latest"/>
+      <outline type="rss" text="网易新闻" title="网易新闻" xmlUrl="https://rsshub.novax.moe/163/news/whole"/>
+      <outline type="rss" text="新华网 - 新闻中心" title="新华网 - 新闻中心" xmlUrl="https://rsshub.novax.moe/xinhuanet/news"/>
+      <outline type="rss" text="人民网 - 滚动新闻" title="人民网 - 滚动新闻" xmlUrl="https://rsshub.novax.moe/people/daily"/>
+    </outline>
+    <outline text="墙外新闻源（全文抓取）" title="墙外新闻源（全文抓取）">
+      <outline type="rss" text="BBC 中文网" title="BBC 中文网" xmlUrl="https://rsshub.novax.moe/bbc/chinese"/>
+      <outline type="rss" text="纽约时报中文网" title="纽约时报中文网" xmlUrl="https://rsshub.novax.moe/nytimes/cn"/>
+      <outline type="rss" text="华尔街日报中文网" title="华尔街日报中文网" xmlUrl="https://rsshub.novax.moe/wsj/zh-cn"/>
+      <outline type="rss" text="德国之声中文网" title="德国之声中文网" xmlUrl="https://rsshub.novax.moe/dw/zh"/>
+      <outline type="rss" text="法广中文网" title="法广中文网" xmlUrl="https://rsshub.novax.moe/rfi/cn"/>
+      <outline type="rss" text="端传媒" title="端传媒" xmlUrl="https://rsshub.novax.moe/theinitium/china"/>
+      <outline type="rss" text="共同网（日本）中文" title="共同网（日本）中文" xmlUrl="https://rsshub.novax.moe/kyodonews/zh"/>
+    </outline>
+  </body>
+</opml>
