@@ -36,21 +36,10 @@
             margin-bottom: 6px;
             font-weight: bold;
         }
+        /* Removed .file-info-container and .file-name-display styles as they are no longer used */
         input[type="file"] {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .file-info-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .file-info-container input[type="file"]{
-            margin-right: 10px;
-        }
-        .file-name-display {
-            font-style: italic;
-            color: #555;
+            display: block; /* Keep this for the input itself */
+            margin-bottom: 15px; /* Adjust margin as filename display is removed */
         }
         #imagePreviewContainer {
             text-align: center;
@@ -64,7 +53,7 @@
             display: none;
             background-color: #eee;
         }
-        .resize-options-label { /* Specific label for resize options row */
+        .resize-options-label {
             display: block;
             margin-bottom: 6px;
             font-weight: bold;
@@ -138,7 +127,6 @@
         #resizedImageLink:hover {
             background-color: #218838;
         }
-        /* For screen reader accessibility, if a label is visually hidden but should be there for SR */
         .sr-only {
             position: absolute;
             width: 1px;
@@ -157,11 +145,9 @@
     <div class="container">
         <h1>图片尺寸调整</h1>
 
-        <div class="form-group file-info-container">
-            <label for="imageFile" class="sr-only">选择文件:</label>
-            <input type="file" id="imageFile" accept="image/*">
-            <span id="fileNameDisplay" class="file-name-display">未选择任何文件</span>
-        </div>
+        <div class="form-group">
+            <label for="imageFile">选择文件:</label> <input type="file" id="imageFile" accept="image/*">
+            </div>
 
         <div id="imagePreviewContainer">
             <img id="imagePreview" src="#" alt="图片预览">
@@ -194,7 +180,7 @@
 
     <script>
         const imageFileInput = document.getElementById('imageFile');
-        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        // const fileNameDisplay = document.getElementById('fileNameDisplay'); // Removed
         const imagePreview = document.getElementById('imagePreview');
         const resizeModeSelect = document.getElementById('resizeMode');
         const imageWidthInput = document.getElementById('imageWidth');
@@ -213,7 +199,7 @@
         imageFileInput.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
-                fileNameDisplay.textContent = file.name;
+                // fileNameDisplay.textContent = file.name; // Removed
                 originalImageName = file.name;
                 originalImageType = file.type || 'image/jpeg';
 
@@ -227,7 +213,6 @@
                         originalAspectRatio = originalImage.width / originalImage.height;
                         if (!userInputLock) {
                             userInputLock = true;
-                            // 您的要求：宽度输入框显示宽度，高度输入框显示高度
                             imageWidthInput.value = originalImage.width;
                             imageHeightInput.value = originalImage.height;
                             userInputLock = false;
@@ -239,18 +224,18 @@
                 }
                 reader.readAsDataURL(file);
             } else {
-                resetImageRelatedFields(true); // Pass true to clear dimensions as well
+                resetImageRelatedFields(true);
             }
         });
 
         function resetImageRelatedFields(clearDimensions = false) {
-            fileNameDisplay.textContent = '未选择任何文件';
+            // fileNameDisplay.textContent = '未选择任何文件'; // Removed
             imagePreview.style.display = 'none';
             imagePreview.src = '#';
             originalImage = null;
-            originalAspectRatio = 1; // Reset aspect ratio
+            originalAspectRatio = 1;
 
-            if (clearDimensions && !userInputLock) { // Only clear if explicitly told (e.g. on cancel or deselect)
+            if (clearDimensions && !userInputLock) {
                 userInputLock = true;
                 imageWidthInput.value = '';
                 imageHeightInput.value = '';
@@ -268,7 +253,7 @@
                 const newWidth = parseInt(this.value);
                 if (!isNaN(newWidth) && newWidth > 0 && originalAspectRatio > 0) {
                     imageHeightInput.value = Math.round(newWidth / originalAspectRatio);
-                } else if (newWidth === 0) { // If user types 0, clear height
+                } else if (newWidth === 0) {
                      imageHeightInput.value = '';
                 }
                 userInputLock = false;
@@ -282,7 +267,7 @@
                 const newHeight = parseInt(this.value);
                 if (!isNaN(newHeight) && newHeight > 0 && originalAspectRatio > 0) {
                      imageWidthInput.value = Math.round(newHeight * originalAspectRatio);
-                } else if (newHeight === 0) { // If user types 0, clear width
+                } else if (newHeight === 0) {
                     imageWidthInput.value = '';
                 }
                 userInputLock = false;
@@ -291,8 +276,6 @@
 
         resizeModeSelect.addEventListener('change', function() {
             if (!originalImage || !imageWidthInput.value) return;
-            // When switching to "keepRatio", re-apply ratio based on current width
-            // if imageWidthInput has a valid number
             if (this.value === 'keepRatio') {
                  if (!userInputLock) {
                     userInputLock = true;
@@ -334,20 +317,28 @@
             canvas.width = targetWidth;
             canvas.height = targetHeight;
 
+            // Draw image with high quality resampling
+            // For better quality downscaling, some suggest drawing in steps,
+            // but for simplicity, a single drawImage is used here.
+            // Modern browsers are generally good at this.
             ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
 
-            let quality = 0.85;
-            let outputMimeType = originalImageType;
-            if (outputMimeType !== 'image/jpeg' && outputMimeType !== 'image/webp') {
-                 outputMimeType = 'image/jpeg';
-            }
+            // --- File Size/Quality Adjustment ---
+            let quality = 0.92; // Default to a higher quality setting for JPEG/WebP
+                                // Values closer to 1 mean higher quality and larger file size.
+                                // 0.92 is generally a good balance.
+                                // For maximum possible quality (and size), try 1.0
 
-            const originalArea = originalImage.width * originalImage.height;
-            const newArea = targetWidth * targetHeight;
-            if (newArea < originalArea / 2) {
-                quality = 0.75;
-            } else if (newArea > originalArea * 1.5 && quality < 0.92) { // If significantly larger, try slightly better quality
-                quality = 0.92;
+            // If you absolutely need to try and make the file larger,
+            // you could set quality to 1.0, but remember that
+            // pixel reduction is the primary factor in size decrease.
+            // quality = 1.0; // Uncomment to try for maximum quality/size for the new dimensions
+
+            let outputMimeType = originalImageType;
+            // Ensure output is JPEG or WebP if we want to control quality effectively.
+            // PNG quality parameter in toDataURL is ignored.
+            if (outputMimeType !== 'image/jpeg' && outputMimeType !== 'image/webp') {
+                 outputMimeType = 'image/jpeg'; // Default to JPEG for quality control
             }
 
 
@@ -357,7 +348,7 @@
             } catch (e) {
                 console.error("Error creating data URL:", e);
                 statusMessage.textContent = `调整失败: 无法生成图片 (格式: ${outputMimeType})。`;
-                if (outputMimeType === 'image/webp') {
+                if (outputMimeType === 'image/webp') { // Fallback for WebP if it fails
                     try {
                         resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
                         outputMimeType = 'image/jpeg';
@@ -370,7 +361,6 @@
                 }
             }
 
-
             const nameWithoutExtension = originalImageName.substring(0, originalImageName.lastIndexOf('.')) || originalImageName;
             let extension = '.' + (outputMimeType.split('/')[1] || 'jpg');
             if (extension === '.jpeg') extension = '.jpg';
@@ -378,20 +368,16 @@
             resizedImageLink.href = resizedDataUrl;
             resizedImageLink.download = `${nameWithoutExtension}_resized${extension}`;
             resizedImageLink.style.display = 'inline-block';
-            statusMessage.textContent = `图片调整完成！估算质量: ${Math.round(quality * 100)}%.`;
+            statusMessage.textContent = `图片调整完成！输出质量参数: ${quality * 100}%.`;
         });
 
         cancelButton.addEventListener('click', function() {
             imageFileInput.value = null;
-            resetImageRelatedFields(true); // Pass true to clear dimension inputs on cancel
+            resetImageRelatedFields(true);
             resizeModeSelect.value = 'keepRatio';
             statusMessage.textContent = '操作已取消。';
             console.log('操作已取消');
         });
-
-        // Dimension inputs are no longer disabled by default.
-        // They will be empty until an image is selected.
-
     </script>
 
 </body>
