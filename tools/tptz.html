@@ -12,7 +12,7 @@
             color: #333;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align to top for longer content */
+            align-items: flex-start;
             min-height: 100vh;
         }
         .container {
@@ -21,7 +21,7 @@
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
             width: 100%;
-            max-width: 600px; /* Limit max width for better readability */
+            max-width: 600px;
         }
         h1 {
             text-align: center;
@@ -31,13 +31,13 @@
         .form-group {
             margin-bottom: 18px;
         }
-        label {
+        label { /* General label styling */
             display: block;
             margin-bottom: 6px;
             font-weight: bold;
         }
         input[type="file"] {
-            display: block; /* Make it take its own line if label is above */
+            display: block;
             margin-bottom: 5px;
         }
         .file-info-container {
@@ -58,17 +58,22 @@
         }
         #imagePreview {
             max-width: 100%;
-            max-height: 250px; /* Max height for preview */
+            max-height: 250px;
             border: 1px solid #ddd;
             margin-top: 8px;
-            display: none; /* 初始隐藏 */
-            background-color: #eee; /* Placeholder bg */
+            display: none;
+            background-color: #eee;
+        }
+        .resize-options-label { /* Specific label for resize options row */
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
         }
         .resize-options-container {
             display: flex;
             align-items: center;
-            gap: 10px; /* Space between elements */
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 10px;
+            flex-wrap: wrap;
             margin-bottom: 15px;
         }
         .resize-options-container select,
@@ -79,7 +84,7 @@
             box-sizing: border-box;
         }
         .resize-options-container select {
-            flex-grow: 1; /* Allow select to take available space */
+            flex-grow: 1;
         }
         .resize-options-container .dimension-label {
             font-size: 0.9em;
@@ -87,7 +92,7 @@
             margin-right: 2px;
         }
         .resize-options-container input[type="number"] {
-            width: 85px; /* Fixed width for dimension inputs */
+            width: 85px;
         }
 
         .buttons-row {
@@ -105,13 +110,13 @@
             transition: background-color 0.3s ease;
         }
         .btn-start {
-            background-color: #007bff; /* 蓝色 */
+            background-color: #007bff;
         }
         .btn-start:hover {
             background-color: #0056b3;
         }
         .btn-cancel {
-            background-color: #dc3545; /* 红色 */
+            background-color: #dc3545;
         }
         .btn-cancel:hover {
             background-color: #c82333;
@@ -121,9 +126,9 @@
             margin-top: 20px;
         }
         #resizedImageLink {
-            display: none; /* 初始隐藏 */
+            display: none;
             padding: 10px 20px;
-            background-color: #28a745; /* Green for download */
+            background-color: #28a745;
             color: white;
             text-decoration: none;
             border-radius: 5px;
@@ -133,6 +138,18 @@
         #resizedImageLink:hover {
             background-color: #218838;
         }
+        /* For screen reader accessibility, if a label is visually hidden but should be there for SR */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
     </style>
 </head>
 <body>
@@ -141,7 +158,8 @@
         <h1>图片尺寸调整</h1>
 
         <div class="form-group file-info-container">
-            <label for="imageFile" class="sr-only">选择文件:</label> <input type="file" id="imageFile" accept="image/*">
+            <label for="imageFile" class="sr-only">选择文件:</label>
+            <input type="file" id="imageFile" accept="image/*">
             <span id="fileNameDisplay" class="file-name-display">未选择任何文件</span>
         </div>
 
@@ -150,7 +168,7 @@
         </div>
 
         <div class="form-group">
-            <label for="resizeMode">调整方式及尺寸:</label>
+            <label class="resize-options-label" for="resizeMode">调整方式及尺寸:</label>
             <div class="resize-options-container">
                 <select id="resizeMode">
                     <option value="keepRatio" selected>保持图片长宽比例</option>
@@ -185,14 +203,12 @@
         const cancelButton = document.getElementById('cancelButton');
         const statusMessage = document.getElementById('statusMessage');
         const resizedImageLink = document.getElementById('resizedImageLink');
-        const downloadContainer = document.getElementById('downloadContainer');
 
         let originalImage = null;
         let originalAspectRatio = 1;
         let originalImageType = 'image/jpeg';
         let originalImageName = 'image.jpg';
-
-        letuserInputLock = false; // To prevent event recursion
+        let userInputLock = false;
 
         imageFileInput.addEventListener('change', function() {
             const file = this.files[0];
@@ -211,13 +227,11 @@
                         originalAspectRatio = originalImage.width / originalImage.height;
                         if (!userInputLock) {
                             userInputLock = true;
+                            // 您的要求：宽度输入框显示宽度，高度输入框显示高度
                             imageWidthInput.value = originalImage.width;
                             imageHeightInput.value = originalImage.height;
                             userInputLock = false;
                         }
-                        // Enable inputs
-                        imageWidthInput.disabled = false;
-                        imageHeightInput.disabled = false;
                     };
                     originalImage.src = e.target.result;
                     resizedImageLink.style.display = 'none';
@@ -225,23 +239,23 @@
                 }
                 reader.readAsDataURL(file);
             } else {
-                resetImageRelatedFields();
+                resetImageRelatedFields(true); // Pass true to clear dimensions as well
             }
         });
 
-        function resetImageRelatedFields() {
+        function resetImageRelatedFields(clearDimensions = false) {
             fileNameDisplay.textContent = '未选择任何文件';
             imagePreview.style.display = 'none';
             imagePreview.src = '#';
             originalImage = null;
-            if (!userInputLock) {
+            originalAspectRatio = 1; // Reset aspect ratio
+
+            if (clearDimensions && !userInputLock) { // Only clear if explicitly told (e.g. on cancel or deselect)
                 userInputLock = true;
                 imageWidthInput.value = '';
                 imageHeightInput.value = '';
                 userInputLock = false;
             }
-            imageWidthInput.disabled = true;
-            imageHeightInput.disabled = true;
             resizedImageLink.style.display = 'none';
             statusMessage.textContent = '';
         }
@@ -251,7 +265,12 @@
             if (userInputLock || !originalImage) return;
             if (resizeModeSelect.value === 'keepRatio' && this.value) {
                 userInputLock = true;
-                imageHeightInput.value = Math.round(parseInt(this.value) / originalAspectRatio);
+                const newWidth = parseInt(this.value);
+                if (!isNaN(newWidth) && newWidth > 0 && originalAspectRatio > 0) {
+                    imageHeightInput.value = Math.round(newWidth / originalAspectRatio);
+                } else if (newWidth === 0) { // If user types 0, clear height
+                     imageHeightInput.value = '';
+                }
                 userInputLock = false;
             }
         });
@@ -260,22 +279,30 @@
             if (userInputLock || !originalImage) return;
             if (resizeModeSelect.value === 'keepRatio' && this.value) {
                 userInputLock = true;
-                imageWidthInput.value = Math.round(parseInt(this.value) * originalAspectRatio);
+                const newHeight = parseInt(this.value);
+                if (!isNaN(newHeight) && newHeight > 0 && originalAspectRatio > 0) {
+                     imageWidthInput.value = Math.round(newHeight * originalAspectRatio);
+                } else if (newHeight === 0) { // If user types 0, clear width
+                    imageWidthInput.value = '';
+                }
                 userInputLock = false;
             }
         });
 
         resizeModeSelect.addEventListener('change', function() {
-            if (!originalImage) return;
+            if (!originalImage || !imageWidthInput.value) return;
             // When switching to "keepRatio", re-apply ratio based on current width
-            if (this.value === 'keepRatio' && imageWidthInput.value) {
+            // if imageWidthInput has a valid number
+            if (this.value === 'keepRatio') {
                  if (!userInputLock) {
                     userInputLock = true;
-                    imageHeightInput.value = Math.round(parseInt(imageWidthInput.value) / originalAspectRatio);
+                    const currentWidth = parseInt(imageWidthInput.value);
+                    if(!isNaN(currentWidth) && currentWidth > 0 && originalAspectRatio > 0){
+                        imageHeightInput.value = Math.round(currentWidth / originalAspectRatio);
+                    }
                     userInputLock = false;
                 }
             }
-            // No special action needed when switching to "customDimensions", inputs just become independent.
         });
 
 
@@ -289,9 +316,6 @@
                 return;
             }
 
-            statusMessage.textContent = '正在调整图片...';
-            resizedImageLink.style.display = 'none';
-
             const targetWidth = parseInt(imageWidthInput.value);
             const targetHeight = parseInt(imageHeightInput.value);
 
@@ -301,6 +325,9 @@
                 return;
             }
 
+            statusMessage.textContent = '正在调整图片...';
+            resizedImageLink.style.display = 'none';
+
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
 
@@ -309,26 +336,18 @@
 
             ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
 
-            let quality = 0.85; // Default quality for JPEG/WebP
-            // Attempt to maintain file size is tricky.
-            // Higher quality usually means larger file. Lower quality, smaller file.
-            // This is a very basic attempt and won't guarantee "same file size".
-            // You might need more sophisticated logic or server-side help for that.
-
+            let quality = 0.85;
             let outputMimeType = originalImageType;
             if (outputMimeType !== 'image/jpeg' && outputMimeType !== 'image/webp') {
-                // PNG doesn't use quality in toDataURL in the same way, default to JPEG for resizing quality control
                  outputMimeType = 'image/jpeg';
-                 console.log("Original type was not JPEG/WebP, defaulting output to JPEG for quality control.");
             }
 
-
-            // Simulate a slightly lower quality if dimensions are reduced significantly
-            // This is a placeholder for more complex logic if strict file size is a goal
             const originalArea = originalImage.width * originalImage.height;
             const newArea = targetWidth * targetHeight;
-            if (newArea < originalArea / 2) { // If significantly smaller
+            if (newArea < originalArea / 2) {
                 quality = 0.75;
+            } else if (newArea > originalArea * 1.5 && quality < 0.92) { // If significantly larger, try slightly better quality
+                quality = 0.92;
             }
 
 
@@ -337,11 +356,9 @@
                 resizedDataUrl = canvas.toDataURL(outputMimeType, quality);
             } catch (e) {
                 console.error("Error creating data URL:", e);
-                statusMessage.textContent = `调整失败: 无法生成图片 (可能是格式问题: ${outputMimeType})。尝试使用JPG或PNG图片。`;
-                // Fallback for Safari or other browsers having issues with specific MIME types on canvas
+                statusMessage.textContent = `调整失败: 无法生成图片 (格式: ${outputMimeType})。`;
                 if (outputMimeType === 'image/webp') {
                     try {
-                        console.log("Retrying with image/jpeg for WebP fallback");
                         resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
                         outputMimeType = 'image/jpeg';
                     } catch (e2) {
@@ -356,25 +373,24 @@
 
             const nameWithoutExtension = originalImageName.substring(0, originalImageName.lastIndexOf('.')) || originalImageName;
             let extension = '.' + (outputMimeType.split('/')[1] || 'jpg');
-            if (extension === '.jpeg') extension = '.jpg'; // Prefer .jpg
+            if (extension === '.jpeg') extension = '.jpg';
 
             resizedImageLink.href = resizedDataUrl;
             resizedImageLink.download = `${nameWithoutExtension}_resized${extension}`;
             resizedImageLink.style.display = 'inline-block';
-            statusMessage.textContent = `图片调整完成！估算质量: ${quality * 100}%.`;
+            statusMessage.textContent = `图片调整完成！估算质量: ${Math.round(quality * 100)}%.`;
         });
 
         cancelButton.addEventListener('click', function() {
-            imageFileInput.value = null; // Clear file input
-            resetImageRelatedFields();
-            resizeModeSelect.value = 'keepRatio'; // Reset dropdown
+            imageFileInput.value = null;
+            resetImageRelatedFields(true); // Pass true to clear dimension inputs on cancel
+            resizeModeSelect.value = 'keepRatio';
             statusMessage.textContent = '操作已取消。';
             console.log('操作已取消');
         });
 
-        // Initial state for dimension inputs
-        imageWidthInput.disabled = true;
-        imageHeightInput.disabled = true;
+        // Dimension inputs are no longer disabled by default.
+        // They will be empty until an image is selected.
 
     </script>
 
