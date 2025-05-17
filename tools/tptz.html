@@ -36,10 +36,9 @@
             margin-bottom: 6px;
             font-weight: bold;
         }
-        /* Removed .file-info-container and .file-name-display styles as they are no longer used */
         input[type="file"] {
-            display: block; /* Keep this for the input itself */
-            margin-bottom: 15px; /* Adjust margin as filename display is removed */
+            display: block;
+            margin-bottom: 15px;
         }
         #imagePreviewContainer {
             text-align: center;
@@ -146,8 +145,9 @@
         <h1>图片尺寸调整</h1>
 
         <div class="form-group">
-            <label for="imageFile">选择文件:</label> <input type="file" id="imageFile" accept="image/*">
-            </div>
+            <label for="imageFile">选择文件:</label>
+            <input type="file" id="imageFile" accept="image/*">
+        </div>
 
         <div id="imagePreviewContainer">
             <img id="imagePreview" src="#" alt="图片预览">
@@ -180,7 +180,6 @@
 
     <script>
         const imageFileInput = document.getElementById('imageFile');
-        // const fileNameDisplay = document.getElementById('fileNameDisplay'); // Removed
         const imagePreview = document.getElementById('imagePreview');
         const resizeModeSelect = document.getElementById('resizeMode');
         const imageWidthInput = document.getElementById('imageWidth');
@@ -192,16 +191,15 @@
 
         let originalImage = null;
         let originalAspectRatio = 1;
-        let originalImageType = 'image/jpeg';
+        let originalImageType = 'image/jpeg'; // Default, will be updated on file selection
         let originalImageName = 'image.jpg';
         let userInputLock = false;
 
         imageFileInput.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
-                // fileNameDisplay.textContent = file.name; // Removed
                 originalImageName = file.name;
-                originalImageType = file.type || 'image/jpeg';
+                originalImageType = file.type || 'image/jpeg'; // Get the actual type
 
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -229,11 +227,11 @@
         });
 
         function resetImageRelatedFields(clearDimensions = false) {
-            // fileNameDisplay.textContent = '未选择任何文件'; // Removed
             imagePreview.style.display = 'none';
             imagePreview.src = '#';
             originalImage = null;
             originalAspectRatio = 1;
+            originalImageType = 'image/jpeg'; // Reset to default
 
             if (clearDimensions && !userInputLock) {
                 userInputLock = true;
@@ -316,59 +314,67 @@
 
             canvas.width = targetWidth;
             canvas.height = targetHeight;
-
-            // Draw image with high quality resampling
-            // For better quality downscaling, some suggest drawing in steps,
-            // but for simplicity, a single drawImage is used here.
-            // Modern browsers are generally good at this.
             ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
 
-            // --- File Size/Quality Adjustment ---
-            let quality = 0.92; // Default to a higher quality setting for JPEG/WebP
-                                // Values closer to 1 mean higher quality and larger file size.
-                                // 0.92 is generally a good balance.
-                                // For maximum possible quality (and size), try 1.0
+            // --- Determine Output Format and Quality ---
+            let outputMimeType = originalImageType; // Start with original type
+            let quality = 0.92; // Default quality for JPEG/WebP
+            let statusMsgText = "";
 
-            // If you absolutely need to try and make the file larger,
-            // you could set quality to 1.0, but remember that
-            // pixel reduction is the primary factor in size decrease.
-            // quality = 1.0; // Uncomment to try for maximum quality/size for the new dimensions
-
-            let outputMimeType = originalImageType;
-            // Ensure output is JPEG or WebP if we want to control quality effectively.
-            // PNG quality parameter in toDataURL is ignored.
-            if (outputMimeType !== 'image/jpeg' && outputMimeType !== 'image/webp') {
-                 outputMimeType = 'image/jpeg'; // Default to JPEG for quality control
+            if (originalImageType === 'image/png') {
+                // Output as PNG, quality parameter is ignored by toDataURL for PNG
+                outputMimeType = 'image/png';
+                // No quality parameter for PNG in this context
+            } else if (originalImageType === 'image/jpeg' || originalImageType === 'image/webp') {
+                // For JPEG or WebP, use the original type and the quality parameter
+                // quality remains 0.92 or could be user-defined later
+            } else {
+                // For other types (e.g., GIF, BMP loaded via browser capabilities),
+                // default to PNG to preserve as much quality/transparency as possible from canvas.
+                // Alternatively, could default to JPEG if smaller size is a hard requirement.
+                console.warn(`Original image type ${originalImageType} is not directly controlled for output quality. Defaulting output to PNG.`);
+                outputMimeType = 'image/png';
             }
-
 
             let resizedDataUrl;
             try {
-                resizedDataUrl = canvas.toDataURL(outputMimeType, quality);
+                if (outputMimeType === 'image/jpeg' || outputMimeType === 'image/webp') {
+                    resizedDataUrl = canvas.toDataURL(outputMimeType, quality);
+                    statusMsgText = `图片调整完成！输出格式: ${outputMimeType.toUpperCase().split('/')[1]}, 输出质量: ${quality * 100}%.`;
+                } else { // This will be 'image/png'
+                    resizedDataUrl = canvas.toDataURL(outputMimeType); // Quality parameter is ignored for PNG
+                    statusMsgText = `图片调整完成！输出格式: ${outputMimeType.toUpperCase().split('/')[1]}.`;
+                }
             } catch (e) {
                 console.error("Error creating data URL:", e);
-                statusMessage.textContent = `调整失败: 无法生成图片 (格式: ${outputMimeType})。`;
-                if (outputMimeType === 'image/webp') { // Fallback for WebP if it fails
+                statusMessage.textContent = `调整失败: 无法生成图片 (尝试输出为 ${outputMimeType})。`;
+                // Simple fallback if primary choice fails (e.g. browser doesn't support outputting WebP from canvas)
+                if (outputMimeType === 'image/webp') {
                     try {
-                        resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                        console.log("WebP output failed, attempting JPEG fallback.");
                         outputMimeType = 'image/jpeg';
+                        resizedDataUrl = canvas.toDataURL(outputMimeType, quality);
+                        statusMsgText = `图片调整完成！输出格式: JPEG (WebP失败), 输出质量: ${quality * 100}%.`;
                     } catch (e2) {
-                         statusMessage.textContent = `调整失败: 无法生成图片 (尝试了JPG和WebP)。`;
-                         return;
+                        statusMessage.textContent = `调整失败: 无法生成图片 (尝试了 ${originalImageType} -> ${outputMimeType} -> JPEG)。`;
+                        return;
                     }
                 } else {
+                     statusMessage.textContent = `调整失败: 无法生成图片 (尝试输出为 ${outputMimeType})。`;
                     return;
                 }
             }
 
             const nameWithoutExtension = originalImageName.substring(0, originalImageName.lastIndexOf('.')) || originalImageName;
-            let extension = '.' + (outputMimeType.split('/')[1] || 'jpg');
+            // Determine extension based on the FINAL outputMimeType
+            let extension = '.' + (outputMimeType.split('/')[1] || 'png'); // Default to png if split fails or type is weird
             if (extension === '.jpeg') extension = '.jpg';
+
 
             resizedImageLink.href = resizedDataUrl;
             resizedImageLink.download = `${nameWithoutExtension}_resized${extension}`;
             resizedImageLink.style.display = 'inline-block';
-            statusMessage.textContent = `图片调整完成！输出质量参数: ${quality * 100}%.`;
+            statusMessage.textContent = statusMsgText;
         });
 
         cancelButton.addEventListener('click', function() {
@@ -382,3 +388,4 @@
 
 </body>
 </html>
+
