@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>离线图片水印工具</title>
+    <style>
+        :root {
+            --primary-color: #007bff; /* 主题蓝 */
+            --primary-hover-color: #0056b3;
+            --secondary-color: #6c757d; /* 次要灰 */
+            --light-gray-color: #f8f9fa; /* 淡灰色背景 */
+            --medium-gray-color: #e9ecef; /* 中灰色边框/背景 */
+            --dark-gray-color: #343a40; /* 深灰色文字 */
+            --text-color: #212529; /* 主要文字颜色 */
+            --label-color: #495057; /* 标签文字颜色 */
+            --input-border-color: #ced4da;
+            --input-focus-border-color: #80bdff;
+            --input-bg-color: #fff;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+            --border-radius: 0.3rem; /* 统一圆角 */
+            --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* 轻微阴影 */
+            --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        body {
+            margin: 0;
+            padding: 0; /* 移除默认padding，由container控制 */
+            font-family: var(--font-family-sans-serif);
+            background-color: var(--light-gray-color); /* 淡灰色背景 */
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        #container {
+            max-width: 1200px;
+            margin: 20px auto; /* 上下边距，左右自动 */
+            padding: 20px;
+            background-color: #fff; /* 容器背景设为白色 */
+            border-radius: var(--border-radius);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); /* 更明显的容器阴影 */
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        article {
+            font-size: 0.95rem;
+            color: var(--secondary-color);
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 0.75rem;
+            background-color: var(--light-gray-color);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid var(--medium-gray-color);
+        }
+
+        .controls-wrapper {
+            background-color: var(--light-gray-color);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .align-center-box {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 15px; /* 统一间距 */
+        }
+
+        /* 特定于步骤的标签 */
+        .step-label {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem; /* 为输入框留出空间 */
+            flex-basis: 100%; /* 步骤标签占满一行 */
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-grow: 1; /* 允许控制组伸展 */
+            min-width: 280px; /* 避免在flex布局中被过度压缩 */
+        }
+
+        label, .control-group label, .format-group label {
+            color: var(--label-color);
+            font-size: 0.95rem;
+            margin-bottom: 0; /* 移除input组内label的底部边距 */
+            white-space: nowrap; /* 防止标签文字换行 */
+        }
+
+        .control-group label {
+             min-width: 60px; /* 控制组内标签最小宽度 */
+        }
+
+
+        input#text,
+        select,
+        input[type=file] {
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--input-border-color);
+            border-radius: var(--border-radius);
+            background-color: var(--input-bg-color);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        input#text {
+            flex-grow: 1; /* 文本输入框占据剩余空间 */
+        }
+
+        input[type=file] {
+            padding: 0.3rem 0.5rem; /* 文件输入框的padding小一些 */
+        }
+
+        input#text:focus,
+        select:focus {
+            border-color: var(--input-focus-border-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        input[type=range] {
+            width: 100%; /* 滑块宽度自适应 */
+            max-width: 300px; /* 最大宽度限制 */
+            height: 10px; /* 轨道高度 */
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--medium-gray-color);
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 8px 0; /* 上下边距 */
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px; /* 滑块宽度 */
+            height: 20px; /* 滑块高度 */
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: var(--box-shadow);
+        }
+
+        input[type=range]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: var(--box-shadow);
+            cursor: pointer;
+        }
+
+        input[type=color] {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: transparent; /* 移除默认背景 */
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+        input[type="color"]::-moz-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+
+
+        select {
+            /* width: auto; 移除固定宽度，使其自适应内容或由flex控制 */
+            min-width: 180px; /* 最小宽度 */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        canvas {
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 100%;
+            border: 2px dashed var(--medium-gray-color); /* 边框更明显 */
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            transition: border-color 0.2s;
+        }
+        canvas:hover {
+            border-color: var(--primary-color);
+        }
+
+        .label { /* 用于显示滑块值的标签 */
+            min-width: 45px;
+            font-size: 0.9rem;
+            color: var(--dark-gray-color);
+            background-color: #fff;
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--input-border-color);
+            text-align: center;
+        }
+
+        button {
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            box-shadow: var(--box-shadow);
+        }
+
+        button:hover {
+            background-color: var(--primary-hover-color);
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+        }
+        button:active {
+            background-color: #004085;
+        }
+
+        #graph {
+            display: grid;
+            grid-gap: 20px; /* 图片间距 */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 响应式网格 */
+            margin-top: 1.5rem;
+        }
+
+        .format-group {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* 选项间距 */
+            flex-wrap: wrap; /* 允许换行 */
+        }
+
+        .format-group label {
+            display: flex; /* 使radio和文字对齐 */
+            align-items: center;
+            gap: 5px;
+            padding: 0.3rem 0.6rem;
+            border: 1px solid var(--input-border-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .format-group label:has(input:checked) { /* 选中时的样式 */
+             background-color: var(--primary-color);
+             color: white;
+             border-color: var(--primary-color);
+        }
+        .format-group input[type=radio] {
+            margin-right: 5px;
+            accent-color: var(--primary-color); /* 美化radio按钮自身颜色 */
+        }
+
+
+        #pic-quality-div {
+            display: flex; /* 原来是none，js控制 */
+            align-items: center;
+            gap: 8px;
+            flex-grow: 1;
+            min-width: 280px;
+        }
+        #pic-quality-div label:first-of-type { /* “图像质量”标签 */
+             min-width: 70px;
+        }
+
+
+        /* 移动端优化 */
+        @media (max-width: 992px) {
+            .control-group {
+                min-width: 250px; /* 中等屏幕控制组宽度 */
+            }
+             input[type=range] {
+                max-width: 250px;
+            }
+        }
+
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0; /* 移除body padding，由container控制 */
+            }
+            #container {
+                margin: 10px;
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.7rem;
+            }
+            article {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+            }
+            .align-center-box {
+                flex-direction: column;
+                align-items: stretch; /* 子元素宽度撑满 */
+                gap: 1rem;
+            }
+            .step-label {
+                text-align: left; /* 移动端标签左对齐 */
+            }
+
+            .control-group {
+                flex-direction: column; /* 标签和输入框垂直排列 */
+                align-items: stretch;
+                width: 100%;
+                gap: 5px;
+            }
+             .control-group label {
+                min-width: auto; /* 移除最小宽度限制 */
+                margin-bottom: 0.25rem; /* 标签和输入框间距 */
+            }
+            input[type=range] {
+                 max-width: none; /* 移除最大宽度，使其撑满 */
+            }
+            select {
+                width: 100%;
+            }
+            input[type=color] {
+                width: 35px;
+                height: 35px;
+            }
+            button,
+            input#text {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            #graph {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                grid-gap: 15px;
+            }
+            .format-group {
+                justify-content: flex-start; /* 左对齐 */
+                gap: 8px;
+            }
+            .format-group label {
+                padding: 0.25rem 0.5rem;
+            }
+             #pic-quality-div {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            article {
+                font-size: 0.85rem;
+            }
+            .controls-wrapper {
+                padding: 1rem;
+            }
+            .label {
+                font-size: 0.85rem;
+                padding: 0.15rem 0.4rem;
+            }
+            button, select, input[type=file], input#text, .format-group label {
+                font-size: 0.9rem;
+            }
+            #graph {
+                grid-template-columns: 1fr; /* 单列显示图片 */
+                grid-gap: 10px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div id="container">
+    <h1><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-image-alt" viewBox="0 0 16 16" style="vertical-align: -0.125em; margin-right: 8px;">
+        <path d="M7 2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0m4.225 4.053a.5.5 0 0 0-.577.093l-3.71 4.71-2.66-2.772a.5.5 0 0 0-.63.062L.002 13.5v-11A1.5 1.5 0 0 1 1.5 1h13A1.5 1.5 0 0 1 16 2.5v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5zm1-1E-6a.5.5 0 0 0 .577-.093l3.71-4.71 2.66 2.772a.5.5 0 0 0 .63-.062L15.998 2.5v11a.5.5 0 0 0 .5.5h.5a.5.5 0 0 0 .5-.5v-11a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 2.5v11a.5.5 0 0 0 .5.5h.5a.5.5 0 0 0 .5-.5z"/>
+      </svg>离线图片水印工具</h1>
+    <article>
+        安全地为图片加水印，所有操作均在您的浏览器本地完成，图片数据不会上传到任何服务器。特别适合处理包含个人信息的敏感证件（如身份证、驾照、护照等）。
+    </article>
+
+    <div class="controls-wrapper">
+        <div class="align-center-box">
+            <label for="image" class="step-label">第一步：选择本地图片 (可多选)</label>
+            <input type="file" id="image" autocomplete="off" multiple>
+        </div>
+
+        <div class="align-center-box">
+            <label for="text" class="step-label">第二步：输入水印文字</label>
+            <input id="text" autocomplete="off" placeholder="请输入文字">
+        </div>
+    </div>
+
+    <div class="controls-wrapper">
+        <p class="section-title">水印参数调整</p>
+        <div class="align-center-box">
+            <div class="control-group">
+                <label for="color">颜色</label>
+                <input type="color" id="color" value="#FFFFFF">
+                <span class="label" id="label-color"></span>
+            </div>
+
+            <div class="control-group">
+                <label for="fontSelect">字体</label>
+                <select id="fontSelect"></select>
+            </div>
+
+            <div class="control-group">
+                <label for="alpha">透明度</label>
+                <input type="range" id="alpha" min="0" max="1" step="0.01" autocomplete="off" value="0.25">
+                <span class="label" id="label-alpha"></span>
+            </div>
+
+            <div class="control-group">
+                <label for="size">字号</label>
+                <input type="range" id="size" min="0.1" max="5" step="0.01" autocomplete="off" value="0.8">
+                <span class="label" id="label-size"></span>
+            </div>
+
+            <div class="control-group">
+                <label for="marginVertical">间隔</label>
+                <input type="range" id="marginVertical" min="-5" max="12" step="0.1" autocomplete="off" value="3.3">
+                <span class="label" id="label-marginVertical"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls-wrapper">
+        <p class="section-title">第三步：下载图片</p>
+        <div class="align-center-box">
+            <span style="flex-basis: 100%; color: var(--secondary-color); font-size: 0.9rem;">点击预览区域中的单个图片可直接下载该图片。</span>
+            <button onclick="downloadAllPic()" style="background-color: var(--success-color);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16" style="vertical-align: -0.125em; margin-right: 5px;">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                </svg>
+                下载全部
+            </button>
+        </div>
+        <div class="align-center-box">
+            <div class="format-group">
+                <label>
+                    PNG格式
+                    <input type="radio" value="image/png" name="pic-type" class="pic-type" checked>
+                </label>
+                <label>
+                    JPEG格式
+                    <input type="radio" value="image/jpeg" name="pic-type" class="pic-type">
+                </label>
+                <label>
+                    WebP格式
+                    <input type="radio" value="image/webp" name="pic-type" class="pic-type">
+                </label>
+            </div>
+            <div id="pic-quality-div" style="display: none"> <label for="pic-quality">图像质量</label>
+                <input type="range" id="pic-quality" min="1" max="100" step="1" autocomplete="off" value="92">
+                <span class="label" id="label-pic-quality"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="graph"></div> <script>
+        // JavaScript部分保持不变，因为要求不改动功能
+        let canvas;
+        let $ = sel => document.querySelector(sel);
+        let inputItems = ['color', 'alpha', 'size', 'marginVertical', 'pic-quality'];
+        let configInputSetting = {};
+        let allCanvas = [];
+
+        let image = $('#image');
+        let graph = $('#graph');
+        let dataURItoBlob = (dataURI, type) => {
+            let i, _i, _ref;
+            let binStr = atob((dataURI.split(','))[1]);
+            let len = binStr.length;
+            let arr = new Uint8Array(len);
+            for (i = _i = 0, _ref = len - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+                arr[i] = binStr.charCodeAt(i);
+            }
+            return new Blob([arr], { type });
+        };
+
+        const fontOptions = ["Arial", "Helvetica", "Times New Roman", "Courier New", "Verdana", "Georgia", "Impact", "Tahoma", "Palatino", "Garamond", "Bookman", "Comic Sans MS", "Century Gothic", "Arial Black", "Lucida Console",
+            "幼圆", "新宋体", "文泉驿微米黑", "微软正黑体", "微软雅黑", "宋体", "思源宋体", "思源黑体", "苹方", "隶书", "楷体", "开源字体", "华文中宋", "华文行楷", "华文新魏", "华文细黑", "华文宋体", "华文隶书", "华文楷体", "华文琥珀", "华文黑体", "华文仿宋", "华文彩云", "黑体", "汉仪雅酷黑W", "汉仪小麦体", "汉仪尚魏手书W", "汉仪旗黑", "汉仪乐喵体简", "汉仪楷体", "汉仪家书简", "汉仪黑荔枝", "汉仪大宋简", "汉仪大黑简", "汉仪程行体", "汉仪PP体简", "仿宋"];
+        const selectElement = $("#fontSelect");
+        for (let i = 0; i < fontOptions.length; i++) {
+            const optionElement = document.createElement("option");
+            optionElement.value = fontOptions[i];
+            optionElement.textContent = fontOptions[i];
+            optionElement.style.fontFamily = fontOptions[i]; // 让选项直接显示该字体效果
+            selectElement.appendChild(optionElement);
+        }
+        // 设置一个通用且美观的默认字体
+        if (fontOptions.includes("微软雅黑")) {
+            selectElement.value = "微软雅黑";
+        } else if (fontOptions.includes("苹方")) {
+             selectElement.value = "苹方";
+        } else {
+            selectElement.value = "Arial";
+        }
+
+
+        const redrawCanvas = (canvas, img, scaledWidth, scaledHeight) => {
+            canvas.width = scaledWidth;
+            canvas.height = scaledHeight;
+            let ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+        };
+
+        const downloadCanvasAsImage = (canvas, fileName) => {
+            let type = configInputSetting["pic-type"] ? configInputSetting["pic-type"] : "image/png";
+            let link = document.createElement('a');
+            const nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
+            link.download = nameWithoutExtension + "_watermark." + type.split("/")[1];
+            let imageData = canvas.toDataURL(type, parseFloat($("#pic-quality").value) / 100);
+            let blob = dataURItoBlob(imageData, type);
+            link.href = URL.createObjectURL(blob);
+            // graph.appendChild(link); // 不再将链接添加到graph，直接点击
+            link.click();
+            // graph.removeChild(link); // 因此也不需要移除
+            URL.revokeObjectURL(link.href); // 及时释放内存
+        };
+
+        const downloadAllPic = async () => {
+            if (allCanvas.length === 0) {
+                alert("请先选择图片并生成水印预览。");
+                return;
+            }
+            allCanvas.forEach(({canvas, img, fileName}) => { // img参数实际未使用，可以考虑移除
+                downloadCanvasAsImage(canvas, fileName);
+            });
+        };
+
+        let readFile = file => {
+            if (!file) {
+                console.error('No file provided');
+                return;
+            }
+            try {
+                let fileReader = new FileReader();
+                fileReader.onload = function () {
+                    try {
+                        let img = new Image();
+                        img.onload = function () {
+                            try {
+                                const canvas = document.createElement('canvas');
+                                const maxWidth = 800; // 预览图的最大宽度可以适当调整
+                                let scaledWidth = img.width;
+                                let scaledHeight = img.height;
+
+                                if (img.width > maxWidth) {
+                                    scaledWidth = maxWidth;
+                                    scaledHeight = img.height * (maxWidth / img.width);
+                                }
+                                // 为allCanvas存储原始尺寸，方便后续可能需要的精确重绘
+                                // 但当前drawText中仍然基于预览尺寸计算，如果需要基于原图尺寸打水印并缩放，逻辑会更复杂
+                                allCanvas.push({img, canvas, fileName: file.name, originalWidth: img.width, originalHeight: img.height, scaledWidth, scaledHeight});
+
+                                drawText(canvas, img, scaledWidth, scaledHeight); // 初始绘制
+                                graph.appendChild(canvas);
+                                console.log(`Canvas for ${file.name} appended to #graph`);
+
+                                canvas.addEventListener('click', () => downloadCanvasAsImage(canvas, file.name));
+                            } catch (err) {
+                                console.error(`Error processing image ${file.name}:`, err);
+                                alert(`处理图片 ${file.name} 时出错: ${err.message}`);
+                            }
+                        };
+                        img.onerror = function () {
+                            console.error(`Failed to load image ${file.name}`);
+                            alert(`无法加载图片 ${file.name}，请确保文件格式正确`);
+                        };
+                        img.src = fileReader.result;
+                    } catch (err) {
+                        console.error(`Error in image creation for ${file.name}:`, err);
+                        alert(`创建图片 ${file.name} 时出错: ${err.message}`);
+                    }
+                };
+                fileReader.onerror = function () {
+                    console.error(`Failed to read file ${file.name}`);
+                    alert(`读取文件 ${file.name} 失败`);
+                };
+                fileReader.readAsDataURL(file);
+            } catch (err) {
+                console.error(`Error in readFile for ${file.name}:`, err);
+                alert(`处理文件 ${file.name} 时出错: ${err.message}`);
+            }
+        };
+
+        const makeStyle = () => {
+            // 确保configInputSetting.color.value存在且有效
+            const colorValue = configInputSetting.color && configInputSetting.color.value ? configInputSetting.color.value : '#FFFFFF';
+            let match = colorValue.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+            if (!match) { // 如果颜色值无效，提供一个默认值
+                console.warn("Invalid color value, defaulting to white.");
+                return 'rgba(255,255,255,' + (configInputSetting.alpha && configInputSetting.alpha.value ? configInputSetting.alpha.value : 0.25) + ')';
+            }
+            return 'rgba(' + (parseInt(match[1], 16)) + ',' + (parseInt(match[2], 16)) + ',' + (parseInt(match[3], 16)) + ',' + (configInputSetting.alpha && configInputSetting.alpha.value ? configInputSetting.alpha.value : 0.25) + ')';
+        };
+
+        const drawText = (canvas, img, scaledWidth, scaledHeight) => {
+            redrawCanvas(canvas, img, scaledWidth, scaledHeight); // 先重绘原始图片
+            if (!canvas || !configInputSetting.text || !configInputSetting.text.value) {
+                return; // 如果没有文字内容，则不绘制水印
+            }
+
+            let textSize = (configInputSetting.size && configInputSetting.size.value ? configInputSetting.size.value : 0.8) * Math.max(15, (Math.min(scaledWidth, scaledHeight)) / 25);
+            let textCtx = canvas.getContext('2d');
+            textCtx.fillStyle = makeStyle();
+            textCtx.font = textSize + "px " + ($("#fontSelect").value || "Arial"); // 确保字体有值
+
+            let watermarkText = configInputSetting.text.value;
+            let baseWidth = textCtx.measureText('啊').width; // 用一个常见中文字符估算宽度
+            let textMetrics = textCtx.measureText(watermarkText);
+            let textWidth = textMetrics.width;
+
+            // 动态调整xAdd和yAdd，确保水印之间有足够的间隔但不过于稀疏
+            // 间隔值现在是基于字号的倍数
+            let marginMultiplier = (configInputSetting.marginVertical && configInputSetting.marginVertical.value ? parseFloat(configInputSetting.marginVertical.value) : 3.3);
+
+            let xAdd = textWidth + (baseWidth * Math.max(1, marginMultiplier / 2)); // 水平间隔至少一个字符宽度
+            let yAdd = textSize * 2 + (baseWidth * marginMultiplier); // 垂直间隔，基于字高和自定义间隔
+
+            xAdd = Math.max(xAdd, textSize * 2); // 保证最小间隔
+            yAdd = Math.max(yAdd, textSize * 2); // 保证最小间隔
+
+
+            // 使用旋转和平铺来创建更自然的水印效果
+            textCtx.textAlign = 'center';
+            textCtx.textBaseline = 'middle';
+
+            const angle = -25 * Math.PI / 180; // 旋转角度，例如-25度
+
+            // 计算平铺的起始点和步长，以覆盖整个画布
+            // 为了让旋转后的水印均匀分布，需要更复杂的计算或者迭代更多次
+            // 简单起见，我们仍然使用矩形迭代，但旋转每个文本
+
+            // 扩展绘制边界，确保旋转后的文本能覆盖边缘
+            let extendedBorder = Math.max(scaledWidth, scaledHeight) * 0.5;
+
+            for (let i = -extendedBorder; i < scaledWidth + extendedBorder; i += xAdd) {
+                for (let j = -extendedBorder; j < scaledHeight + extendedBorder; j += yAdd) {
+                    textCtx.save();
+                    textCtx.translate(i + textWidth / 2, j + textSize / 2); // 移动到文本中心点
+                    textCtx.rotate(angle);
+                    textCtx.fillText(watermarkText, 0, 0);
+                    textCtx.restore();
+                }
+            }
+        };
+
+        const reDrawAllCanvases = () => {
+             allCanvas.forEach(({canvas, img, scaledWidth, scaledHeight}) => {
+                // scaledWidth 和 scaledHeight 是预览时的尺寸
+                // 如果原图尺寸存储了，可以在这里用，但要注意性能
+                drawText(canvas, img, scaledWidth, scaledHeight);
+            });
+        }
+
+        let picTypeInputs = document.getElementsByClassName("pic-type");
+        for (let i = 0; i < picTypeInputs.length; i++) {
+            let item = picTypeInputs[i];
+            item.addEventListener('change', () => {
+                let picQuality = $("#pic-quality-div");
+                // picQuality.style.display = "none"; // 先隐藏，下面再判断是否显示
+                if (item.checked) {
+                    configInputSetting["pic-type"] = item.value;
+                    if ("image/webp" === item.value || "image/jpeg" === item.value) {
+                        picQuality.style.display = "flex"; // 使用flex以便对齐
+                    } else {
+                        picQuality.style.display = "none";
+                    }
+                }
+            });
+        }
+        // 初始化时检查一次pic-quality-div的显示状态
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkedType = document.querySelector('.pic-type:checked');
+            if (checkedType) {
+                 let picQuality = $("#pic-quality-div");
+                if ("image/webp" === checkedType.value || "image/jpeg" === checkedType.value) {
+                    picQuality.style.display = "flex";
+                } else {
+                    picQuality.style.display = "none";
+                }
+            }
+        });
+
+
+        image.addEventListener('change', function () {
+            if (!this.files || this.files.length === 0) {
+                // console.warn('No files selected'); // 可以用更友好的提示
+                // alert('未选择任何文件');
+                return;
+            }
+            // 清空之前的图片和canvas数据
+            graph.innerHTML = '';
+            allCanvas = [];
+
+            const batchFileHandler = file => {
+                const type = file.type.toLowerCase();
+                if (!['image/png', 'image/jpeg', 'image/webp', 'image/gif'].includes(type)) { // 增加了gif支持（虽然只取第一帧）
+                    console.warn(`Unsupported file type for ${file.name}: ${type}`);
+                    alert(`文件 ${file.name} 的格式 (${type}) 不受支持，仅支持 PNG、JPEG、WebP、GIF。`);
+                    return;
+                }
+                readFile(file);
+            };
+            Array.from(this.files).forEach(batchFileHandler);
+            this.value = ''; // 清空file input的值，允许用户重复选择相同文件
+        });
+
+        configInputSetting["text"] = $('#text');
+        configInputSetting["text"].addEventListener('input', reDrawAllCanvases);
+
+        configInputSetting["fontSelect"] = $('#fontSelect');
+        configInputSetting["fontSelect"].addEventListener('change', reDrawAllCanvases);
+
+        inputItems.forEach(item => {
+            let el = $('#' + item);
+            if (!el) return; // 确保元素存在
+            configInputSetting[item] = el;
+
+            let labelDomQuery = "#label-" + item;
+            let labelDom = $(labelDomQuery);
+
+            if (labelDom) {
+                 // 初始化标签显示
+                if (el.type === 'color') {
+                    labelDom.innerText = el.value;
+                } else {
+                    labelDom.innerText = isNaN(parseFloat(el.value)) ? el.value : parseFloat(el.value).toFixed(el.step && el.step.includes('.') ? el.step.split('.')[1].length : (item === 'alpha' ? 2 : 0) );
+                }
+            }
+
+            el.addEventListener('input', () => {
+                if (labelDom) {
+                    if (el.type === 'color') {
+                        labelDom.innerText = el.value;
+                    } else {
+                         // 根据step的小数位数来决定toFixed的参数
+                        const step = el.step;
+                        let precision = 0;
+                        if (step && step.includes('.')) {
+                            precision = step.split('.')[1].length;
+                        } else if (item === 'alpha') { // alpha 特殊处理两位小数
+                            precision = 2;
+                        }
+                        labelDom.innerText = isNaN(parseFloat(el.value)) ? el.value : parseFloat(el.value).toFixed(precision);
+                    }
+                }
+                reDrawAllCanvases();
+            });
+        });
+         // 初始化所有label的值
+        inputItems.forEach(item => {
+            let el = $('#' + item);
+            if (!el) return;
+            let labelDomQuery = "#label-" + item;
+            let labelDom = $(labelDomQuery);
+            if (labelDom) {
+                if (el.type === 'color') {
+                    labelDom.innerText = el.value;
+                } else {
+                    const step = el.step;
+                    let precision = 0;
+                    if (step && step.includes('.')) {
+                        precision = step.split('.')[1].length;
+                    } else if (item === 'alpha') {
+                        precision = 2;
+                    }
+                    labelDom.innerText = isNaN(parseFloat(el.value)) ? el.value : parseFloat(el.value).toFixed(precision);
+                }
+            }
+        });
+
+    </script>
+</div>
+</body>
+</html>
