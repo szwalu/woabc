@@ -10,63 +10,99 @@
             margin: 20px;
             background-color: #f4f4f4;
             color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for longer content */
+            min-height: 100vh;
         }
         .container {
             background-color: #fff;
-            padding: 20px;
+            padding: 25px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 600px; /* Limit max width for better readability */
         }
         h1 {
             text-align: center;
             color: #333;
+            margin-bottom: 25px;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: bold;
         }
-        select, input[type="file"], input[type="number"] {
-            width: calc(100% - 22px);
-            padding: 10px;
+        input[type="file"] {
+            display: block; /* Make it take its own line if label is above */
             margin-bottom: 5px;
+        }
+        .file-info-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .file-info-container input[type="file"]{
+            margin-right: 10px;
+        }
+        .file-name-display {
+            font-style: italic;
+            color: #555;
+        }
+        #imagePreviewContainer {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 250px; /* Max height for preview */
+            border: 1px solid #ddd;
+            margin-top: 8px;
+            display: none; /* 初始隐藏 */
+            background-color: #eee; /* Placeholder bg */
+        }
+        .resize-options-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between elements */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            margin-bottom: 15px;
+        }
+        .resize-options-container select,
+        .resize-options-container input[type="number"] {
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
         }
-        .file-info {
-            margin-left: 10px;
-            font-style: italic;
-            color: #555;
+        .resize-options-container select {
+            flex-grow: 1; /* Allow select to take available space */
         }
-        .dimensions-input {
-            display: none; /* 默认隐藏 */
+        .resize-options-container .dimension-label {
+            font-size: 0.9em;
+            margin-left: 5px;
+            margin-right: 2px;
         }
-        .dimensions-input label {
-            display: inline-block;
-            width: auto;
-            margin-right: 5px;
+        .resize-options-container input[type="number"] {
+            width: 85px; /* Fixed width for dimension inputs */
         }
-        .dimensions-input input[type="number"] {
-            width: 80px;
-            display: inline-block;
-            margin-right: 10px;
-        }
+
         .buttons-row {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px;
         }
         .btn {
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
             border-radius: 5px;
             color: white;
             cursor: pointer;
             font-size: 16px;
             margin: 0 10px;
+            transition: background-color 0.3s ease;
         }
         .btn-start {
             background-color: #007bff; /* 蓝色 */
@@ -80,29 +116,19 @@
         .btn-cancel:hover {
             background-color: #c82333;
         }
-        #imagePreviewContainer {
-            margin-top: 20px;
+        #statusMessage, #downloadContainer {
             text-align: center;
-        }
-        #imagePreview {
-            max-width: 100%;
-            max-height: 300px;
-            border: 1px solid #ddd;
-            margin-top: 10px;
-            display: none; /* 初始隐藏 */
-        }
-        #resizedImageContainer {
             margin-top: 20px;
-            text-align: center;
         }
         #resizedImageLink {
             display: none; /* 初始隐藏 */
             padding: 10px 20px;
-            background-color: #28a745;
+            background-color: #28a745; /* Green for download */
             color: white;
             text-decoration: none;
             border-radius: 5px;
             margin-top: 10px;
+            transition: background-color 0.3s ease;
         }
         #resizedImageLink:hover {
             background-color: #218838;
@@ -114,34 +140,27 @@
     <div class="container">
         <h1>图片尺寸调整</h1>
 
-        <div class="form-group">
-            <label for="resizeMode">调整方式:</label>
-            <select id="resizeMode">
-                <option value="keepRatio" selected>保持图片长宽比例</option>
-                <option value="customDimensions">可选图片长和宽</option>
-            </select>
-        </div>
-
-        <div id="customDimensions" class="form-group dimensions-input">
-            <label for="customWidth">宽度(px):</label>
-            <input type="number" id="customWidth" placeholder="例如: 800">
-            <label for="customHeight">高度(px):</label>
-            <input type="number" id="customHeight" placeholder="例如: 600">
-            <br>
-            <label for="targetSize">期望文件体积 (KB) - 尽力而为:</label>
-            <input type="number" id="targetSize" placeholder="例如: 500">
-            <small>注意: 精确控制文件体积非常困难，此为目标值，质量优先。</small>
-        </div>
-
-        <div class="form-group">
-            <label for="imageFile">选择文件:</label>
-            <input type="file" id="imageFile" accept="image/*">
-            <span id="fileName" class="file-info">未选择任何文件</span>
+        <div class="form-group file-info-container">
+            <label for="imageFile" class="sr-only">选择文件:</label> <input type="file" id="imageFile" accept="image/*">
+            <span id="fileNameDisplay" class="file-name-display">未选择任何文件</span>
         </div>
 
         <div id="imagePreviewContainer">
-            <p><strong>原图预览:</strong></p>
             <img id="imagePreview" src="#" alt="图片预览">
+        </div>
+
+        <div class="form-group">
+            <label for="resizeMode">调整方式及尺寸:</label>
+            <div class="resize-options-container">
+                <select id="resizeMode">
+                    <option value="keepRatio" selected>保持图片长宽比例</option>
+                    <option value="customDimensions">可选图片长和宽</option>
+                </select>
+                <span class="dimension-label">宽:</span>
+                <input type="number" id="imageWidth" placeholder="宽度" title="图片宽度 (像素)">
+                <span class="dimension-label">高:</span>
+                <input type="number" id="imageHeight" placeholder="高度" title="图片高度 (像素)">
+            </div>
         </div>
 
         <div class="buttons-row">
@@ -149,189 +168,214 @@
             <button id="cancelButton" class="btn btn-cancel">取消操作</button>
         </div>
 
-        <div id="resizedImageContainer">
-             <p id="statusMessage" style="margin-top:15px;"></p>
+        <div id="statusMessage"></div>
+        <div id="downloadContainer">
             <a id="resizedImageLink" download="resized_image.jpg">下载调整后的图片</a>
         </div>
     </div>
 
     <script>
-        const resizeModeSelect = document.getElementById('resizeMode');
-        const customDimensionsDiv = document.getElementById('customDimensions');
         const imageFileInput = document.getElementById('imageFile');
-        const fileNameSpan = document.getElementById('fileName');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const imagePreview = document.getElementById('imagePreview');
+        const resizeModeSelect = document.getElementById('resizeMode');
+        const imageWidthInput = document.getElementById('imageWidth');
+        const imageHeightInput = document.getElementById('imageHeight');
         const startButton = document.getElementById('startButton');
         const cancelButton = document.getElementById('cancelButton');
-        const customWidthInput = document.getElementById('customWidth');
-        const customHeightInput = document.getElementById('customHeight');
-        const targetSizeInput = document.getElementById('targetSize');
-
-        const imagePreview = document.getElementById('imagePreview');
-        const resizedImageLink = document.getElementById('resizedImageLink');
         const statusMessage = document.getElementById('statusMessage');
+        const resizedImageLink = document.getElementById('resizedImageLink');
+        const downloadContainer = document.getElementById('downloadContainer');
 
         let originalImage = null;
-        let originalImageType = 'image/jpeg'; // 默认类型
+        let originalAspectRatio = 1;
+        let originalImageType = 'image/jpeg';
         let originalImageName = 'image.jpg';
 
-        resizeModeSelect.addEventListener('change', function() {
-            if (this.value === 'customDimensions') {
-                customDimensionsDiv.style.display = 'block';
-            } else {
-                customDimensionsDiv.style.display = 'none';
-            }
-        });
+        letuserInputLock = false; // To prevent event recursion
 
         imageFileInput.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
-                fileNameSpan.textContent = file.name;
+                fileNameDisplay.textContent = file.name;
                 originalImageName = file.name;
-                originalImageType = file.type;
+                originalImageType = file.type || 'image/jpeg';
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     imagePreview.src = e.target.result;
                     imagePreview.style.display = 'block';
+
                     originalImage = new Image();
                     originalImage.onload = () => {
-                        // 如果是保持比例，预填入尺寸
-                        if (resizeModeSelect.value === 'keepRatio' && !customWidthInput.value && !customHeightInput.value) {
-                           // 用户未主动选择自定义尺寸时，可以考虑预填，或让用户自己填一个作为基准
+                        originalAspectRatio = originalImage.width / originalImage.height;
+                        if (!userInputLock) {
+                            userInputLock = true;
+                            imageWidthInput.value = originalImage.width;
+                            imageHeightInput.value = originalImage.height;
+                            userInputLock = false;
                         }
+                        // Enable inputs
+                        imageWidthInput.disabled = false;
+                        imageHeightInput.disabled = false;
                     };
                     originalImage.src = e.target.result;
-                    resizedImageLink.style.display = 'none'; // 隐藏旧的下载链接
+                    resizedImageLink.style.display = 'none';
                     statusMessage.textContent = '';
                 }
                 reader.readAsDataURL(file);
             } else {
-                fileNameSpan.textContent = '未选择任何文件';
-                imagePreview.style.display = 'none';
-                imagePreview.src = '#';
-                originalImage = null;
-                resizedImageLink.style.display = 'none';
-                statusMessage.textContent = '';
+                resetImageRelatedFields();
             }
         });
+
+        function resetImageRelatedFields() {
+            fileNameDisplay.textContent = '未选择任何文件';
+            imagePreview.style.display = 'none';
+            imagePreview.src = '#';
+            originalImage = null;
+            if (!userInputLock) {
+                userInputLock = true;
+                imageWidthInput.value = '';
+                imageHeightInput.value = '';
+                userInputLock = false;
+            }
+            imageWidthInput.disabled = true;
+            imageHeightInput.disabled = true;
+            resizedImageLink.style.display = 'none';
+            statusMessage.textContent = '';
+        }
+
+
+        imageWidthInput.addEventListener('input', function() {
+            if (userInputLock || !originalImage) return;
+            if (resizeModeSelect.value === 'keepRatio' && this.value) {
+                userInputLock = true;
+                imageHeightInput.value = Math.round(parseInt(this.value) / originalAspectRatio);
+                userInputLock = false;
+            }
+        });
+
+        imageHeightInput.addEventListener('input', function() {
+            if (userInputLock || !originalImage) return;
+            if (resizeModeSelect.value === 'keepRatio' && this.value) {
+                userInputLock = true;
+                imageWidthInput.value = Math.round(parseInt(this.value) * originalAspectRatio);
+                userInputLock = false;
+            }
+        });
+
+        resizeModeSelect.addEventListener('change', function() {
+            if (!originalImage) return;
+            // When switching to "keepRatio", re-apply ratio based on current width
+            if (this.value === 'keepRatio' && imageWidthInput.value) {
+                 if (!userInputLock) {
+                    userInputLock = true;
+                    imageHeightInput.value = Math.round(parseInt(imageWidthInput.value) / originalAspectRatio);
+                    userInputLock = false;
+                }
+            }
+            // No special action needed when switching to "customDimensions", inputs just become independent.
+        });
+
 
         startButton.addEventListener('click', function() {
             if (!originalImage) {
                 alert('请先选择一个图片文件！');
                 return;
             }
+            if (!imageWidthInput.value || !imageHeightInput.value) {
+                alert('请输入有效的图片宽度和高度！');
+                return;
+            }
 
             statusMessage.textContent = '正在调整图片...';
             resizedImageLink.style.display = 'none';
 
+            const targetWidth = parseInt(imageWidthInput.value);
+            const targetHeight = parseInt(imageHeightInput.value);
+
+            if (isNaN(targetWidth) || isNaN(targetHeight) || targetWidth <= 0 || targetHeight <= 0) {
+                alert('宽度和高度必须是有效的正数。');
+                statusMessage.textContent = '调整失败：无效的尺寸。';
+                return;
+            }
+
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
 
-            let targetWidth = originalImage.width;
-            let targetHeight = originalImage.height;
-            const aspectRatio = originalImage.width / originalImage.height;
-
-            if (resizeModeSelect.value === 'keepRatio') {
-                // 保持比例调整，需要用户至少输入宽度或高度中的一个
-                // 这里我们简化，假设用户会在自定义区域输入一个基准值（如果它是可见的）
-                // 或者，我们可以添加新的输入框专用于“保持比例”模式下的目标宽度/高度
-                // 为简单起见，若自定义宽高有值，则以宽度优先调整
-                if (customWidthInput.value) {
-                    targetWidth = parseInt(customWidthInput.value);
-                    targetHeight = targetWidth / aspectRatio;
-                } else if (customHeightInput.value) { // 如果只填了高度
-                    targetHeight = parseInt(customHeightInput.value);
-                    targetWidth = targetHeight * aspectRatio;
-                } else {
-                    // 如果保持比例但用户未在自定义区输入任何值，则需要一个明确的输入
-                    // 或者我们可以默认不改变，或者提示用户输入一个目标宽度或高度
-                    // 为了演示，我们假设如果自定义尺寸未填写，则尺寸不变（这可能不是期望行为）
-                    // 更好的做法是为“保持比例”提供单独的输入，例如“目标最大宽度”
-                    alert('请在“可选图片长和宽”中至少输入期望的宽度或高度，即使当前选择的是“保持图片长宽比例”，该值将作为调整基准。');
-                    statusMessage.textContent = '';
-                    return;
-                }
-            } else { // customDimensions
-                if (!customWidthInput.value || !customHeightInput.value) {
-                    alert('请指定自定义的宽度和高度！');
-                    statusMessage.textContent = '';
-                    return;
-                }
-                targetWidth = parseInt(customWidthInput.value);
-                targetHeight = parseInt(customHeightInput.value);
-            }
-
-            canvas.width = Math.round(targetWidth);
-            canvas.height = Math.round(targetHeight);
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
 
             ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
 
-            // 尝试控制文件大小 (非常粗略的方式，效果有限)
-            // HTMLCanvasElement.toDataURL(type, encoderOptions)
-            // encoderOptions 是一个0到1之间的数字，表示JPEG或WebP格式的图片质量。
-            // 这并不直接控制文件大小，而是质量，质量越低，文件通常越小。
-            let quality = 0.92; // 默认较高质量
-            const desiredSizeKB = parseFloat(targetSizeInput.value);
+            let quality = 0.85; // Default quality for JPEG/WebP
+            // Attempt to maintain file size is tricky.
+            // Higher quality usually means larger file. Lower quality, smaller file.
+            // This is a very basic attempt and won't guarantee "same file size".
+            // You might need more sophisticated logic or server-side help for that.
 
-            // 这是一个非常简化的尝试，实际效果可能不佳
-            // 真正可靠的体积控制需要更复杂的算法或服务器端处理
-            if (!isNaN(desiredSizeKB) && desiredSizeKB > 0) {
-                // 粗略估算：质量与大小并非线性关系，不同图片内容压缩率也不同
-                // 这里只是一个示例性的调整，实际应用中需要更智能的策略
-                if (desiredSizeKB < 50) quality = 0.5;
-                else if (desiredSizeKB < 100) quality = 0.6;
-                else if (desiredSizeKB < 200) quality = 0.7;
-                else if (desiredSizeKB < 500) quality = 0.8;
-                else quality = 0.9; // 对于较大的期望体积，给高一点的初始质量
+            let outputMimeType = originalImageType;
+            if (outputMimeType !== 'image/jpeg' && outputMimeType !== 'image/webp') {
+                // PNG doesn't use quality in toDataURL in the same way, default to JPEG for resizing quality control
+                 outputMimeType = 'image/jpeg';
+                 console.log("Original type was not JPEG/WebP, defaulting output to JPEG for quality control.");
             }
 
-            // 尝试生成图片并检查大小 (这是一个迭代的例子，可能很慢且不精确)
-            // 为了避免浏览器卡死，这里不做多次迭代，仅演示一次性的质量调整
-            let resizedDataUrl = canvas.toDataURL(originalImageType, quality);
 
-            // 模拟文件大小检查 (Data URL 比实际文件大一些，因为它用 Base64 编码)
-            // Base64 编码大约会增加 33% 的大小。 (length * 3/4)
-            let estimatedSizeBytes = resizedDataUrl.length * 0.75;
-            console.log(`使用质量 ${quality.toFixed(2)} 估算文件大小: ${(estimatedSizeBytes / 1024).toFixed(2)} KB`);
-            statusMessage.textContent = `调整完成。估算文件大小: ${(estimatedSizeBytes / 1024).toFixed(2)} KB (基于质量 ${quality.toFixed(2)})。实际下载文件大小可能略有不同。`;
+            // Simulate a slightly lower quality if dimensions are reduced significantly
+            // This is a placeholder for more complex logic if strict file size is a goal
+            const originalArea = originalImage.width * originalImage.height;
+            const newArea = targetWidth * targetHeight;
+            if (newArea < originalArea / 2) { // If significantly smaller
+                quality = 0.75;
+            }
 
+
+            let resizedDataUrl;
+            try {
+                resizedDataUrl = canvas.toDataURL(outputMimeType, quality);
+            } catch (e) {
+                console.error("Error creating data URL:", e);
+                statusMessage.textContent = `调整失败: 无法生成图片 (可能是格式问题: ${outputMimeType})。尝试使用JPG或PNG图片。`;
+                // Fallback for Safari or other browsers having issues with specific MIME types on canvas
+                if (outputMimeType === 'image/webp') {
+                    try {
+                        console.log("Retrying with image/jpeg for WebP fallback");
+                        resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                        outputMimeType = 'image/jpeg';
+                    } catch (e2) {
+                         statusMessage.textContent = `调整失败: 无法生成图片 (尝试了JPG和WebP)。`;
+                         return;
+                    }
+                } else {
+                    return;
+                }
+            }
+
+
+            const nameWithoutExtension = originalImageName.substring(0, originalImageName.lastIndexOf('.')) || originalImageName;
+            let extension = '.' + (outputMimeType.split('/')[1] || 'jpg');
+            if (extension === '.jpeg') extension = '.jpg'; // Prefer .jpg
 
             resizedImageLink.href = resizedDataUrl;
-            // 获取原始文件名和扩展名
-            const nameWithoutExtension = originalImageName.substring(0, originalImageName.lastIndexOf('.')) || originalImageName;
-            const extension = originalImageName.substring(originalImageName.lastIndexOf('.')) || (originalImageType.split('/')[1] ? '.' + originalImageType.split('/')[1] : '.jpg');
             resizedImageLink.download = `${nameWithoutExtension}_resized${extension}`;
             resizedImageLink.style.display = 'inline-block';
-
-
-            // 注意：如果想更精确地尝试达到目标文件大小，需要一个循环：
-            // 1. 生成 DataURL (或 Blob) 使用一个质量设置
-            // 2. 检查其大小
-            // 3. 如果太大，降低质量，重新生成；如果太小且可接受，或者质量已到下限，则停止。
-            // 这会比较耗时，且效果不一定完美。
+            statusMessage.textContent = `图片调整完成！估算质量: ${quality * 100}%.`;
         });
 
         cancelButton.addEventListener('click', function() {
-            imageFileInput.value = null; // 清除文件选择
-            fileNameSpan.textContent = '未选择任何文件';
-            customDimensionsDiv.style.display = 'none';
-            resizeModeSelect.value = 'keepRatio';
-            customWidthInput.value = '';
-            customHeightInput.value = '';
-            targetSizeInput.value = '';
-            imagePreview.style.display = 'none';
-            imagePreview.src = '#';
-            originalImage = null;
-            resizedImageLink.style.display = 'none';
+            imageFileInput.value = null; // Clear file input
+            resetImageRelatedFields();
+            resizeModeSelect.value = 'keepRatio'; // Reset dropdown
             statusMessage.textContent = '操作已取消。';
             console.log('操作已取消');
         });
 
-        // 初始化时根据下拉框设置自定义尺寸区域的显示
-        if (resizeModeSelect.value === 'customDimensions') {
-            customDimensionsDiv.style.display = 'block';
-        } else {
-            customDimensionsDiv.style.display = 'none';
-        }
+        // Initial state for dimension inputs
+        imageWidthInput.disabled = true;
+        imageHeightInput.disabled = true;
+
     </script>
 
 </body>
