@@ -31,7 +31,7 @@
         .form-group {
             margin-bottom: 18px;
         }
-        label { /* General label styling */
+        label {
             display: block;
             margin-bottom: 6px;
             font-weight: bold;
@@ -52,35 +52,42 @@
             display: none;
             background-color: #eee;
         }
-        .resize-options-label {
+        .options-label { /* Renamed for general use */
             display: block;
             margin-bottom: 6px;
             font-weight: bold;
         }
-        .resize-options-container {
+        .flex-container { /* Used for side-by-side layout */
             display: flex;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
             margin-bottom: 15px;
         }
-        .resize-options-container select,
-        .resize-options-container input[type="number"] {
+        .flex-container select,
+        .flex-container input[type="number"] {
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
         }
-        .resize-options-container select {
+        .flex-container select {
             flex-grow: 1;
         }
-        .resize-options-container .dimension-label {
+        .flex-container .dimension-label {
             font-size: 0.9em;
             margin-left: 5px;
             margin-right: 2px;
         }
-        .resize-options-container input[type="number"] {
+        .flex-container input[type="number"] {
             width: 85px;
+        }
+        #outputFormatSelect {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            /* width: 100%; */ /* Make it full width if not in flex-container */
         }
 
         .buttons-row {
@@ -126,17 +133,6 @@
         #resizedImageLink:hover {
             background-color: #218838;
         }
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
     </style>
 </head>
 <body>
@@ -154,8 +150,8 @@
         </div>
 
         <div class="form-group">
-            <label class="resize-options-label" for="resizeMode">调整方式及尺寸:</label>
-            <div class="resize-options-container">
+            <label class="options-label" for="resizeMode">调整方式及尺寸:</label>
+            <div class="flex-container">
                 <select id="resizeMode">
                     <option value="keepRatio" selected>保持图片长宽比例</option>
                     <option value="customDimensions">可选图片长和宽</option>
@@ -165,6 +161,14 @@
                 <span class="dimension-label">高:</span>
                 <input type="number" id="imageHeight" placeholder="高度" title="图片高度 (像素)">
             </div>
+        </div>
+
+        <div class="form-group">
+            <label class="options-label" for="outputFormatSelect">选择输出格式:</label>
+            <select id="outputFormatSelect">
+                <option value="image/png">PNG</option>
+                <option value="image/jpeg">JPEG</option>
+                </select>
         </div>
 
         <div class="buttons-row">
@@ -184,6 +188,7 @@
         const resizeModeSelect = document.getElementById('resizeMode');
         const imageWidthInput = document.getElementById('imageWidth');
         const imageHeightInput = document.getElementById('imageHeight');
+        const outputFormatSelect = document.getElementById('outputFormatSelect'); // New select element
         const startButton = document.getElementById('startButton');
         const cancelButton = document.getElementById('cancelButton');
         const statusMessage = document.getElementById('statusMessage');
@@ -191,15 +196,43 @@
 
         let originalImage = null;
         let originalAspectRatio = 1;
-        let originalImageType = 'image/jpeg'; // Default, will be updated on file selection
+        let originalImageType = 'image/jpeg';
         let originalImageName = 'image.jpg';
         let userInputLock = false;
+
+        // --- Initialize Output Format Select ---
+        function initializeOutputFormatSelect() {
+            // Check for WebP output support
+            const canvasTest = document.createElement('canvas');
+            try {
+                if (canvasTest.toDataURL('image/webp').startsWith('data:image/webp')) {
+                    const webpOption = document.createElement('option');
+                    webpOption.value = 'image/webp';
+                    webpOption.textContent = 'WebP';
+                    outputFormatSelect.appendChild(webpOption);
+                }
+            } catch (e) {
+                console.log("WebP output not supported by this browser's canvas.");
+            }
+        }
+        initializeOutputFormatSelect(); // Call on script load
 
         imageFileInput.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
                 originalImageName = file.name;
-                originalImageType = file.type || 'image/jpeg'; // Get the actual type
+                originalImageType = file.type || 'image/jpeg';
+
+                // Set default output format based on original image type
+                if (originalImageType === 'image/png' ||
+                    originalImageType === 'image/jpeg' ||
+                    (originalImageType === 'image/webp' && outputFormatSelect.querySelector('option[value="image/webp"]'))) {
+                    outputFormatSelect.value = originalImageType;
+                } else {
+                    // Default to PNG for other types like GIF, BMP to preserve quality
+                    outputFormatSelect.value = 'image/png';
+                }
+
 
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -231,7 +264,10 @@
             imagePreview.src = '#';
             originalImage = null;
             originalAspectRatio = 1;
-            originalImageType = 'image/jpeg'; // Reset to default
+            originalImageType = 'image/jpeg';
+            // Reset output format to a sensible default (e.g., PNG or the first option)
+            outputFormatSelect.value = 'image/png';
+
 
             if (clearDimensions && !userInputLock) {
                 userInputLock = true;
@@ -316,63 +352,74 @@
             canvas.height = targetHeight;
             ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
 
-            // --- Determine Output Format and Quality ---
-            let outputMimeType = originalImageType; // Start with original type
+            // --- Get Selected Output Format and Quality ---
+            const selectedOutputMimeType = outputFormatSelect.value; // User's choice from the new dropdown
             let quality = 0.92; // Default quality for JPEG/WebP
             let statusMsgText = "";
 
-            if (originalImageType === 'image/png') {
-                // Output as PNG, quality parameter is ignored by toDataURL for PNG
-                outputMimeType = 'image/png';
-                // No quality parameter for PNG in this context
-            } else if (originalImageType === 'image/jpeg' || originalImageType === 'image/webp') {
-                // For JPEG or WebP, use the original type and the quality parameter
-                // quality remains 0.92 or could be user-defined later
-            } else {
-                // For other types (e.g., GIF, BMP loaded via browser capabilities),
-                // default to PNG to preserve as much quality/transparency as possible from canvas.
-                // Alternatively, could default to JPEG if smaller size is a hard requirement.
-                console.warn(`Original image type ${originalImageType} is not directly controlled for output quality. Defaulting output to PNG.`);
-                outputMimeType = 'image/png';
-            }
-
             let resizedDataUrl;
             try {
-                if (outputMimeType === 'image/jpeg' || outputMimeType === 'image/webp') {
-                    resizedDataUrl = canvas.toDataURL(outputMimeType, quality);
-                    statusMsgText = `图片调整完成！输出格式: ${outputMimeType.toUpperCase().split('/')[1]}, 输出质量: ${quality * 100}%.`;
-                } else { // This will be 'image/png'
-                    resizedDataUrl = canvas.toDataURL(outputMimeType); // Quality parameter is ignored for PNG
-                    statusMsgText = `图片调整完成！输出格式: ${outputMimeType.toUpperCase().split('/')[1]}.`;
+                if (selectedOutputMimeType === 'image/jpeg' || selectedOutputMimeType === 'image/webp') {
+                    resizedDataUrl = canvas.toDataURL(selectedOutputMimeType, quality);
+                    statusMsgText = `图片调整完成！输出格式: ${selectedOutputMimeType.toUpperCase().split('/')[1]}, 输出质量: ${quality * 100}%.`;
+                } else { // Assumed to be 'image/png' or other types defaulted to PNG
+                    resizedDataUrl = canvas.toDataURL(selectedOutputMimeType); // Quality parameter is ignored for PNG
+                    statusMsgText = `图片调整完成！输出格式: ${selectedOutputMimeType.toUpperCase().split('/')[1]}.`;
                 }
             } catch (e) {
-                console.error("Error creating data URL:", e);
-                statusMessage.textContent = `调整失败: 无法生成图片 (尝试输出为 ${outputMimeType})。`;
-                // Simple fallback if primary choice fails (e.g. browser doesn't support outputting WebP from canvas)
-                if (outputMimeType === 'image/webp') {
+                console.error("Error creating data URL for " + selectedOutputMimeType + ":", e);
+                statusMessage.textContent = `调整失败: 无法生成图片 (尝试输出为 ${selectedOutputMimeType})。`;
+                // Fallback logic (optional, can be simplified if not strictly needed)
+                if (selectedOutputMimeType === 'image/webp' && originalImageType !== 'image/jpeg') { // If WebP failed and original wasn't JPEG
                     try {
                         console.log("WebP output failed, attempting JPEG fallback.");
-                        outputMimeType = 'image/jpeg';
-                        resizedDataUrl = canvas.toDataURL(outputMimeType, quality);
+                        const fallbackMimeType = 'image/jpeg';
+                        resizedDataUrl = canvas.toDataURL(fallbackMimeType, quality);
                         statusMsgText = `图片调整完成！输出格式: JPEG (WebP失败), 输出质量: ${quality * 100}%.`;
+                         // Update extension for download link based on fallback
+                        const nameWithoutExtensionFallback = originalImageName.substring(0, originalImageName.lastIndexOf('.')) || originalImageName;
+                        let extensionFallback = '.jpg';
+                        resizedImageLink.download = `${nameWithoutExtensionFallback}_resized${extensionFallback}`;
+
                     } catch (e2) {
-                        statusMessage.textContent = `调整失败: 无法生成图片 (尝试了 ${originalImageType} -> ${outputMimeType} -> JPEG)。`;
+                        statusMessage.textContent = `调整失败: 无法生成图片 (尝试了 ${selectedOutputMimeType} -> JPEG)。`;
                         return;
                     }
-                } else {
-                     statusMessage.textContent = `调整失败: 无法生成图片 (尝试输出为 ${outputMimeType})。`;
+                } else if (selectedOutputMimeType === 'image/webp' && originalImageType === 'image/jpeg') { // If WebP failed and original was JPEG, just use JPEG
+                     try {
+                        console.log("WebP output failed, attempting JPEG (original) fallback.");
+                        const fallbackMimeType = 'image/jpeg';
+                        resizedDataUrl = canvas.toDataURL(fallbackMimeType, quality);
+                        statusMsgText = `图片调整完成！输出格式: JPEG (WebP失败), 输出质量: ${quality * 100}%.`;
+                        const nameWithoutExtensionFallback = originalImageName.substring(0, originalImageName.lastIndexOf('.')) || originalImageName;
+                        let extensionFallback = '.jpg';
+                        resizedImageLink.download = `${nameWithoutExtensionFallback}_resized${extensionFallback}`;
+                     } catch (e3) {
+                        statusMessage.textContent = `调整失败: 无法生成图片。`;
+                        return;
+                     }
+                }
+                 else { // For failures other than WebP that don't have a simple fallback here
+                    statusMessage.textContent = `调整失败: 无法生成图片 (尝试输出为 ${selectedOutputMimeType})。`;
                     return;
                 }
             }
 
             const nameWithoutExtension = originalImageName.substring(0, originalImageName.lastIndexOf('.')) || originalImageName;
-            // Determine extension based on the FINAL outputMimeType
-            let extension = '.' + (outputMimeType.split('/')[1] || 'png'); // Default to png if split fails or type is weird
+            // Determine extension based on the FINAL selectedOutputMimeType (or fallback)
+            let finalOutputMimeTypeForExtension = selectedOutputMimeType;
+            if (resizedDataUrl && resizedDataUrl.startsWith('data:image/jpeg')) finalOutputMimeTypeForExtension = 'image/jpeg';
+            else if (resizedDataUrl && resizedDataUrl.startsWith('data:image/png')) finalOutputMimeTypeForExtension = 'image/png';
+            // Add other checks if more fallbacks modify the type directly
+
+            let extension = '.' + (finalOutputMimeTypeForExtension.split('/')[1] || 'png');
             if (extension === '.jpeg') extension = '.jpg';
 
 
             resizedImageLink.href = resizedDataUrl;
+            // Ensure download name uses the final extension from successful conversion
             resizedImageLink.download = `${nameWithoutExtension}_resized${extension}`;
+
             resizedImageLink.style.display = 'inline-block';
             statusMessage.textContent = statusMsgText;
         });
@@ -381,6 +428,7 @@
             imageFileInput.value = null;
             resetImageRelatedFields(true);
             resizeModeSelect.value = 'keepRatio';
+            outputFormatSelect.value = 'image/png'; // Reset output format to default
             statusMessage.textContent = '操作已取消。';
             console.log('操作已取消');
         });
@@ -388,4 +436,3 @@
 
 </body>
 </html>
-
