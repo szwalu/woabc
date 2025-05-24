@@ -31,7 +31,7 @@
         .form-group {
             margin-bottom: 18px;
         }
-        label {
+        label { /* General label style, can be overridden */
             display: block;
             margin-bottom: 6px;
             font-weight: bold;
@@ -52,17 +52,17 @@
             display: none;
             background-color: #eee;
         }
-        .options-label { /* Renamed for general use */
+        .options-label { /* Specific style for main labels of sections */
             display: block;
             margin-bottom: 6px;
             font-weight: bold;
         }
-        .flex-container { /* Used for side-by-side layout */
+        .flex-container {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
+            align-items: center; /* Aligns items vertically in the middle */
+            gap: 10px; /* Space between items in the flex container */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            margin-bottom: 15px; /* Consistent margin for groups with flex-container */
         }
         .flex-container select,
         .flex-container input[type="number"] {
@@ -70,26 +70,33 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
+            flex-grow: 1; /* Allows select/input to grow and fill space */
+            width: auto; /* Overrides any fixed width to allow flex-grow */
         }
-        .flex-container select {
-            flex-grow: 1;
+         /* Wrapper for items within flex container to allow labels on top */
+        .flex-item-wrapper {
+            flex: 1; /* Each wrapper takes equal space */
+            min-width: 150px; /* Minimum width before wrapping or shrinking too much */
         }
+        .flex-item-wrapper label { /* Style for labels inside flex-item-wrapper */
+            font-weight: normal; /* Less emphasis than .options-label */
+            margin-bottom: 4px;
+            display: block;
+        }
+        .flex-item-wrapper select,
+        .flex-item-wrapper input[type="number"] {
+            width: 100%; /* Make select/input fill its wrapper */
+        }
+
         .flex-container .dimension-label {
             font-size: 0.9em;
             margin-left: 5px;
             margin-right: 2px;
         }
-        .flex-container input[type="number"] {
-            width: 85px;
+        .flex-container input[type="number"] { /* Specific width for dimension inputs */
+             width: 85px;
+             flex-grow: 0; /* Don't grow dimension inputs */
         }
-        #outputFormatSelect {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            /* width: 100%; */ /* Make it full width if not in flex-container */
-        }
-
         .buttons-row {
             text-align: center;
             margin-top: 25px;
@@ -163,12 +170,22 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="options-label" for="outputFormatSelect">选择输出格式:</label>
-            <select id="outputFormatSelect">
-                <option value="image/png">PNG</option>
-                <option value="image/jpeg">JPEG</option>
-                </select>
+        <div class="form-group"> <label class="options-label">输出设置:</label>
+            <div class="flex-container">
+                <div class="flex-item-wrapper"> <label for="outputFormatSelect">选择输出格式:</label>
+                    <select id="outputFormatSelect">
+                        <option value="image/png">PNG</option>
+                        <option value="image/jpeg">JPEG</option>
+                        </select>
+                </div>
+                <div class="flex-item-wrapper"> <label for="imageQualitySelect">选择体积:</label>
+                    <select id="imageQualitySelect">
+                        <option value="0.3">原体积的30%</option>
+                        <option value="0.5">原体积的50%</option>
+                        <option value="0.9" selected>原体积的90%</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
         <div class="buttons-row">
@@ -188,7 +205,8 @@
         const resizeModeSelect = document.getElementById('resizeMode');
         const imageWidthInput = document.getElementById('imageWidth');
         const imageHeightInput = document.getElementById('imageHeight');
-        const outputFormatSelect = document.getElementById('outputFormatSelect'); // New select element
+        const outputFormatSelect = document.getElementById('outputFormatSelect');
+        const imageQualitySelect = document.getElementById('imageQualitySelect'); // New quality select
         const startButton = document.getElementById('startButton');
         const cancelButton = document.getElementById('cancelButton');
         const statusMessage = document.getElementById('statusMessage');
@@ -200,9 +218,16 @@
         let originalImageName = 'image.jpg';
         let userInputLock = false;
 
-        // --- Initialize Output Format Select ---
+        function toggleQualitySelect() {
+            const selectedFormat = outputFormatSelect.value;
+            if (selectedFormat === 'image/png') {
+                imageQualitySelect.disabled = true;
+            } else {
+                imageQualitySelect.disabled = false;
+            }
+        }
+
         function initializeOutputFormatSelect() {
-            // Check for WebP output support
             const canvasTest = document.createElement('canvas');
             try {
                 if (canvasTest.toDataURL('image/webp').startsWith('data:image/webp')) {
@@ -215,7 +240,7 @@
                 console.log("WebP output not supported by this browser's canvas.");
             }
         }
-        initializeOutputFormatSelect(); // Call on script load
+        initializeOutputFormatSelect();
 
         imageFileInput.addEventListener('change', function() {
             const file = this.files[0];
@@ -223,16 +248,14 @@
                 originalImageName = file.name;
                 originalImageType = file.type || 'image/jpeg';
 
-                // Set default output format based on original image type
                 if (originalImageType === 'image/png' ||
                     originalImageType === 'image/jpeg' ||
                     (originalImageType === 'image/webp' && outputFormatSelect.querySelector('option[value="image/webp"]'))) {
                     outputFormatSelect.value = originalImageType;
                 } else {
-                    // Default to PNG for other types like GIF, BMP to preserve quality
                     outputFormatSelect.value = 'image/png';
                 }
-
+                toggleQualitySelect(); // Update quality select state
 
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -265,9 +288,9 @@
             originalImage = null;
             originalAspectRatio = 1;
             originalImageType = 'image/jpeg';
-            // Reset output format to a sensible default (e.g., PNG or the first option)
             outputFormatSelect.value = 'image/png';
-
+            imageQualitySelect.value = '0.9'; // Reset quality dropdown
+            toggleQualitySelect(); // Update quality select state
 
             if (clearDimensions && !userInputLock) {
                 userInputLock = true;
@@ -279,7 +302,6 @@
             statusMessage.textContent = '';
         }
 
-
         imageWidthInput.addEventListener('input', function() {
             if (userInputLock || !originalImage) return;
             if (resizeModeSelect.value === 'keepRatio' && this.value) {
@@ -287,8 +309,8 @@
                 const newWidth = parseInt(this.value);
                 if (!isNaN(newWidth) && newWidth > 0 && originalAspectRatio > 0) {
                     imageHeightInput.value = Math.round(newWidth / originalAspectRatio);
-                } else if (newWidth === 0) {
-                     imageHeightInput.value = '';
+                } else if (newWidth === 0 || this.value === '') {
+                    imageHeightInput.value = '';
                 }
                 userInputLock = false;
             }
@@ -300,8 +322,8 @@
                 userInputLock = true;
                 const newHeight = parseInt(this.value);
                 if (!isNaN(newHeight) && newHeight > 0 && originalAspectRatio > 0) {
-                     imageWidthInput.value = Math.round(newHeight * originalAspectRatio);
-                } else if (newHeight === 0) {
+                    imageWidthInput.value = Math.round(newHeight * originalAspectRatio);
+                } else if (newHeight === 0 || this.value === '') {
                     imageWidthInput.value = '';
                 }
                 userInputLock = false;
@@ -311,7 +333,7 @@
         resizeModeSelect.addEventListener('change', function() {
             if (!originalImage || !imageWidthInput.value) return;
             if (this.value === 'keepRatio') {
-                 if (!userInputLock) {
+                if (!userInputLock) {
                     userInputLock = true;
                     const currentWidth = parseInt(imageWidthInput.value);
                     if(!isNaN(currentWidth) && currentWidth > 0 && originalAspectRatio > 0){
@@ -322,6 +344,7 @@
             }
         });
 
+        outputFormatSelect.addEventListener('change', toggleQualitySelect); // Listen for format changes
 
         startButton.addEventListener('click', function() {
             if (!originalImage) {
@@ -352,86 +375,63 @@
             canvas.height = targetHeight;
             ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
 
-            // --- Get Selected Output Format and Quality ---
-            const selectedOutputMimeType = outputFormatSelect.value; // User's choice from the new dropdown
-            let quality = 0.92; // Default quality for JPEG/WebP
+            const selectedOutputMimeType = outputFormatSelect.value;
+            const selectedQuality = parseFloat(imageQualitySelect.value);
             let statusMsgText = "";
+            let actualOutputMimeType = selectedOutputMimeType; // Track final MIME type after fallback
 
             let resizedDataUrl;
             try {
                 if (selectedOutputMimeType === 'image/jpeg' || selectedOutputMimeType === 'image/webp') {
-                    resizedDataUrl = canvas.toDataURL(selectedOutputMimeType, quality);
-                    statusMsgText = `图片调整完成！输出格式: ${selectedOutputMimeType.toUpperCase().split('/')[1]}, 输出质量: ${quality * 100}%.`;
-                } else { // Assumed to be 'image/png' or other types defaulted to PNG
-                    resizedDataUrl = canvas.toDataURL(selectedOutputMimeType); // Quality parameter is ignored for PNG
-                    statusMsgText = `图片调整完成！输出格式: ${selectedOutputMimeType.toUpperCase().split('/')[1]}.`;
+                    resizedDataUrl = canvas.toDataURL(selectedOutputMimeType, selectedQuality);
+                    statusMsgText = `图片调整完成！输出格式: ${selectedOutputMimeType.toUpperCase().split('/')[1]}, 输出质量: ${selectedQuality * 100}%.`;
+                } else { // Assumed to be 'image/png'
+                    resizedDataUrl = canvas.toDataURL(selectedOutputMimeType);
+                    statusMsgText = `图片调整完成！输出格式: ${selectedOutputMimeType.toUpperCase().split('/')[1]}. (体积选项不适用于PNG)`;
                 }
             } catch (e) {
                 console.error("Error creating data URL for " + selectedOutputMimeType + ":", e);
-                statusMessage.textContent = `调整失败: 无法生成图片 (尝试输出为 ${selectedOutputMimeType})。`;
-                // Fallback logic (optional, can be simplified if not strictly needed)
-                if (selectedOutputMimeType === 'image/webp' && originalImageType !== 'image/jpeg') { // If WebP failed and original wasn't JPEG
+                if (selectedOutputMimeType === 'image/webp') {
+                    const fallbackMimeType = 'image/jpeg';
+                    console.log(`WebP output failed, attempting ${fallbackMimeType} fallback with quality ${selectedQuality * 100}%.`);
                     try {
-                        console.log("WebP output failed, attempting JPEG fallback.");
-                        const fallbackMimeType = 'image/jpeg';
-                        resizedDataUrl = canvas.toDataURL(fallbackMimeType, quality);
-                        statusMsgText = `图片调整完成！输出格式: JPEG (WebP失败), 输出质量: ${quality * 100}%.`;
-                         // Update extension for download link based on fallback
-                        const nameWithoutExtensionFallback = originalImageName.substring(0, originalImageName.lastIndexOf('.')) || originalImageName;
-                        let extensionFallback = '.jpg';
-                        resizedImageLink.download = `${nameWithoutExtensionFallback}_resized${extensionFallback}`;
-
+                        resizedDataUrl = canvas.toDataURL(fallbackMimeType, selectedQuality);
+                        statusMsgText = `图片调整完成！输出格式: JPEG (WebP失败), 输出质量: ${selectedQuality * 100}%.`;
+                        actualOutputMimeType = fallbackMimeType; // Update the actual output type
                     } catch (e2) {
-                        statusMessage.textContent = `调整失败: 无法生成图片 (尝试了 ${selectedOutputMimeType} -> JPEG)。`;
+                        console.error("Error creating data URL for fallback JPEG:", e2);
+                        statusMessage.textContent = `调整失败: 无法生成图片 (尝试了 ${selectedOutputMimeType} -> ${fallbackMimeType})。`;
                         return;
                     }
-                } else if (selectedOutputMimeType === 'image/webp' && originalImageType === 'image/jpeg') { // If WebP failed and original was JPEG, just use JPEG
-                     try {
-                        console.log("WebP output failed, attempting JPEG (original) fallback.");
-                        const fallbackMimeType = 'image/jpeg';
-                        resizedDataUrl = canvas.toDataURL(fallbackMimeType, quality);
-                        statusMsgText = `图片调整完成！输出格式: JPEG (WebP失败), 输出质量: ${quality * 100}%.`;
-                        const nameWithoutExtensionFallback = originalImageName.substring(0, originalImageName.lastIndexOf('.')) || originalImageName;
-                        let extensionFallback = '.jpg';
-                        resizedImageLink.download = `${nameWithoutExtensionFallback}_resized${extensionFallback}`;
-                     } catch (e3) {
-                        statusMessage.textContent = `调整失败: 无法生成图片。`;
-                        return;
-                     }
-                }
-                 else { // For failures other than WebP that don't have a simple fallback here
+                } else {
                     statusMessage.textContent = `调整失败: 无法生成图片 (尝试输出为 ${selectedOutputMimeType})。`;
                     return;
                 }
             }
 
             const nameWithoutExtension = originalImageName.substring(0, originalImageName.lastIndexOf('.')) || originalImageName;
-            // Determine extension based on the FINAL selectedOutputMimeType (or fallback)
-            let finalOutputMimeTypeForExtension = selectedOutputMimeType;
-            if (resizedDataUrl && resizedDataUrl.startsWith('data:image/jpeg')) finalOutputMimeTypeForExtension = 'image/jpeg';
-            else if (resizedDataUrl && resizedDataUrl.startsWith('data:image/png')) finalOutputMimeTypeForExtension = 'image/png';
-            // Add other checks if more fallbacks modify the type directly
-
-            let extension = '.' + (finalOutputMimeTypeForExtension.split('/')[1] || 'png');
+            let extension = '.' + (actualOutputMimeType.split('/')[1] || 'png');
             if (extension === '.jpeg') extension = '.jpg';
 
-
             resizedImageLink.href = resizedDataUrl;
-            // Ensure download name uses the final extension from successful conversion
             resizedImageLink.download = `${nameWithoutExtension}_resized${extension}`;
-
             resizedImageLink.style.display = 'inline-block';
             statusMessage.textContent = statusMsgText;
         });
 
         cancelButton.addEventListener('click', function() {
-            imageFileInput.value = null;
+            imageFileInput.value = null; // Clear file input
             resetImageRelatedFields(true);
             resizeModeSelect.value = 'keepRatio';
-            outputFormatSelect.value = 'image/png'; // Reset output format to default
+            // outputFormatSelect.value is reset in resetImageRelatedFields
+            // imageQualitySelect.value is reset in resetImageRelatedFields
+            // toggleQualitySelect is called in resetImageRelatedFields
             statusMessage.textContent = '操作已取消。';
             console.log('操作已取消');
         });
+
+        // Set initial state for the quality dropdown based on the default selected format
+        toggleQualitySelect();
     </script>
 
 </body>
